@@ -133,3 +133,121 @@
   --color-accent: var(--accent); --color-accent-light: var(--accent-light); --color-accent-tint: var(--accent-tint);
   --font-display: var(--font-hanken); --font-sans: var(--font-instrument); --font-mono: var(--font-plex-mono);
 }
+
+/*
+ * Hero backdrop, layer 1: grid + dots (see HeroBackdrop.tsx and
+ * design-reference/README.md "Hero (dark) -> Background, three layers").
+ * Values transcribed verbatim -- do not "clean up".
+ *
+ * HARD CONSTRAINT: never set a `background` SHORTHAND on any element
+ * carrying `.kx-grid` (directly, via a later rule, or via a Tailwind
+ * `bg-*` utility that resolves to the shorthand) -- it resets
+ * background-image/-position/-size to `initial` and wipes the entire
+ * pattern. Use `background-color` only. This was a real bug in the
+ * prototype and cost real debugging time.
+ *
+ * The dot layer's 312px tile (3x the 104px line grid) and its
+ * `-156px -52px` offset exist so dots land EXACTLY on grid-line
+ * intersections and so the top row of the grid has no dots. Getting dots
+ * onto the corners rather than floating mid-square took the designer
+ * several passes; keep the numbers exactly as given.
+ */
+.kx-grid {
+  background-color: var(--dark-canvas);
+  background-image:
+    radial-gradient(var(--grid-dot) 1px, transparent 1.6px),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 312px 312px, 104px 104px, 104px 104px;
+  background-position: -156px -52px, 0 0, 0 0;
+}
+
+/*
+ * Hero backdrop, layer 2: orbs (rendered by HeroBackdrop.tsx).
+ * Gradient stops/sizes/positions transcribed verbatim from the design
+ * prototype's hero-instance `.kx-orb` / `.kx-orb-b` elements
+ * (design-reference/KINECT Marketing Site.dc.html lines 182-183) -- warm
+ * coral+blue wash on the left, cyan on the right. Both sit at
+ * `z-index:-1`, well behind content.
+ *
+ * Breathe timing (scale + opacity) follows the README "Motion" spec of
+ * independent ~18s / ~23s cycles with offset negative delays. Note: the
+ * prototype's own CSS instead reuses one 16s keyframe with the second orb
+ * played in `reverse`; that shortcut reads as synced/mirrored rather than
+ * independent, so here each orb gets its own duration/delay per the
+ * README's explicit numbers while keeping the prototype's exact visual
+ * (gradient) values.
+ */
+@keyframes kx-orb-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+.kx-orb {
+  position: absolute;
+  inset: -10%;
+  z-index: -1;
+  pointer-events: none;
+  animation: kx-orb-breathe 18s ease-in-out infinite;
+  animation-delay: -6s;
+  will-change: transform, opacity;
+}
+.kx-orb-left {
+  background: radial-gradient(820px 520px at 14% 12%, rgba(236, 82, 66, 0.42), transparent 64%),
+    radial-gradient(760px 460px at 50% -8%, rgba(130, 160, 240, 0.26), transparent 66%);
+}
+.kx-orb-right {
+  background: radial-gradient(820px 520px at 86% 16%, rgba(53, 214, 232, 0.4), transparent 64%);
+  animation-duration: 23s;
+  animation-delay: -11s;
+}
+
+/*
+ * Hero backdrop, layer 3: trace lines (rendered by HeroBackdrop.tsx).
+ * Per-line top/left offsets, durations, delays, lengths and opacities
+ * transcribed verbatim from the prototype's hero instance (KINECT
+ * Marketing Site.dc.html lines 24-27, 185-190): six lines, staggered
+ * negative/positive delays and varied 23-41s durations, so no two ever
+ * sync. Positions are multiples of 104px so each line overlays a real
+ * `.kx-grid` line. Handoff acceptance criterion, verbatim: "these should
+ * read as almost subliminal; if you notice them, they are too strong."
+ */
+@keyframes kx-trace-x {
+  0% { transform: translateX(-30%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+@keyframes kx-trace-y {
+  0% { transform: translateY(-30%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(130%); opacity: 0; }
+}
+.kx-trace {
+  position: absolute;
+  pointer-events: none;
+}
+.kx-trace-h {
+  left: 0;
+  width: 38%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.13) 50%, transparent);
+  animation-name: kx-trace-x;
+  animation-duration: 26s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.kx-trace-v {
+  top: 0;
+  width: 1px;
+  height: 34%;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.11) 50%, transparent);
+  animation-name: kx-trace-y;
+  animation-duration: 31s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kx-orb, .kx-trace { animation: none !important; }
+}
