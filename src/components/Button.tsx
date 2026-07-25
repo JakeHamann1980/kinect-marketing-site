@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "ghost" | "accent" | "outline-light";
+export type ButtonVariant = "primary" | "ghost" | "accent" | "outline-light" | "fill-dark";
 export type ButtonSize = "md" | "lg" | "xl";
 
 interface ButtonProps {
@@ -40,16 +40,26 @@ const SIZES: Record<ButtonSize, string> = {
 };
 
 // Per design-reference/README.md line 81 (nav CTA) and line 121 (hero CTA
-// row). "outline-light" is the light-context bordered treatment recovered
-// verbatim from the non-popular pricing tier CTAs in
-// KINECT Marketing Site.dc.html (`hi?...:'rgba(255,255,255,.07)'` branch
-// adapted to the light rhythm PricingSection/PersonaCard/PillarCards already
-// use elsewhere: border-border, text-ink, transparent background).
+// row). "outline-light" is the light-context bordered treatment originally
+// adapted from the non-popular pricing tier CTAs in
+// KINECT Marketing Site.dc.html (`hi?...:'rgba(255,255,255,.07)'` branch)
+// for the light rhythm PersonaCard/PillarCards already use elsewhere:
+// border-border, text-ink, transparent background. Kept defined even
+// though PricingSection no longer uses it (see "fill-dark" below) since
+// it remains a reasonable light-context bordered primitive.
+//
+// "fill-dark" (user-directed 2026-07-25): the UNADAPTED dark-context
+// version of that same prototype branch -- bg rgba(255,255,255,.07), no
+// border, on-dark text -- recovered verbatim once PricingSection's
+// non-popular tier CTA needed to go back to dark. Genuinely differs from
+// "ghost" (which has a visible border and a fully transparent background)
+// so it's its own variant rather than a ghost reuse.
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: "bg-on-dark text-[#0B0F17]",
   ghost: "border border-[rgba(255,255,255,.18)] bg-transparent text-on-dark",
   accent: "bg-accent-light text-white",
   "outline-light": "border border-border bg-transparent text-ink",
+  "fill-dark": "bg-[rgba(255,255,255,.07)] text-on-dark",
 };
 
 /**

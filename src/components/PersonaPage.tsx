@@ -79,13 +79,15 @@ function AccentEyebrow({ children, className }: { children: ReactNode; className
  *      `content.screenshot`, so repeating it in the hero would be
  *      redundant, and the brief is explicit that this section should
  *      match home's structure.
- *   2. Pain                                         -- flat dark canvas
- *      (no kx-grid texture), a title and three quiet cards. Not in
- *      README's own numbered persona-page list, but present in every
- *      sub-page instance in the prototype (`KINECT Marketing Site.dc.html`
- *      "PAIN", ~line 391) directly after the hero and before "Built for
- *      the way you work"; `content.pain` is real, approved copy with no
- *      other section to render in, so it keeps its own section here.
+ *   2. Pain                                         -- LIGHT section
+ *      (user-directed 2026-07-25, see the section's own inline comment
+ *      below for the full rationale). Not in README's own numbered
+ *      persona-page list, but present in every sub-page instance in the
+ *      prototype (`KINECT Marketing Site.dc.html` "PAIN", ~line 391)
+ *      directly after the hero and before "Built for the way you work" --
+ *      originally recovered there as a dark quiet-card treatment;
+ *      `content.pain` is real, approved copy with no other section to
+ *      render in, so it keeps its own section here regardless of tone.
  *   3+4. Capabilities ("Built for the way you work") + product screenshot
  *      -- one continuous dark `kx-grid`-textured section in the
  *      prototype's own FEATURES instance (~line 402-417: the capability
@@ -103,7 +105,13 @@ function AccentEyebrow({ children, className }: { children: ReactNode; className
  *      uses (including its Jake-directed colored card treatment), per the
  *      brief's explicit "StepCards with content.steps" instruction.
  *   7. Pricing                                       -- the shared,
- *      self-contained `PricingSection` (same three tiers as home).
+ *      self-contained `PricingSection` (same three tiers as home), left at
+ *      its default `tone="light"` (user-directed 2026-07-25: home passes
+ *      `tone="dark"` instead -- see PricingSection.tsx's own doc comment --
+ *      but the persona pages are already dark-heavy through capabilities/
+ *      workflow/steps, and with the pain section above flipping to light,
+ *      a light pricing section balances the rhythm better here than a
+ *      dark one would).
  *   8. FAQ                                            -- light section
  *      using the same `Faq` accordion as home. `PersonaPageContent` has
  *      no section-title field of its own (unlike home's `faqTitle`) since
@@ -165,25 +173,44 @@ export default function PersonaPage({ content }: PersonaPageProps) {
         </div>
       </section>
 
-      {/* 2 - PAIN (dark, flat canvas, quiet cards) */}
-      <section className="kx-sec border-t border-[rgba(255,255,255,.06)] bg-dark-canvas">
+      {/* 2 - PAIN (light).
+          user-directed 2026-07-25: light treatment chosen over the
+          prototype's dark quiet-card version (originally recovered from
+          KINECT Marketing Site.dc.html's PAIN instance, ~line 391-399:
+          bg rgba(255,255,255,.03), border rgba(255,255,255,.09), a coral
+          "✕" mark). Jake asked for this section to flip to light so the
+          page doesn't stack five dark sections in a row right after the
+          hero (pain -> capabilities+screenshot -> workflow -> steps ->
+          [pricing, itself staying light on persona pages -- see section 7
+          below]); a light section directly under the hero restores some
+          alternation early in the page. Converted to the established
+          light-card language PersonaCard/PillarCards already use
+          elsewhere: bg-light-canvas section, white surface cards,
+          border-border, 18px radius, the standard
+          shadow-[0_1px_3px_rgba(12,18,32,.05)] card shadow, ink text
+          colors. The prototype has no light-context precedent for the "✕"
+          pain marks (they only ever appear on its dark PAIN instance), so
+          they're recolored to --coral-light (#C4501F) here, the same
+          light-context red-family token this codebase uses elsewhere --
+          a disclosed choice, not a recovered one. */}
+      <section className="kx-sec bg-light-canvas">
         <div className="mx-auto max-w-[1180px]">
-          <SectionHead context="dark" className="max-w-[780px]">
+          <SectionHead context="light" className="max-w-[780px]">
             {content.pain.title}
           </SectionHead>
           <div className="mt-10 grid grid-cols-1 gap-5 kx-md:grid-cols-3">
             {content.pain.cards.map((card) => (
               <div
                 key={card.title}
-                className="rounded-[16px] border border-[rgba(255,255,255,.09)] bg-[rgba(255,255,255,.03)] p-[28px_26px]"
+                className="rounded-[18px] border border-border bg-surface p-[32px_30px] shadow-[0_1px_3px_rgba(12,18,32,.05)]"
               >
-                <div aria-hidden="true" className="mb-3 text-[20px] text-coral">
+                <div aria-hidden="true" className="mb-3 text-[20px] text-coral-light">
                   {"✕"}
                 </div>
-                <h3 className="mb-[9px] font-display text-[21px] font-bold text-on-dark">
+                <h3 className="mb-[9px] font-display text-[21px] font-bold text-ink">
                   {card.title}
                 </h3>
-                <p className="text-[16px] leading-[1.55] text-on-dark-3">{card.body}</p>
+                <p className="text-[16px] leading-[1.55] text-ink-3">{card.body}</p>
               </div>
             ))}
           </div>

@@ -269,12 +269,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7 - PRICING (light). PricingSection is a self-contained section
-          (own kx-sec padding + light-canvas background). */}
+      {/* 7 - PRICING (dark). PricingSection is a self-contained section
+          (own kx-sec padding + canvas background per `tone`).
+          user-directed 2026-07-25: home passes tone="dark" -- pillars ->
+          pricing -> FAQ was three light sections in a row, so pricing goes
+          back to the prototype's original dark treatment here to restore
+          the light/dark alternation. See PricingSection.tsx's own doc
+          comment for the full rationale and recovered values; the persona
+          subdomain pages (PersonaPage.tsx) pass no `tone` and keep the
+          light default instead, since their rhythm differs. */}
       <PricingSection
         headline={settings.pricing.headline}
         supporting={settings.pricing.supporting}
         tiers={settings.pricing.tiers}
+        tone="dark"
       />
 
       {/* 8 - FAQ (light). */}
