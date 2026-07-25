@@ -10,20 +10,28 @@
   --rule-strong: rgba(255,255,255,.22); --rule: rgba(255,255,255,.16); --rule-soft: rgba(255,255,255,.12);
   --rule-faint: rgba(255,255,255,.09); --rule-ghost: rgba(255,255,255,.06);
   --grid-line: rgba(255,255,255,.016); --grid-dot: rgba(255,255,255,.05);
+  /* gradients are intentionally CSS-var-only; they cannot be Tailwind color tokens */
   --text-gradient: linear-gradient(95deg, #F5A15A, #EC5242 45%, #35D6E8);
   --cta-gradient: linear-gradient(135deg, #F0913A, #EC5242);
+  /* persona accent, switched by data-persona (Task 3) */
   --accent: var(--cyan); --accent-light: var(--cyan-light); --accent-tint: rgba(14,147,172,.12);
 }
 .kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @media print { .kx-grad { color: #EC5242; } }
 
 @theme inline {
-  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-ink-3: var(--ink-3); --color-muted: var(--muted);
-  --color-surface: var(--surface); --color-border: var(--border); --color-light-canvas: var(--light-canvas);
-  --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
+  --color-dark-bg: var(--dark-bg); --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
+  --color-dropdown-bg: var(--dropdown-bg);
+  --color-light-canvas: var(--light-canvas); --color-surface: var(--surface); --color-border: var(--border);
+  --color-divider: var(--divider);
   --color-on-dark: var(--on-dark); --color-on-dark-2: var(--on-dark-2); --color-on-dark-3: var(--on-dark-3);
   --color-on-dark-4: var(--on-dark-4); --color-on-dark-5: var(--on-dark-5);
+  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-ink-3: var(--ink-3); --color-muted: var(--muted);
   --color-cyan: var(--cyan); --color-amber: var(--amber); --color-coral: var(--coral); --color-violet: var(--violet);
-  --color-accent: var(--accent);
+  --color-cyan-light: var(--cyan-light); --color-coral-light: var(--coral-light); --color-violet-light: var(--violet-light);
+  --color-rule-strong: var(--rule-strong); --color-rule: var(--rule); --color-rule-soft: var(--rule-soft);
+  --color-rule-faint: var(--rule-faint); --color-rule-ghost: var(--rule-ghost);
+  --color-grid-line: var(--grid-line); --color-grid-dot: var(--grid-dot);
+  --color-accent: var(--accent); --color-accent-light: var(--accent-light); --color-accent-tint: var(--accent-tint);
   --font-display: var(--font-hanken); --font-sans: var(--font-instrument); --font-mono: var(--font-plex-mono);
 }

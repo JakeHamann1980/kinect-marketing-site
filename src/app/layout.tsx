@@ -17,9 +17,8 @@ export default function RootLayout({
       className={`${hanken.variable} ${instrument.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body
-        className="min-h-full flex flex-col"
+        className="min-h-full flex flex-col bg-dark-bg"
         style={{
-          background: "var(--dark-bg)",
           color: "var(--on-dark)",
           fontFamily: "var(--font-sans)",
           overflowX: "clip",
