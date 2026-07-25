@@ -8,6 +8,7 @@ import { privacy } from "./legal/privacy";
 import { terms } from "./legal/terms";
 import { security } from "./legal/security";
 import { cookies } from "./legal/cookies";
+import { waitlistDialogCopy, waitlistEmailCopy } from "./waitlist-copy";
 
 const allText = JSON.stringify([
   home,
@@ -19,6 +20,13 @@ const allText = JSON.stringify([
   terms,
   security,
   cookies,
+  // Task 16 follow-up: the waitlist dialog's UI copy and the Resend
+  // confirmation email's subject/body are drafted, not-yet-approved copy
+  // (see waitlist-copy.ts's own doc comment) -- they get the same voice
+  // guardrails as every other piece of site copy rather than a silent
+  // exemption just because they live outside content/*.ts's original set.
+  waitlistDialogCopy,
+  waitlistEmailCopy,
 ]);
 
 describe("copy constraints", () => {

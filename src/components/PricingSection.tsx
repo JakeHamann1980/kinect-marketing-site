@@ -1,5 +1,4 @@
 import { type ButtonVariant } from "@/components/Button";
-import TrackedLink from "@/components/TrackedLink";
 import WaitlistCta from "@/components/WaitlistCta";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
@@ -162,42 +161,38 @@ export default function PricingSection({
 
                 <div className="mt-auto">
                   {/* Task 15: PricingSection is a Server Component, so the
-                      click handler goes through TrackedLink (see its doc
-                      comment) rather than Button directly. Fires both the
-                      generic cta_clicked{location:"pricing"} (this is one
-                      of the task brief's named trackLocation call sites)
-                      AND the tier-specific pricing_tier_clicked -- a
-                      rollup "any CTA click" metric plus the more precise
-                      "which tier" one, not a duplicate of the same signal.
-                      Task 16: only the tier literally labeled "Start free"
-                      (Growth, today) opens the waitlist dialog instead of
-                      navigating -- Starter/Scale ("Choose Starter"/"Choose
-                      Scale") are not "Start free"-labeled and keep their
-                      prior placeholder-navigation behavior via
-                      TrackedLink. Both branches still fire the same
-                      cta_clicked + pricing_tier_clicked pair either way. */}
-                  {tier.cta === "Start free" ? (
-                    <WaitlistCta
-                      variant={ctaVariant}
-                      className="w-full justify-center"
-                      trackLocation="pricing"
-                      event="pricing_tier_clicked"
-                      eventProps={{ tier: tier.name }}
-                    >
-                      {tier.cta}
-                    </WaitlistCta>
-                  ) : (
-                    <TrackedLink
-                      variant={ctaVariant}
-                      href="/"
-                      className="w-full justify-center"
-                      trackLocation="pricing"
-                      event="pricing_tier_clicked"
-                      eventProps={{ tier: tier.name }}
-                    >
-                      {tier.cta}
-                    </TrackedLink>
-                  )}
+                      click handler goes through WaitlistCta/TrackedLink
+                      (client boundaries -- see their own doc comments)
+                      rather than Button directly. Fires both the generic
+                      cta_clicked{location:"pricing"} (this is one of the
+                      task brief's named trackLocation call sites) AND the
+                      tier-specific pricing_tier_clicked -- a rollup "any
+                      CTA click" metric plus the more precise "which tier"
+                      one, not a duplicate of the same signal.
+                      Task 16 follow-up (controller-approved, superseding
+                      this task's original "only the tier literally labeled
+                      'Start free' opens the dialog" scoping): ALL THREE
+                      tiers now open the waitlist dialog, Starter/Scale
+                      included, regardless of label. There is no signup
+                      flow to route any of them to (design-reference/
+                      README.md's own open question #4: "'Start free'
+                      destination -- signup flow, waitlist, or demo
+                      request? Not designed."); a pricing CTA that instead
+                      navigated to the "/" placeholder would abandon a
+                      visitor's purchase intent at exactly the moment it's
+                      highest, while the waitlist is this site's actual
+                      launch conversion path today. Labels ("Choose
+                      Starter" / "Start free" / "Choose Scale") are
+                      unchanged -- only the destination moved. */}
+                  <WaitlistCta
+                    variant={ctaVariant}
+                    className="w-full justify-center"
+                    trackLocation="pricing"
+                    event="pricing_tier_clicked"
+                    eventProps={{ tier: tier.name }}
+                  >
+                    {tier.cta}
+                  </WaitlistCta>
                 </div>
               </div>
             );

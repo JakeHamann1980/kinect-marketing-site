@@ -12,31 +12,11 @@ import {
 import Button from "@/components/Button";
 import { track, firstTouchUtms, currentPersona } from "@/lib/analytics";
 import { onOpenWaitlist, type OpenWaitlistDetail } from "@/lib/cta";
+import { parseWaitlistInput } from "@/lib/waitlist-validation";
 import { submitWaitlist } from "@/app/actions/waitlist";
+import { waitlistDialogCopy as COPY } from "@/content/waitlist-copy";
 
 type Status = "idle" | "submitting" | "success" | "already" | "error";
-
-/**
- * NEW copy, drafted for this task (design-reference has no waitlist dialog
- * content of its own to recover -- README only flags "'Start free'
- * destination -- signup flow, waitlist, or demo request? Not designed."
- * and content/*.ts has no waitlist section). Written in the site's existing
- * voice (short declaratives, no em dashes, no exclamation points -- see
- * home.ts's closing copy for the same register) but NOT yet Jake-approved;
- * flagged here rather than presented as recovered/approved copy.
- */
-const COPY = {
-  heading: "Get your portal first",
-  intro: "Join the list and we will email you the moment KINECT opens up.",
-  emailLabel: "Email",
-  submitIdle: "Join the waitlist",
-  submitPending: "Joining...",
-  success: "You are on the list.",
-  successNext: "We will email you when your invite is ready.",
-  already: "You are already on the list.",
-  errorUnavailable: "The waitlist is warming up. Try again shortly.",
-  errorInvalidEmail: "Enter a valid email address and try again.",
-};
 
 /**
  * Task 16 (waitlist): the modal every "Start free" CTA opens (see
@@ -67,6 +47,14 @@ const COPY = {
  *    `e.target === e.currentTarget` on the backdrop's own onMouseDown, so a
  *    mousedown that starts inside the panel and drags out doesn't
  *    spuriously close it.
+ *
+ * Validation: `handleSubmit` runs the shared `parseWaitlistInput` (see
+ * src/lib/waitlist-validation.ts) client-side before ever calling the
+ * server action, so an obviously malformed email gets an instant,
+ * no-network error. The server action re-runs the exact same function
+ * against the posted FormData regardless -- this is a UX nicety, never the
+ * actual gate; see handleSubmit's own comment for why honeypot/too_fast
+ * are deliberately NOT short-circuited the same way.
  */
 export default function WaitlistDialog() {
   const [open, setOpen] = useState(false);
@@ -150,15 +138,46 @@ export default function WaitlistDialog() {
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (status === "submitting") return;
+
+    const email = emailRef.current?.value ?? "";
+    const company = honeypotRef.current?.value ?? "";
+    const submissionRenderedAt = renderedAt ?? Date.now();
+    const persona = currentPersona();
+    const sourcePath = window.location.pathname;
+    const utm = firstTouchUtms();
+
+    // Client pre-flight: the exact same parseWaitlistInput the server action
+    // re-runs (see that module's own doc comment -- this is the "friendly
+    // pre-flight check before even hitting the network" it already
+    // promised). Only `invalid_email` short-circuits here, with an instant,
+    // no-network error -- honeypot/too_fast still go to the server, which
+    // is where those are actually enforced (never trust a client-only
+    // anti-bot check; showing a bot-specific message this early would also
+    // just teach it what tripped). The server remains the authoritative
+    // gate either way: this only saves a genuine typo a round trip.
+    const preflight = parseWaitlistInput({
+      email,
+      company,
+      renderedAt: submissionRenderedAt,
+      persona,
+      sourcePath,
+      utm,
+    });
+    if (!preflight.ok && preflight.reason === "invalid_email") {
+      setStatus("error");
+      setErrorMessage(COPY.errorInvalidEmail);
+      return;
+    }
+
     setStatus("submitting");
 
     const formData = new FormData();
-    formData.set("email", emailRef.current?.value ?? "");
-    formData.set("company", honeypotRef.current?.value ?? "");
-    formData.set("renderedAt", String(renderedAt ?? Date.now()));
-    formData.set("persona", currentPersona());
-    formData.set("sourcePath", window.location.pathname);
-    formData.set("utm", JSON.stringify(firstTouchUtms()));
+    formData.set("email", email);
+    formData.set("company", company);
+    formData.set("renderedAt", String(submissionRenderedAt));
+    formData.set("persona", persona);
+    formData.set("sourcePath", sourcePath);
+    formData.set("utm", JSON.stringify(utm));
 
     const result = await submitWaitlist(formData);
 

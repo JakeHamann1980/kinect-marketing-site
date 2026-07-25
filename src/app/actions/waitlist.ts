@@ -3,6 +3,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { parseWaitlistInput } from "@/lib/waitlist-validation";
+import { waitlistEmailCopy } from "@/content/waitlist-copy";
 
 /**
  * Task 16 (waitlist): the one server-side entry point for a waitlist
@@ -93,16 +94,8 @@ export async function submitWaitlist(formData: FormData): Promise<WaitlistResult
       const { error: sendError } = await resend.emails.send({
         from: "KINECT <hello@kinectnow.com>",
         to: email,
-        subject: "You are on the KINECT list",
-        text: [
-          "Hi,",
-          "",
-          "You are on the KINECT waitlist. When your invite is ready, we will email this address with next steps.",
-          "",
-          "Questions? Just reply to this email.",
-          "",
-          "The KINECT team",
-        ].join("\n"),
+        subject: waitlistEmailCopy.subject,
+        text: waitlistEmailCopy.body,
       });
       if (sendError) {
         console.error("[waitlist] Resend confirmation email failed:", sendError);
