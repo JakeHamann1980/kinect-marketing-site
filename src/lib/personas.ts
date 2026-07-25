@@ -34,6 +34,7 @@ export const PERSONAS: Record<
   },
 };
 
+/** Resolves a Host header to a persona; null for root, www, and unknown hosts. Assumes hostname:port form (not IPv6 literals). */
 export function personaFromHost(host: string): Persona | null {
   const sub = host.split(":")[0].split(".")[0];
   return (PERSONA_IDS as readonly string[]).includes(sub)

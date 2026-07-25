@@ -13,7 +13,7 @@
   /* gradients are intentionally CSS-var-only; they cannot be Tailwind color tokens */
   --text-gradient: linear-gradient(95deg, #F5A15A, #EC5242 45%, #35D6E8);
   --cta-gradient: linear-gradient(135deg, #F0913A, #EC5242);
-  /* persona accent, switched by data-persona (Task 3) */
+  /* persona accent, overridden via [data-persona] on the page root */
   --accent: var(--cyan); --accent-light: var(--cyan-light); --accent-tint: rgba(14,147,172,.12);
 }
 .kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
