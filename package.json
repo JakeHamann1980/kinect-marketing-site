@@ -2,6 +2,12 @@
   "name": "kinect-marketing-site",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "chrome >= 111",
+    "safari >= 16.4",
+    "firefox >= 128",
+    "edge >= 111"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

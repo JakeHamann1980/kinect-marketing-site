@@ -53,10 +53,21 @@
 }
 #kx-nav.kx-stuck {
   background: rgba(11,15,23,.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
   border-bottom-color: rgba(255,255,255,.09);
 }
+/*
+ * The unprefixed and -webkit- prefixed backdrop-filter declarations are
+ * split into separate rules (same selector) rather than sitting side by
+ * side in one declaration block. When they're in the same block, the
+ * production build's CSS minifier (Lightning CSS) "collapses" the pair
+ * and drops the unprefixed standard property, leaving only
+ * -webkit-backdrop-filter -- which non-WebKit browsers (e.g. Firefox)
+ * don't understand, silently turning the blur off for them. Verified via
+ * `grep -o "#kx-nav\.kx-stuck{[^}]*}" .next/static/chunks/*.css` on the
+ * compiled output; splitting the rules keeps both declarations intact.
+ */
+#kx-nav.kx-stuck { -webkit-backdrop-filter: blur(14px); }
+#kx-nav.kx-stuck { backdrop-filter: blur(14px); }
 @media (max-width: 860px) {
   /* Overrides the nav's px-[60px] Tailwind utility: #kx-nav's id
      specificity wins over the class-based utility regardless of source
