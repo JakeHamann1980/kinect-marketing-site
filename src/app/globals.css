@@ -33,6 +33,9 @@
   .kx-section-head { font-size: 24px; }
 }
 
+/* Traces animate transform/opacity like the orbs; same compositor hint. */
+.kx-trace { will-change: transform, opacity; }
+
 [data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
 [data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }

@@ -29,7 +29,10 @@
  */
 export default function HeroBackdrop() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+    // z-0 creates a self-contained stacking context so the orbs' z-index:-1
+    // can never paint behind/among unrelated siblings once real hero layers
+    // (nav z-40, screenshot glow, badges) mount around this in Task 12.
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
       <div className="kx-orb kx-orb-left" />
       <div className="kx-orb kx-orb-right" />
 
