@@ -19,6 +19,20 @@
 .kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @media print { .kx-grad { color: #EC5242; } }
 
+/* Section headline scale: 38px / 1.14 -> 27px @860 -> 24px @480. See SectionHead.tsx. */
+.kx-section-head {
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-section-head { font-size: 27px; }
+}
+@media (max-width: 480px) {
+  .kx-section-head { font-size: 24px; }
+}
+
 [data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
 [data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
