@@ -38,7 +38,7 @@ export default function PricingSection({
   tiers,
 }: PricingSectionProps) {
   return (
-    <div className="bg-light-canvas px-[60px] py-[124px]">
+    <div className="kx-sec bg-light-canvas">
       <div className="mx-auto max-w-[1000px]">
         <div className="text-center">
           <SectionHead context="light">{headline}</SectionHead>

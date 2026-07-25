@@ -36,6 +36,151 @@
 /* Traces animate transform/opacity like the orbs; same compositor hint. */
 .kx-trace { will-change: transform, opacity; }
 
+/*
+ * Task 12 (Home Page Assembly) section-rhythm utilities. Plain max-width
+ * media queries, matching the pre-existing `.kx-section-head` convention,
+ * rather than the kx-sm/kx-md/kx-lg Tailwind breakpoints above (those are
+ * reserved for grid column counts per their own comment in the `@theme`
+ * block). Values transcribed from design-reference/README.md "Responsive"
+ * and "Spacing", cross-checked against KINECT Marketing Site.dc.html's own
+ * authored `<style>` responsive block.
+ */
+
+/*
+ * Standard full-bleed section padding, used by every home section other
+ * than the hero/closing CTA (persona selector, steps, showcase, pillars,
+ * FAQ): 124px 60px desktop; <=1024 drops horizontal only to 34px (the
+ * prototype's own responsive CSS overrides padding-left/right only at this
+ * tier); <=860 collapses to a full 68px 20px; <=480 to a full 56px 16px.
+ */
+.kx-sec { padding: 124px 60px; }
+@media (max-width: 1024px) {
+  .kx-sec { padding-left: 34px; padding-right: 34px; }
+}
+@media (max-width: 860px) {
+  .kx-sec { padding: 68px 20px; }
+}
+@media (max-width: 480px) {
+  .kx-sec { padding: 56px 16px; }
+}
+
+/*
+ * Hero padding cascade (README "1. Hero" + "Responsive"). Deliberately has
+ * no <=1024 tier: the prototype's own responsive CSS has no bucket matching
+ * "152px 60px 62px" at max-width:1024px, jumping straight from the full
+ * desktop value to the <=860 override, and the README's own responsive
+ * bullet list agrees ("hero padding <=860 = 104px 20px 56px") without
+ * mentioning an intermediate step.
+ */
+.kx-hero-sec { padding: 152px 60px 62px; }
+@media (max-width: 860px) {
+  .kx-hero-sec { padding: 104px 20px 56px; }
+}
+@media (max-width: 480px) {
+  .kx-hero-sec { padding: 92px 16px 48px; }
+}
+
+/*
+ * Closing CTA padding. README section 9 says the closing canvas "matches
+ * the hero" (same kx-grid, same orbs) but doesn't give its own padding
+ * figure; the desktop value here (132px 60px) is recovered verbatim from
+ * the prototype's home "GRADIENT CTA WASH" instance, which is close to but
+ * not identical to the hero's 152px top padding (a shorter, punchier
+ * bookend section). The <=860/<=480 steps reuse the hero's own cascade
+ * numbers, consistent with README's "matches the hero" framing, since the
+ * prototype's own responsive CSS has no bucket at all for "132px 60px"
+ * (it never shrinks in the reference) and README gives no alternative.
+ */
+.kx-closing-sec { padding: 132px 60px; }
+@media (max-width: 860px) {
+  .kx-closing-sec { padding: 104px 20px 56px; }
+}
+@media (max-width: 480px) {
+  .kx-closing-sec { padding: 92px 16px 48px; }
+}
+
+/* Hero headline: 66px / 1.06 / -.02em -> 34px / 1.12 / -.01em @860 -> 29px @480. */
+.kx-hero-head {
+  font-weight: 700;
+  font-size: 66px;
+  line-height: 1.06;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-hero-head { font-size: 34px; line-height: 1.12; letter-spacing: -.01em; }
+}
+@media (max-width: 480px) {
+  .kx-hero-head { font-size: 29px; }
+}
+
+/* Hero subhead: 20px -> 17px @860 (no further @480 step in the reference). */
+.kx-hero-sub { font-size: 20px; line-height: 1.6; text-wrap: pretty; }
+@media (max-width: 860px) {
+  .kx-hero-sub { font-size: 17px; }
+}
+
+/*
+ * Closing headline: 52px / 1.08 -> 30px / 1.14 @860. Recovered from the
+ * prototype's `h2[style*="font-size:52px"]{font-size:30px !important;
+ * line-height:1.14 !important}` rule (max-width:860px block); no further
+ * @480 step exists there either, so it holds at 30px down to the smallest
+ * viewport.
+ */
+.kx-closing-head {
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-closing-head { font-size: 30px; line-height: 1.14; }
+}
+
+/*
+ * Closing subhead: 17px single line desktop (`white-space:nowrap`, per
+ * README section 9 verbatim), released to normal wrapping <=860 per the
+ * README "Responsive" bullet ("white-space:nowrap ... are released so
+ * nothing overflows").
+ */
+.kx-closing-sub { font-size: 17px; line-height: 1.55; white-space: nowrap; }
+@media (max-width: 860px) {
+  .kx-closing-sub { white-space: normal; }
+}
+
+/*
+ * Shared hero/closing CTA row (README: "Gap 11px. On mobile they stack full
+ * width."). `> *` targets Button's rendered <a>/<button> directly since
+ * Button has no size-independent "full width" class of its own.
+ */
+.kx-ctarow { display: flex; gap: 11px; justify-content: center; }
+@media (max-width: 860px) {
+  .kx-ctarow { flex-direction: column; align-items: stretch; }
+  .kx-ctarow > * { width: 100%; }
+}
+
+/* Hero/closing asterisk badge: 78px circle, shrinks to 60px @860 (dc.html `.kx-heromark`). */
+.kx-hero-badge { width: 78px; height: 78px; }
+@media (max-width: 860px) {
+  .kx-hero-badge { width: 60px; height: 60px; }
+}
+
+/*
+ * Section intro row shared by the persona-selector and pillars sections
+ * (KINECT Marketing Site.dc.html lines 217-221, 306-309): title and
+ * supporting paragraph side by side, each holding a minimum width so they
+ * wrap onto their own line rather than squeezing, with that minimum
+ * released <=860 (dc.html's own `[style*="min-width:340px"],
+ * [style*="min-width:300px"]{min-width:0 !important}` rule) so the stacked
+ * mobile layout isn't held open.
+ */
+.kx-intro-row { display: flex; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+.kx-intro-title { flex: 1 1 340px; min-width: 340px; }
+.kx-intro-body { flex: 1 1 300px; min-width: 300px; }
+@media (max-width: 860px) {
+  .kx-intro-title, .kx-intro-body { min-width: 0; }
+}
+
 [data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
 [data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
