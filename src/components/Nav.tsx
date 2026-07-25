@@ -107,7 +107,11 @@ export default function Nav() {
   return (
     <>
       <span ref={sentinelRef} style={{ display: "block", height: 1 }} />
-      <div style={{ position: "sticky", top: 0, zIndex: 40 }}>
+      {/* height: 0 removes the wrapper from flow height so the hero canvas
+          extends up behind the transparent nav (the prototype achieves the
+          same overlay with margin-bottom: -84px on #kx-navwrap; height 0 is
+          exact at every breakpoint instead of hardcoding the nav height). */}
+      <div style={{ position: "sticky", top: 0, zIndex: 40, height: 0 }}>
         <nav
           id="kx-nav"
           className={cn(
