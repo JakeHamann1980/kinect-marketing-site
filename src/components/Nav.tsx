@@ -177,9 +177,14 @@ export default function Nav({ badge }: NavProps) {
               </button>
 
               {solutionsOpen && (
+                /* The outer div's padding bridges the visual gap between the
+                   trigger and the panel so the pointer never crosses a zone
+                   outside the hover wrapper on its way down (which would fire
+                   mouseleave and close the panel mid-travel). */
+                <div className="absolute left-0 top-full pt-[4px]">
                 <div
                   id="kx-solutions-panel"
-                  className="absolute left-0 top-[26px] w-[300px] rounded-[14px] border border-[rgba(255,255,255,.1)] bg-dropdown-bg p-2 shadow-[0_24px_60px_rgba(0,0,0,.5)]"
+                  className="w-[300px] rounded-[14px] border border-[rgba(255,255,255,.1)] bg-dropdown-bg p-2 shadow-[0_24px_60px_rgba(0,0,0,.5)]"
                 >
                   {settings.solutions.map((s) => (
                     <Link
@@ -199,6 +204,7 @@ export default function Nav({ badge }: NavProps) {
                       </span>
                     </Link>
                   ))}
+                </div>
                 </div>
               )}
             </div>
