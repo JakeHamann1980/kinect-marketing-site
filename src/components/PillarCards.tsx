@@ -125,18 +125,25 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
 
           <div className="flex flex-col gap-[18px]">
             {/*
-              Dark card background recovered verbatim as `#0C1220`
-              (dc.html line 311). This is numerically identical to the
-              `--ink` token, but `--ink` is defined/used as a *text* color
-              for the light context elsewhere in this codebase -- reusing
-              it as a background here would be a misleading coincidence,
-              so it's kept as an explicit literal instead.
+              User-directed 2026-07-25: the prototype rendered this card
+              dark (#0C1220, dc.html line 311); Jake asked for the same
+              light warm-to-cool gradient wash the product UI uses on its
+              plan cards (sampled from the "Practice plan" card in
+              public/screenshots/consultant-hq.png: pale cream top-left
+              into pale cyan bottom-right). Text colors flipped to the
+              light-context ink family accordingly.
             */}
-            <div className="rounded-[18px] bg-[#0C1220] p-[28px] text-white">
-              <div className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-[#F3B27A]">
+            <div
+              className="rounded-[18px] border border-border p-[28px]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #F7EFE8 0%, #F0F4F2 48%, #DFF0EF 100%)",
+              }}
+            >
+              <div className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-coral-light">
                 {bento.aiInsight.eyebrow}
               </div>
-              <p className="text-[17px] leading-[1.55] text-[#E4E9F0]">
+              <p className="text-[17px] leading-[1.55] text-ink-2">
                 {"“"}
                 {bento.aiInsight.quote}
                 {"”"}
