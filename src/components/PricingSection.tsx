@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Button from "@/components/Button";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
@@ -81,18 +80,16 @@ export default function PricingSection({
                     {tier.cta}
                   </Button>
                 ) : (
-                  // "Bordered" light CTA: Button's fixed variant set has no
-                  // light-context bordered treatment, and cn() is additive
-                  // only (see src/lib/cn.ts), so utility classes passed via
-                  // `className` aren't guaranteed to override Button's
-                  // built-in ones. Built as plain markup instead, mirroring
-                  // Button's own base classes.
-                  <Link
+                  // Light-context bordered CTA, now Button's own
+                  // "outline-light" variant (see Button.tsx) instead of a
+                  // duplicated plain-markup class literal.
+                  <Button
+                    variant="outline-light"
                     href="/"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-[10px] border border-border bg-transparent px-5 py-[11px] font-sans text-[15px] font-semibold text-ink"
+                    className="w-full justify-center"
                   >
                     {tier.cta}
-                  </Link>
+                  </Button>
                 )}
               </div>
             </div>
