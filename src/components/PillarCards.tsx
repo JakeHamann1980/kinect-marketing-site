@@ -67,7 +67,7 @@ function PillarIcon({ paths, color }: { paths: string[]; color: string }) {
 export default function PillarCards({ pillars, bento }: PillarCardsProps) {
   return (
     <div>
-      <div className="grid grid-cols-1 gap-[18px] md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-lg:grid-cols-3">
         {pillars.map((pillar, i) => {
           const icon = PILLAR_ICONS[i] ?? FALLBACK_ICON;
           return (

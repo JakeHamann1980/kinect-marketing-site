@@ -153,6 +153,23 @@
   --color-grid-line: var(--grid-line); --color-grid-dot: var(--grid-dot);
   --color-accent: var(--accent); --color-accent-light: var(--accent-light); --color-accent-tint: var(--accent-tint);
   --font-display: var(--font-hanken); --font-sans: var(--font-instrument); --font-mono: var(--font-plex-mono);
+
+  /*
+   * Design-system breakpoints (design-reference/README.md "Responsive": 1024,
+   * 860, 480). Tailwind's own default `md`/`lg` (768/1024) don't land on
+   * 860, so multi-column grids using `md:`/`lg:` collapse at the wrong
+   * width. Tailwind v4 generates `kx-sm:`/`kx-md:`/`kx-lg:` min-width
+   * variants from these `--breakpoint-kx-*` theme keys (sorted by value at
+   * build time regardless of declaration order here), giving a mobile-first
+   * cascade whose steps land exactly on the documented breakpoints: base
+   * (<480) -> kx-sm (>=480) -> kx-md (>=860) -> kx-lg (>=1024). Reserved for
+   * grid column counts; section padding/type scale keep using plain
+   * max-width media queries (see `.kx-sec`/`.kx-hero-sec` etc. below),
+   * matching the pre-existing `.kx-section-head` convention.
+   */
+  --breakpoint-kx-sm: 30rem;   /* 480px */
+  --breakpoint-kx-md: 53.75rem; /* 860px */
+  --breakpoint-kx-lg: 64rem;   /* 1024px */
 }
 
 /*

@@ -48,7 +48,7 @@ export default function PricingSection({
           </p>
         </div>
 
-        <div className="mt-[50px] grid grid-cols-1 gap-[18px] md:grid-cols-3">
+        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-lg:grid-cols-3">
           {tiers.map((tier) => (
             <div
               key={tier.name}

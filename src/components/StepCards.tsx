@@ -20,7 +20,7 @@ interface StepCardsProps {
  */
 export default function StepCards({ steps }: StepCardsProps) {
   return (
-    <div className="grid grid-cols-2 gap-[18px] md:grid-cols-4">
+    <div className="grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-lg:grid-cols-4">
       {steps.map((step) => (
         <div
           key={step.number}
