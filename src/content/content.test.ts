@@ -4,8 +4,22 @@ import { agency } from "./agency";
 import { coach } from "./coach";
 import { consultant } from "./consultant";
 import { settings } from "./settings";
+import { privacy } from "./legal/privacy";
+import { terms } from "./legal/terms";
+import { security } from "./legal/security";
+import { cookies } from "./legal/cookies";
 
-const allText = JSON.stringify([home, agency, coach, consultant, settings]);
+const allText = JSON.stringify([
+  home,
+  agency,
+  coach,
+  consultant,
+  settings,
+  privacy,
+  terms,
+  security,
+  cookies,
+]);
 
 describe("copy constraints", () => {
   it("contains no em dashes", () => {

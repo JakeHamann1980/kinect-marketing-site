@@ -119,6 +119,7 @@ export const settings: SiteSettings = {
     legalLinks: [
       { label: "Privacy Policy", href: "#" },
       { label: "Terms & Conditions", href: "#" },
+      { label: "Security", href: "#" },
       { label: "Cookie Policy", href: "#" },
       { label: "DPA", href: "#" },
       { label: "Accessibility", href: "#" },
