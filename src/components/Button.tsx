@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
 export type ButtonVariant = "primary" | "ghost" | "accent";
 
@@ -30,7 +31,7 @@ export default function Button({
   children,
   type = "button",
 }: ButtonProps) {
-  const classes = `${BASE} ${VARIANTS[variant]} ${className}`.trim();
+  const classes = cn(BASE, VARIANTS[variant], className);
 
   if (href) {
     return (

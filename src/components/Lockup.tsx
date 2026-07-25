@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/cn";
 
 interface LockupProps {
   /** Destination for the whole lockup. Defaults to the site root. */
@@ -24,7 +25,7 @@ export default function Lockup({
   return (
     <Link
       href={href}
-      className={`inline-flex items-center gap-[11px] ${className}`.trim()}
+      className={cn("inline-flex items-center gap-[11px]", className)}
     >
       <svg
         viewBox="0 0 32 32"

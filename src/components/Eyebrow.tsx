@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
 interface EyebrowProps {
   children: ReactNode;
@@ -16,7 +17,11 @@ export default function Eyebrow({
   const colorClass = context === "light" ? "text-muted" : "text-on-dark-5";
   return (
     <span
-      className={`font-mono text-[11px] uppercase tracking-[.14em] ${colorClass} ${className}`.trim()}
+      className={cn(
+        "font-mono text-[11px] uppercase tracking-[.14em]",
+        colorClass,
+        className,
+      )}
     >
       {children}
     </span>

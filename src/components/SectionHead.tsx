@@ -1,4 +1,5 @@
 import type { ElementType, ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
 interface SectionHeadProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ export default function SectionHead({
   const colorClass = context === "light" ? "text-ink" : "text-on-dark";
   return (
     <Tag
-      className={`kx-section-head font-display ${colorClass} ${className}`.trim()}
+      className={cn("kx-section-head font-display", colorClass, className)}
     >
       {children}
     </Tag>
