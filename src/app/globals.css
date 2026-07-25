@@ -120,6 +120,24 @@
   .kx-mobile-sheet { display: block; }
 }
 
+/*
+ * Footer responsive stacking (see src/components/Footer.tsx and
+ * design-reference/README.md "Footer" -> "Responsive"). 860px matches the
+ * nav's breakpoint above and isn't one of Tailwind's default steps, so
+ * (per the same convention as `.kx-section-head` and the nav rules above)
+ * this uses a plain media query rather than a Tailwind variant. Class
+ * names and behavior are transcribed from `KINECT Marketing Site.dc.html`
+ * lines 101-104 (`.kx-footer-top`/`.kx-footer-cols`/`.kx-footer-legal`/
+ * `.kx-footer-bar`), whose own surrounding `@media (max-width:860px)`
+ * block (line 60) confirms the same breakpoint.
+ */
+@media (max-width: 860px) {
+  .kx-footer-top { flex-direction: column; gap: 38px; }
+  .kx-footer-cols { margin-left: 0; gap: 34px; width: 100%; }
+  .kx-footer-legal { margin-left: 0; gap: 14px; }
+  .kx-footer-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+
 @theme inline {
   --color-dark-bg: var(--dark-bg); --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
   --color-dropdown-bg: var(--dropdown-bg);

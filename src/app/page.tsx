@@ -6,7 +6,13 @@ import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import { Faq } from "@/components/Faq";
 import ShowcaseCycler from "@/components/ShowcaseCycler";
+import PersonaCard from "@/components/PersonaCard";
+import StepCards from "@/components/StepCards";
+import PillarCards from "@/components/PillarCards";
+import PricingSection from "@/components/PricingSection";
+import Footer from "@/components/Footer";
 import { home } from "@/content/home";
+import { settings } from "@/content/settings";
 
 // NOTE: this page remains placeholder content for verifying Task 6's shared
 // primitives (Lockup, Button, Eyebrow, SectionHead), Task 7's Nav, and
@@ -84,6 +90,57 @@ export default function Home() {
           <ShowcaseCycler labels={home.showcase.labels} />
         </div>
       </section>
+
+      {/*
+        Task 11 verification section: placeholder-until-Task-12. Persona
+        cards on a light canvas so the icon tile tint/CTA are eyeballable
+        against the reference; will be folded into the real home page
+        layout (with the persona-selector intro row) in Task 12.
+      */}
+      <section className="bg-light-canvas px-6 py-24">
+        <Eyebrow context="light">Persona cards (Task 11 placeholder)</Eyebrow>
+        <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
+          {home.personaCards.map((card) => (
+            <PersonaCard key={card.persona} {...card} />
+          ))}
+        </div>
+      </section>
+
+      {/*
+        Task 11 verification section: placeholder-until-Task-12. Steps grid
+        on a dark canvas, per the design reference's "How it works" section.
+      */}
+      <section className="bg-dark-canvas px-6 py-24">
+        <Eyebrow context="dark">Step cards (Task 11 placeholder)</Eyebrow>
+        <div className="mx-auto mt-10 max-w-5xl">
+          <StepCards steps={home.steps} />
+        </div>
+      </section>
+
+      {/*
+        Task 11 verification section: placeholder-until-Task-12. Pillar
+        cards plus the bento sub-layout, and the pricing table, on a light
+        canvas per the design reference's rhythm.
+      */}
+      <section className="bg-light-canvas px-6 py-24">
+        <Eyebrow context="light">Pillar cards + bento (Task 11 placeholder)</Eyebrow>
+        <div className="mx-auto mt-10 max-w-5xl">
+          <PillarCards pillars={home.pillars} bento={home.bento} />
+        </div>
+      </section>
+
+      <PricingSection
+        headline={settings.pricing.headline}
+        supporting={settings.pricing.supporting}
+        tiers={settings.pricing.tiers}
+      />
+
+      {/*
+        Task 11 verification: real Footer at the bottom of the placeholder
+        page (not wrapped in an eyebrow/section shell like the blocks
+        above -- the footer is a page-level landmark, not a demo card).
+      */}
+      <Footer />
     </>
   );
 }
