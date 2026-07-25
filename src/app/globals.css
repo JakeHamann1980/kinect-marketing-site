@@ -258,12 +258,24 @@
 /*
  * Screenshot showcase cycler (Task 10; see src/components/ShowcaseCycler.tsx
  * and design-reference/README.md "5. Product showcase with cycling
- * screenshots"). Keyframes and per-layer/label delays are transcribed
- * verbatim from design-reference/KINECT Marketing Site.dc.html lines 31-46
- * (`kx-cycle`/`kx-cyclab`/`kx-shotglow` keyframes, the `kx-cyc-2`/`-3` and
- * `kx-lab-2`/`-3` 5s/10s delay classes, and the `kx-pin-N` pinned-state
+ * screenshots"). Keyframes are transcribed verbatim from
+ * design-reference/KINECT Marketing Site.dc.html lines 31-46
+ * (`kx-cycle`/`kx-cyclab`/`kx-shotglow`, and the `kx-pin-N` pinned-state
  * overrides) and lines 263-274 (the frame's composite box-shadow, the
  * glow's three-stop gradient + blur amount, and the label row layout).
+ *
+ * The `kx-cyc-2`/`-3` and `kx-lab-2`/`-3` delays are NOT verbatim: the
+ * prototype uses positive delays (`animation-delay:5s`/`10s`). A positive
+ * delay with the default `animation-fill-mode: none` leaves an element on
+ * its pre-animation style until the delay elapses -- since `.kx-cyc`/
+ * `.kx-lab` don't set a static `opacity`/`color` outside the animation,
+ * that pre-animation style is fully opaque/default-colored, so all three
+ * layers (and labels) would sit stacked at full opacity for the first 5s
+ * of every page load, a latent bug in the prototype. Negative delays
+ * (`-5s`/`-10s`, used below) start each layer as if it had already been
+ * playing for that long, landing immediately in the correct offset phase
+ * of the cycle. This is a deliberate, disclosed fix, not a transcription
+ * error.
  *
  * Pinning is real React state (src/lib/cycler.ts's `clickLabel`), not a
  * CSS-only toggle: ShowcaseCycler applies a `kx-pin-1`/`kx-pin-2`/`kx-pin-3`
@@ -293,16 +305,25 @@
   /*
    * background/border-color are set here (rather than via Tailwind's
    * `bg-transparent`/`border-transparent` utilities on the element) so the
-   * `.kx-pin-N .kx-lab:nth-child(N)` override below reliably wins: those
-   * Tailwind utilities live inside `@layer utilities`, and this project's
-   * automation browser was observed NOT giving unlayered author rules
-   * priority over layered ones for this property (background stayed
-   * transparent under a pin even though the unlayered, higher-specificity
-   * override rule matched) -- keeping both declarations unlayered and in
-   * this file sidesteps the discrepancy entirely.
+   * `.kx-pin-N .kx-lab:nth-child(N)` override below reliably wins on
+   * specificity/source-order alone: those Tailwind utilities live inside
+   * `@layer utilities`, and keeping both declarations unlayered and in
+   * this file avoids any question of layered-vs-unlayered precedence.
    */
   background: transparent;
   border: 1px solid transparent;
+  /*
+   * `color`-only transition (NOT Tailwind's `transition-colors`, which is
+   * applied to the element in ShowcaseCycler.tsx -- deliberately omitted
+   * there). `transition-colors` would also transition background-color/
+   * border-color, and the pinned-state override below intentionally does
+   * NOT use `!important` on those two properties (see that rule's
+   * comment), so nothing here should stand between an ordinary cascade
+   * win and the computed value. Scoping the transition to `color` keeps
+   * the pin/unpin swap for background/border instant and avoids relying
+   * on transitioning into a value from a higher-specificity rule at all.
+   */
+  transition: color .2s ease;
 }
 .kx-lab-2 { animation-delay: -5s; }
 .kx-lab-3 { animation-delay: -10s; }
@@ -318,12 +339,16 @@
  * deterministically rather than freezing at whatever frame the 15s cycle
  * happened to be paused on.
  *
- * The pinned label's `background`/`border-color` also carry `!important`.
- * Without it they lost, in this project's automation browser, to Tailwind
- * preflight's `button { background-color: transparent }` reset even though
- * this rule is unlayered, higher-specificity, and later in source than
- * that (layered) reset -- which should already be a win on every count.
- * `!important` sidesteps that discrepancy rather than depending on it.
+ * The pinned label's `background`/`border-color` deliberately do NOT carry
+ * `!important` (re-audited after fixing a real bug: the label previously
+ * also carried Tailwind's `transition-colors`, which transitions
+ * background-color/border-color too, and animating INTO an
+ * `!important`-declared end value is a known cross-browser weak spot --
+ * the computed value never left its pre-pin state). Now that the element
+ * has no `background`/`border-color` transition (see the `.kx-lab`
+ * comment above) and no longer carries the competing Tailwind
+ * `bg-transparent`/`border-transparent` utilities, this rule's higher
+ * specificity plus later source order is sufficient on its own.
  */
 .kx-pin-1 .kx-cyc, .kx-pin-2 .kx-cyc, .kx-pin-3 .kx-cyc {
   animation-play-state: paused;
@@ -342,8 +367,8 @@
 .kx-pin-2 .kx-lab:nth-child(2),
 .kx-pin-3 .kx-lab:nth-child(3) {
   color: #EEF2F8;
-  background: rgba(255, 255, 255, .08) !important;
-  border-color: rgba(255, 255, 255, .22) !important;
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .22);
 }
 
 /*
@@ -380,6 +405,15 @@
   animation: kx-shotglow 9s ease-in-out infinite;
 }
 
+/*
+ * `!important` here (not present in the prototype's equivalent reduced-
+ * motion rule) matches the pre-existing `.kx-orb`/`.kx-trace` pattern
+ * above: it guards against a higher-specificity rule -- most relevantly
+ * `.kx-pin-N .kx-lab` further down, which also sets `animation` and is
+ * more specific than this bare `.kx-cyc, .kx-lab, .kx-shot-glow` selector
+ * -- winning instead. Disabling motion for accessibility should be
+ * unconditional, not dependent on pin state or Tailwind layer ordering.
+ */
 @media (prefers-reduced-motion: reduce) {
   .kx-cyc, .kx-lab, .kx-shot-glow { animation: none !important; }
   .kx-cyc-2, .kx-cyc-3 { opacity: 0; }

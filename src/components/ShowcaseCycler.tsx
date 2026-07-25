@@ -53,7 +53,7 @@ export default function ShowcaseCycler({ labels }: ShowcaseCyclerProps) {
               src={SCREENSHOTS[persona].src}
               alt={SCREENSHOTS[persona].alt}
               fill
-              sizes="(max-width: 900px) 100vw, 880px"
+              sizes="(max-width: 860px) 100vw, 880px"
               className={LAYER_CLASS[i]}
             />
           ))}
@@ -69,7 +69,17 @@ export default function ShowcaseCycler({ labels }: ShowcaseCyclerProps) {
             onClick={() => setState((s) => clickLabel(s, i))}
             className={cn(
               LABEL_CLASS[i],
-              "cursor-pointer rounded-[20px] px-[15px] py-[7px] font-mono text-[12px] uppercase tracking-[.1em] transition-colors duration-200",
+              // NOTE: no Tailwind `transition-colors` here -- see the
+              // `.kx-lab` comment in globals.css. That utility transitions
+              // background-color/border-color too; this rule's pinned-state
+              // override previously needed `!important` on those two
+              // properties to win, and transitioning INTO an
+              // `!important`-declared end value is a known cross-browser
+              // weak spot (observed: the computed value never left its
+              // pre-pin state). `.kx-lab` instead declares a `color`-only
+              // transition directly, which no longer has any `!important`
+              // to contend with.
+              "cursor-pointer rounded-[20px] px-[15px] py-[7px] font-mono text-[12px] uppercase tracking-[.1em]",
             )}
           >
             {labels[persona]}
