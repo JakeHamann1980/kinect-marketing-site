@@ -12,8 +12,11 @@ describe("copy constraints", () => {
     expect(allText).not.toMatch(/—/);
   });
   it("contains no emoji or exclamation points", () => {
+    // Voice guide: no exclamation points in site copy.
     expect(allText).not.toMatch(/!/);
-    expect(allText).not.toMatch(/[\u{1F300}-\u{1FAFF}]/u);
+    expect(allText).not.toMatch(
+      /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/u,
+    );
   });
   it("pricing tiers are 149/399/799 with Growth popular", () => {
     const tiers = settings.pricing.tiers;

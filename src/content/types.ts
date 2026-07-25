@@ -46,6 +46,10 @@ export interface Seo {
  *   the source items are single short chips, not title+body pairs.
  * - `steps`: the persona-specific "Live in ten minutes, not ten days"
  *   4-step section, absent from the original contract.
+ * - `closing.secondaryCta`: the closing section's second button ("Not you?
+ *   Pick another lane") that routes back to the home persona picker; the
+ *   original `closing` shape only had room for the headline pair and
+ *   subhead.
  */
 export interface PersonaPageContent {
   persona: Persona;
@@ -58,13 +62,24 @@ export interface PersonaPageContent {
     secondaryCta: string;
   };
   heroExtra: { eyebrow: string; proofPoints: [string, string] };
+  /**
+   * The nav's small subdomain badge shown next to the wordmark on persona
+   * pages (e.g. "for Agencies"). Home has no equivalent (its nav shows no
+   * badge), so this lives on `PersonaPageContent` only.
+   */
+  navBadge: string;
   pain: { title: string; cards: Card[] };
   capabilities: { title: string; intro: string; cards: Card[] };
   screenshot: { src: string; alt: string; caption: string };
   workflow: { eyebrow: string; title: string; subhead: string; items: string[] };
   steps: { title: string; items: Step[] };
   faq: Faq[];
-  closing: { headline: string; gradientPhrase: string; subhead: string };
+  closing: {
+    headline: string;
+    gradientPhrase: string;
+    subhead: string;
+    secondaryCta: string;
+  };
 }
 
 /**
@@ -98,13 +113,30 @@ export interface HomeContent {
   };
   faqTitle: string;
   faq: Faq[];
-  closing: PersonaPageContent["closing"];
+  /**
+   * Home's closing CTA ("Stop reporting on the work. Start showing it.")
+   * has only the single primary button in the source; the "Not you? Pick
+   * another lane" secondary button only makes sense on persona subdomain
+   * pages routing back to the home persona picker. Home's closing therefore
+   * omits `secondaryCta` rather than inheriting the full persona shape.
+   */
+  closing: Omit<PersonaPageContent["closing"], "secondaryCta">;
 }
 
 export interface SiteSettings {
   navLinks: { label: string; href: string }[];
   solutions: { persona: Persona; name: string; description: string }[];
-  pricing: { headline: string; supporting: string; tiers: Tier[] };
+  /**
+   * `note` is the home pricing section's trailing line ("Every plan
+   * includes the portal, analytics and AI insights. Pricing varies
+   * slightly by lane."). It is transcribed verbatim for fidelity, but it
+   * presumes per-lane pricing variation, which conflicts with the current
+   * canonical single shared tier table described above (see the pricing
+   * note in settings.ts). Whether/how this line renders is pending a
+   * product decision, so the field is optional and flagged here rather
+   * than wired into any component yet.
+   */
+  pricing: { headline: string; supporting: string; tiers: Tier[]; note?: string };
   footer: {
     positioning: string;
     columns: { heading: string; links: { label: string; href: string }[] }[];

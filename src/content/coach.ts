@@ -16,6 +16,7 @@ export const coach: PersonaPageContent = {
     eyebrow: "For coaches & personal trainers",
     proofPoints: ["Adherence tracking built in", "Unlimited program templates"],
   },
+  navBadge: "for Coaches",
 
   pain: {
     title: "Great coaching dies in a spreadsheet and a group chat.",
@@ -109,5 +110,6 @@ export const coach: PersonaPageContent = {
     headline: "Coach the work. Let KINECT prove it.",
     gradientPhrase: "Let KINECT prove it.",
     subhead: "Free for your first three athletes. Keep the ones who stay.",
+    secondaryCta: "Not you? Pick another lane",
   },
 };

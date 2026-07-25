@@ -16,6 +16,7 @@ export const consultant: PersonaPageContent = {
     eyebrow: "For consultants, advisors & mentors",
     proofPoints: ["Time against fee budgets", "SOWs with e-signature"],
   },
+  navBadge: "for Consultants",
 
   pain: {
     title: "The hardest part of advisory is proving the advice landed.",
@@ -109,5 +110,6 @@ export const consultant: PersonaPageContent = {
     headline: "Advice is easy to doubt. Evidence is not.",
     gradientPhrase: "Evidence is not.",
     subhead: "Free for your first engagement. Renew on proof, not goodwill.",
+    secondaryCta: "Not you? Pick another lane",
   },
 };

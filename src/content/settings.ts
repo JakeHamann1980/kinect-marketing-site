@@ -66,6 +66,13 @@ export const settings: SiteSettings = {
         cta: "Choose Scale",
       },
     ],
+    // Transcribed verbatim from the home pricing section's trailing note
+    // (line 351). This sentence presumes per-lane pricing variation ("varies
+    // slightly by lane"), which conflicts with the single canonical shared
+    // tier table above (see the pricing note at the top of this file).
+    // Whether/how this renders is pending a product decision; flagged here,
+    // not yet wired into any component.
+    note: "Every plan includes the portal, analytics and AI insights. Pricing varies slightly by lane.",
   },
 
   footer: {

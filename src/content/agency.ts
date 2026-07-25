@@ -16,6 +16,7 @@ export const agency: PersonaPageContent = {
     eyebrow: "For full-service agencies",
     proofPoints: ["Native GA + Google Ads", "No per-seat pricing"],
   },
+  navBadge: "for Agencies",
 
   pain: {
     title: "You did not start an agency to build slide decks about the agency.",
@@ -113,5 +114,6 @@ export const agency: PersonaPageContent = {
     gradientPhrase: "not the one that tells.",
     subhead:
       "Free for your first client. Bring the second one when you are convinced.",
+    secondaryCta: "Not you? Pick another lane",
   },
 };
