@@ -71,7 +71,14 @@ export default function PersonaCard({
   const { tint, accentLight } = PERSONAS[persona];
 
   return (
-    <div className="flex flex-col rounded-[18px] border border-border bg-surface p-[32px_30px] shadow-[0_1px_3px_rgba(12,18,32,.05)]">
+    // h-full: grid items stretch by default (no align-items override on the
+    // parent grid), but that only sizes THIS element's box to the row's
+    // tallest cell -- h-full makes the box explicitly fill that stretched
+    // height rather than relying on stretch alone, so the mt-auto CTA below
+    // has real free space to consume. Jake flagged 2026-07-25 that the
+    // three "Pick your lane" cards were rendering unequal heights with the
+    // CTA immediately trailing the shortest card's content.
+    <div className="flex h-full flex-col rounded-[18px] border border-border bg-surface p-[32px_30px] shadow-[0_1px_3px_rgba(12,18,32,.05)]">
       <div
         className="mb-[22px] flex h-[52px] w-[52px] flex-none items-center justify-center rounded-[14px]"
         style={{ background: tint, color: accentLight }}
@@ -83,7 +90,7 @@ export default function PersonaCard({
       <p className="mt-[11px] text-[17px] leading-[1.6] text-ink-3">{body}</p>
 
       {features && features.length > 0 ? (
-        <ul className="mt-5 flex flex-col gap-[9px]">
+        <ul className="mt-5 flex flex-col gap-[9px] text-pretty">
           {features.map((feature) => (
             <li
               key={feature}
@@ -98,7 +105,11 @@ export default function PersonaCard({
         </ul>
       ) : null}
 
-      <div className="mt-6">
+      {/* mt-auto (not mt-6): pushes the CTA to the bottom of the flex
+          column, consuming whatever free space the stretched card height
+          leaves above it, so all three cards' CTAs land on one line
+          regardless of how much body/feature copy precedes them. */}
+      <div className="mt-auto pt-6">
         <Button variant="accent" href={personaHref(persona)}>
           {cta}
           <span aria-hidden="true">{"→"}</span>

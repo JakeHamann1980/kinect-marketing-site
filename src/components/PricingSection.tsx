@@ -65,12 +65,12 @@ export default function PricingSection({
               <div className="mb-[10px] h-[16px] font-mono text-[11px] uppercase tracking-[.14em] text-accent-light">
                 {tier.popular ? "Most popular" : ""}
               </div>
-              <div className="font-display text-[21px] font-bold text-ink">{tier.name}</div>
+              <div className="font-display text-[21px] font-bold text-ink text-balance">{tier.name}</div>
               <div className="mt-2 mb-1 font-display text-[42px] font-bold text-ink">
                 {"$" + tier.price}
                 <span className="text-[16px] font-medium text-muted">/mo</span>
               </div>
-              <ul className="mb-[22px] flex flex-col gap-2 text-[16px] leading-[1.55] text-ink-2">
+              <ul className="mb-[22px] flex flex-col gap-2 text-[16px] leading-[1.55] text-ink-2 text-pretty">
                 {tier.features.map((feature) => (
                   <li key={feature}>{feature}</li>
                 ))}

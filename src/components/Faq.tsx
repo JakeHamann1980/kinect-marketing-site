@@ -36,7 +36,7 @@ export function Faq({ items }: FaqProps) {
               onClick={() => setOpenIndex(open ? null : index)}
               className="flex min-h-[56px] w-full items-center justify-between gap-4 px-6 py-3 text-left text-[17px] font-semibold text-ink"
             >
-              <span>{item.question}</span>
+              <span className="text-balance">{item.question}</span>
               <span
                 aria-hidden="true"
                 className={cn(
@@ -55,7 +55,7 @@ export function Faq({ items }: FaqProps) {
             {open ? (
               <div
                 id={panelId}
-                className="px-6 pb-5 text-base leading-[1.6] text-ink-3"
+                className="px-6 pb-5 text-base leading-[1.6] text-ink-3 text-pretty"
               >
                 {item.answer}
               </div>

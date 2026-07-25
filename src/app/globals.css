@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+/*
+ * Site-wide widows/orphans control (design-reference/README.md
+ * "Typography": "Apply text-wrap: balance to headlines and text-wrap:
+ * pretty to body copy... Widows and orphans were deliberately minimized").
+ * Task 12/13 had only applied this per-component (`.kx-section-head`,
+ * `.kx-hero-head`, `.kx-hero-sub`, etc.) rather than sitewide as the README
+ * asks; Jake flagged this gap 2026-07-25 reviewing the live home page.
+ * `@layer base` keeps these as the lowest-priority layer Tailwind defines,
+ * so every existing unlayered class in this file (the `.kx-*` rules below)
+ * and every Tailwind utility (`@layer utilities`, e.g. a future
+ * `text-nowrap`) continues to win over these defaults without needing
+ * `!important` anywhere -- CSS cascade layers always let an unlayered or
+ * later-layer declaration win over an earlier layer regardless of
+ * selector specificity.
+ */
+@layer base {
+  p { text-wrap: pretty; }
+  h1, h2, h3, h4 { text-wrap: balance; }
+}
+
 :root {
   --dark-bg: #05070C; --dark-canvas: #070B12; --dark-panel: #0B1017; --dropdown-bg: #0E141F;
   --light-canvas: #F5F7FA; --surface: #FFFFFF; --border: #E4E9F0; --divider: #F0F3F7;
