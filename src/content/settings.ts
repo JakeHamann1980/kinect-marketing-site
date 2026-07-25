@@ -123,6 +123,6 @@ export const settings: SiteSettings = {
       { label: "DPA", href: "#" },
       { label: "Accessibility", href: "#" },
     ],
-    copyright: "© 2026 KINECT · kinectapp.ai",
+    copyright: "© 2026 KINECT · kinectnow.com",
   },
 };

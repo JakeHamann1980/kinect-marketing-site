@@ -35,7 +35,7 @@ export const home: HomeContent = {
         "Project templates per service line",
         "Client-facing portal they actually open",
       ],
-      cta: "Enter agency.kinectapp.ai",
+      cta: "Enter agency.kinectnow.com",
     },
     {
       persona: "coach",
@@ -46,7 +46,7 @@ export const home: HomeContent = {
         "Video form review with timestamps",
         "Weekly check-ins and progress photos",
       ],
-      cta: "Enter coach.kinectapp.ai",
+      cta: "Enter coach.kinectnow.com",
     },
     {
       persona: "consultant",
@@ -57,7 +57,7 @@ export const home: HomeContent = {
         "Time tracking against fee budgets",
         "Session notes → decisions → recap",
       ],
-      cta: "Enter consultant.kinectapp.ai",
+      cta: "Enter consultant.kinectnow.com",
     },
   ],
 
