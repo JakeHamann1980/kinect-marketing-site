@@ -71,8 +71,14 @@ export function firstTouchUtms(): Record<string, string> {
   return captured;
 }
 
-/** /agency, /coach, /consultant (any subpath) -> that persona; everything else -> "home". */
-function currentPersona(): Persona | "home" {
+/**
+ * /agency, /coach, /consultant (any subpath) -> that persona; everything
+ * else -> "home". Exported (Task 16) so the waitlist dialog can attach the
+ * same persona value to a form submission that `track()` already attaches
+ * to every analytics event, without a second, drifting implementation of
+ * "which persona is this page" living in two files.
+ */
+export function currentPersona(): Persona | "home" {
   if (typeof window === "undefined") return "home";
   const seg = window.location.pathname.split("/")[1];
   return (PERSONA_IDS as readonly string[]).includes(seg) ? (seg as Persona) : "home";

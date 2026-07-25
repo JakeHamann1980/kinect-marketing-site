@@ -1,5 +1,6 @@
 import { type ButtonVariant } from "@/components/Button";
 import TrackedLink from "@/components/TrackedLink";
+import WaitlistCta from "@/components/WaitlistCta";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
 import { cn } from "@/lib/cn";
@@ -160,27 +161,43 @@ export default function PricingSection({
                 </ul>
 
                 <div className="mt-auto">
-                  {/* Placeholder destination: checkout/signup routing is
-                      wired up in a later task (same "/" placeholder
-                      convention as Nav's primary CTA).
-                      Task 15: PricingSection is a Server Component, so the
+                  {/* Task 15: PricingSection is a Server Component, so the
                       click handler goes through TrackedLink (see its doc
                       comment) rather than Button directly. Fires both the
                       generic cta_clicked{location:"pricing"} (this is one
                       of the task brief's named trackLocation call sites)
                       AND the tier-specific pricing_tier_clicked -- a
                       rollup "any CTA click" metric plus the more precise
-                      "which tier" one, not a duplicate of the same signal. */}
-                  <TrackedLink
-                    variant={ctaVariant}
-                    href="/"
-                    className="w-full justify-center"
-                    trackLocation="pricing"
-                    event="pricing_tier_clicked"
-                    eventProps={{ tier: tier.name }}
-                  >
-                    {tier.cta}
-                  </TrackedLink>
+                      "which tier" one, not a duplicate of the same signal.
+                      Task 16: only the tier literally labeled "Start free"
+                      (Growth, today) opens the waitlist dialog instead of
+                      navigating -- Starter/Scale ("Choose Starter"/"Choose
+                      Scale") are not "Start free"-labeled and keep their
+                      prior placeholder-navigation behavior via
+                      TrackedLink. Both branches still fire the same
+                      cta_clicked + pricing_tier_clicked pair either way. */}
+                  {tier.cta === "Start free" ? (
+                    <WaitlistCta
+                      variant={ctaVariant}
+                      className="w-full justify-center"
+                      trackLocation="pricing"
+                      event="pricing_tier_clicked"
+                      eventProps={{ tier: tier.name }}
+                    >
+                      {tier.cta}
+                    </WaitlistCta>
+                  ) : (
+                    <TrackedLink
+                      variant={ctaVariant}
+                      href="/"
+                      className="w-full justify-center"
+                      trackLocation="pricing"
+                      event="pricing_tier_clicked"
+                      eventProps={{ tier: tier.name }}
+                    >
+                      {tier.cta}
+                    </TrackedLink>
+                  )}
                 </div>
               </div>
             );

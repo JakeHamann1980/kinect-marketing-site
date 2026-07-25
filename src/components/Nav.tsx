@@ -3,7 +3,7 @@
 import { useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
 import Link from "next/link";
 import Lockup from "@/components/Lockup";
-import Button from "@/components/Button";
+import WaitlistCta from "@/components/WaitlistCta";
 import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
 import { home } from "@/content/home";
@@ -229,9 +229,11 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               </Link>
             ))}
 
-            <Button variant="primary" href="/" trackLocation="nav">
+            {/* Task 16: "Start free" -- see WaitlistCta.tsx's own doc
+                comment. Replaces the prior placeholder `href="/"` Button. */}
+            <WaitlistCta variant="primary" trackLocation="nav">
               {ctaLabel}
-            </Button>
+            </WaitlistCta>
           </div>
 
           <button
@@ -281,15 +283,14 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               </Link>
             ))}
 
-            <Button
+            <WaitlistCta
               variant="primary"
-              href="/"
               className="mt-4 w-full"
               trackLocation="mobile-sheet"
               onClick={closeMobile}
             >
               {ctaLabel}
-            </Button>
+            </WaitlistCta>
           </div>
         )}
       </div>

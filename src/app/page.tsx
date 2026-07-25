@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
 import TrackedLink from "@/components/TrackedLink";
+import WaitlistCta from "@/components/WaitlistCta";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import LogoStrip from "@/components/LogoStrip";
@@ -136,10 +137,14 @@ export default function Home() {
           <div className="kx-ctarow mt-[30px]">
             {/* Task 15: this page is a Server Component -- TrackedLink is
                 the client boundary that lets these CTAs fire
-                cta_clicked{location:"hero"} (see its own doc comment). */}
-            <TrackedLink variant="primary" size="lg" href="/" trackLocation="hero">
+                cta_clicked{location:"hero"} (see its own doc comment).
+                Task 16: the primary "Start free" CTA now opens the
+                waitlist dialog instead (WaitlistCta) -- see that
+                component's own doc comment; "View demo" is unaffected and
+                keeps navigating via TrackedLink. */}
+            <WaitlistCta variant="primary" size="lg" trackLocation="hero">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </TrackedLink>
+            </WaitlistCta>
             <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
               {home.hero.secondaryCta}
             </TrackedLink>
@@ -319,9 +324,11 @@ export default function Home() {
             {home.closing.subhead}
           </p>
           <div className="kx-ctarow">
-            <TrackedLink variant="primary" size="xl" href="/" trackLocation="closing">
+            {/* Task 16: same "Start free" -> WaitlistCta swap as the hero
+                pair above. */}
+            <WaitlistCta variant="primary" size="xl" trackLocation="closing">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </TrackedLink>
+            </WaitlistCta>
             <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
               {home.hero.secondaryCta}
             </TrackedLink>

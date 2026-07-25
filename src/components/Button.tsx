@@ -29,6 +29,16 @@ interface ButtonProps {
    * doc comment for the full explanation and which call sites need it.
    */
   trackLocation?: string;
+  /**
+   * Task 16 (waitlist): only meaningful on the plain-`<button>` render path
+   * (no `href`) -- WaitlistDialog's submit button uses this while a
+   * submission is in flight, so a slow network / double Enter can't fire a
+   * second request. Next's `Link` has no equivalent "disabled" state
+   * (disclosed rather than half-implemented: passing this alongside `href`
+   * is a no-op today, since nothing in this codebase currently needs a
+   * disabled link).
+   */
+  disabled?: boolean;
 }
 
 const BASE = "inline-flex items-center justify-center gap-2 font-sans font-semibold";
@@ -91,8 +101,15 @@ export default function Button({
   type = "button",
   onClick,
   trackLocation,
+  disabled = false,
 }: ButtonProps) {
-  const classes = cn(BASE, SIZES[size], VARIANTS[variant], className);
+  const classes = cn(
+    BASE,
+    SIZES[size],
+    VARIANTS[variant],
+    disabled && "opacity-60 pointer-events-none",
+    className,
+  );
 
   // Deliberately left `undefined` (not a defined-but-empty closure) when
   // neither prop is set, matching the pre-Task-15 behavior exactly: a
@@ -101,7 +118,7 @@ export default function Button({
   // conversion) must keep getting a plain, non-interactive `undefined`
   // onClick here, not a function value.
   const handleClick =
-    trackLocation || onClick
+    (trackLocation || onClick) && !disabled
       ? () => {
           if (trackLocation) track("cta_clicked", { location: trackLocation });
           onClick?.();
@@ -117,7 +134,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} className={classes} onClick={handleClick}>
+    <button type={type} className={classes} onClick={handleClick} disabled={disabled}>
       {children}
     </button>
   );

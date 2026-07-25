@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
 import TrackedLink from "@/components/TrackedLink";
+import WaitlistCta from "@/components/WaitlistCta";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import StepCards from "@/components/StepCards";
@@ -160,10 +161,13 @@ export default function PersonaPage({ content }: PersonaPageProps) {
           <div className="kx-ctarow mt-[30px]">
             {/* Task 15: this page is a Server Component -- TrackedLink is
                 the client boundary that lets these CTAs fire
-                cta_clicked{location:"hero"} (see its own doc comment). */}
-            <TrackedLink variant="primary" size="lg" href="/" trackLocation="hero">
+                cta_clicked{location:"hero"} (see its own doc comment).
+                Task 16: the primary "Start free" CTA now opens the
+                waitlist dialog instead (WaitlistCta) -- see
+                WaitlistCta.tsx's own doc comment. */}
+            <WaitlistCta variant="primary" size="lg" trackLocation="hero">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </TrackedLink>
+            </WaitlistCta>
             <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
               {content.hero.secondaryCta}
             </TrackedLink>
@@ -344,9 +348,12 @@ export default function PersonaPage({ content }: PersonaPageProps) {
             {content.closing.subhead}
           </p>
           <div className="kx-ctarow">
-            <TrackedLink variant="primary" size="xl" href="/" trackLocation="closing">
+            {/* Task 16: same "Start free" -> WaitlistCta swap as the hero
+                pair above. "Not you? Pick another lane" is not "Start
+                free"-labeled and keeps navigating. */}
+            <WaitlistCta variant="primary" size="xl" trackLocation="closing">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </TrackedLink>
+            </WaitlistCta>
             <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
               {content.closing.secondaryCta}
             </TrackedLink>

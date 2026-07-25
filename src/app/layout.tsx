@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { hanken, instrument, plexMono } from "@/lib/fonts";
 import PostHogProvider from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
+import WaitlistDialog from "@/components/WaitlistDialog";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -30,9 +31,13 @@ export default function RootLayout({
             already-recorded consent (and react to live changes) regardless
             of which route mounts first; ConsentBanner is a sibling, not a
             child, since it renders its own fixed-position UI rather than
-            wrapping page content. */}
+            wrapping page content. Task 16: WaitlistDialog is the same
+            shape -- a fixed-position overlay mounted once here, opened by
+            any "Start free" CTA anywhere in the tree via the
+            kx-open-waitlist window event (see cta.ts). */}
         <PostHogProvider>{children}</PostHogProvider>
         <ConsentBanner />
+        <WaitlistDialog />
       </body>
     </html>
   );
