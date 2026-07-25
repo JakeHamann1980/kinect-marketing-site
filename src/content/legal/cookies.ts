@@ -41,5 +41,11 @@ export const cookies: LegalPage = {
         "You can change your analytics consent choice at any time using the cookie preferences control in the site footer, which reopens the same choice presented in the initial banner. You can also control cookies more broadly through your browser's own settings, though blocking all cookies may affect how some parts of the site function.",
       ],
     },
+    {
+      heading: "Changes and contact",
+      paragraphs: [
+        "If our use of cookies changes, we will update this page and revise the date shown at the top. Questions about this policy or our privacy practices can be sent to [COMPANY LEGAL NAME AND ADDRESS].",
+      ],
+    },
   ],
 };

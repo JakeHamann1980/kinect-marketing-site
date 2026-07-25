@@ -48,5 +48,11 @@ export const security: LegalPage = {
         "If you believe you have found a security issue affecting kinectnow.com, our persona subdomains, or the waitlist, please tell us before disclosing it publicly. Contact us at [COMPANY LEGAL NAME AND ADDRESS] with as much detail as you can provide, and we will work to acknowledge and address the issue.",
       ],
     },
+    {
+      heading: "Changes to this overview",
+      paragraphs: [
+        "As our practices evolve, we will update this page and revise the date shown at the top. Material changes will be reflected here before they take effect.",
+      ],
+    },
   ],
 };
