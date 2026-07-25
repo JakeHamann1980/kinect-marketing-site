@@ -42,6 +42,22 @@ function PersonaDot({
   );
 }
 
+interface NavProps {
+  /**
+   * Persona subdomain badge shown next to the wordmark (e.g. "for
+   * Agencies"), recovered from `KINECT Marketing Site.dc.html`'s
+   * `subNames`/`subLabelStyle` (~line 660/690): a small mono uppercase
+   * pill, accent-colored text on an accent-tinted background. Home passes
+   * nothing so the badge is omitted there, matching the prototype's own
+   * `subLabel:page==='home'?'':subNames[page]` behavior. Uses the
+   * `--accent`/`--accent-tint` CSS vars (set per page via `[data-persona]`
+   * on the page root) rather than a hardcoded per-persona color table, so
+   * it follows whichever persona the page root declares automatically,
+   * same mechanism as AsteriskMark/Lockup's own `var(--accent)` default.
+   */
+  badge?: string;
+}
+
 /**
  * Sticky site nav: transparent over the hero, gains a blurred dark
  * background once scrolled past (see useStuck + globals.css #kx-nav rules).
@@ -53,7 +69,7 @@ function PersonaDot({
  * breaks `position: sticky` -- a real bug in the prototype). The root
  * layout already uses `overflow-x: clip`; nothing here adds clipping.
  */
-export default function Nav() {
+export default function Nav({ badge }: NavProps) {
   const { sentinelRef, stuck } = useStuck();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
@@ -119,7 +135,17 @@ export default function Nav() {
             stuck && "kx-stuck",
           )}
         >
-          <Lockup />
+          <div className="flex items-center gap-2">
+            <Lockup />
+            {badge ? (
+              <span
+                className="rounded-[6px] px-[9px] py-1 font-mono text-[11px] uppercase tracking-[.1em]"
+                style={{ color: "var(--accent)", background: "var(--accent-tint)" }}
+              >
+                {badge}
+              </span>
+            ) : null}
+          </div>
 
           <div className="kx-nav-links">
             <div

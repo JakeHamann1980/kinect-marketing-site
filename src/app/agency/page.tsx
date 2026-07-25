@@ -1,3 +1,6 @@
+import PersonaPage from "@/components/PersonaPage";
+import { agency } from "@/content/agency";
+
 export default function AgencyPage() {
-  return <h1 className="font-display text-on-dark p-10">Agency placeholder</h1>;
+  return <PersonaPage content={agency} />;
 }

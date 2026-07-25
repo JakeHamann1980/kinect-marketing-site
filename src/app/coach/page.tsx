@@ -1,3 +1,6 @@
+import PersonaPage from "@/components/PersonaPage";
+import { coach } from "@/content/coach";
+
 export default function CoachPage() {
-  return <h1 className="font-display text-on-dark p-10">Coach placeholder</h1>;
+  return <PersonaPage content={coach} />;
 }
