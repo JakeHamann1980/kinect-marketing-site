@@ -1,4 +1,5 @@
-import Button, { type ButtonVariant } from "@/components/Button";
+import { type ButtonVariant } from "@/components/Button";
+import TrackedLink from "@/components/TrackedLink";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
 import { cn } from "@/lib/cn";
@@ -161,10 +162,25 @@ export default function PricingSection({
                 <div className="mt-auto">
                   {/* Placeholder destination: checkout/signup routing is
                       wired up in a later task (same "/" placeholder
-                      convention as Nav's primary CTA). */}
-                  <Button variant={ctaVariant} href="/" className="w-full justify-center">
+                      convention as Nav's primary CTA).
+                      Task 15: PricingSection is a Server Component, so the
+                      click handler goes through TrackedLink (see its doc
+                      comment) rather than Button directly. Fires both the
+                      generic cta_clicked{location:"pricing"} (this is one
+                      of the task brief's named trackLocation call sites)
+                      AND the tier-specific pricing_tier_clicked -- a
+                      rollup "any CTA click" metric plus the more precise
+                      "which tier" one, not a duplicate of the same signal. */}
+                  <TrackedLink
+                    variant={ctaVariant}
+                    href="/"
+                    className="w-full justify-center"
+                    trackLocation="pricing"
+                    event="pricing_tier_clicked"
+                    eventProps={{ tier: tier.name }}
+                  >
                     {tier.cta}
-                  </Button>
+                  </TrackedLink>
                 </div>
               </div>
             );

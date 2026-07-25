@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Lockup from "@/components/Lockup";
+import { CookiePreferencesButton } from "@/components/ConsentBanner";
 import { settings } from "@/content/settings";
 
 /**
@@ -162,6 +163,12 @@ export default function Footer() {
                 {link.label}
               </Link>
             ))}
+            {/* Task 15: settings, not a page navigation -- reopens the
+                consent banner rather than routing anywhere (see
+                CookiePreferencesButton's own doc comment for why this is
+                additional to, not a replacement for, the "Cookie Policy"
+                link above). */}
+            <CookiePreferencesButton />
           </div>
         </div>
       </div>

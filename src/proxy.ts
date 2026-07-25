@@ -35,7 +35,22 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   // Exclusions are segment-anchored (e.g. `/apiary` must still hit the proxy).
+  //
+  // Task 15: `ph` added for the PostHog reverse-proxy rewrites
+  // (next.config.ts `/ph/static/*` and `/ph/*`). Traced through every
+  // branch above: `/ph/...` never matches a PERSONA_IDS segment, so on the
+  // production root host it already falls through to the final
+  // `NextResponse.next()`; on a persona subdomain it hits the "shared
+  // routes ... serve as-is" `NextResponse.next()` for any non-"/" path.
+  // Neither branch would actually rewrite or redirect a PostHog request
+  // today, so this exclusion isn't fixing a live bug -- it's a disclosed,
+  // defensive addition matching the existing exclusion list's own pattern
+  // (skip this middleware's host/persona work entirely for known
+  // infrastructure paths) so future changes to the branches above can't
+  // accidentally start intercepting analytics calls, and so every
+  // PostHog beacon (potentially frequent -- pageviews, autocapture) skips
+  // needless middleware execution.
   matcher: [
-    "/((?!(?:_next|api|studio|screenshots|favicon.ico|robots.txt|sitemap.xml|llms.txt)(?:/|$)).*)",
+    "/((?!(?:_next|api|studio|screenshots|ph|favicon.ico|robots.txt|sitemap.xml|llms.txt)(?:/|$)).*)",
   ],
 };

@@ -20,6 +20,24 @@ export default defineConfig({
     // "vitest". Existing .ts tests already import these explicitly, so
     // turning on globals is additive and doesn't change their behavior.
     globals: true,
+    // Task 15: Node 22+ ships its own experimental global `localStorage`
+    // (flag `--experimental-webstorage`, on by default on this machine's
+    // Node 25). jsdom's Window also defines its own per-window
+    // `localStorage`, and the two collide: under Vitest's worker process,
+    // `window.localStorage` resolved to Node's native implementation
+    // instead of jsdom's, which silently no-ops without a
+    // `--localstorage-file` path configured (observed:
+    // `window.localStorage.clear` -- and every other Storage method --
+    // missing at runtime, no error surfaced, and a
+    // "`--localstorage-file` was provided without a valid path" warning on
+    // stderr). `--no-experimental-webstorage` on the test worker's own
+    // process removes Node's native global so jsdom's own
+    // `window.localStorage` (which the consent store and analytics'
+    // first-touch UTM capture both depend on) wins instead. `poolOptions`
+    // was removed in Vitest 4 (its `execArgv` is now this top-level
+    // option -- Vitest prints a deprecation warning and ignores the old
+    // nested shape if used instead, which silently drops this flag).
+    execArgv: ["--no-experimental-webstorage"],
     projects: [
       {
         extends: true,

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { hanken, instrument, plexMono } from "@/lib/fonts";
+import PostHogProvider from "@/components/PostHogProvider";
+import ConsentBanner from "@/components/ConsentBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,7 +26,13 @@ export default function RootLayout({
           overflowX: "clip",
         }}
       >
-        {children}
+        {/* Task 15: PostHogProvider wraps every page so it can apply
+            already-recorded consent (and react to live changes) regardless
+            of which route mounts first; ConsentBanner is a sibling, not a
+            child, since it renders its own fixed-position UI rather than
+            wrapping page content. */}
+        <PostHogProvider>{children}</PostHogProvider>
+        <ConsentBanner />
       </body>
     </html>
   );

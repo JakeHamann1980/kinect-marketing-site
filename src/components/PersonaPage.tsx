@@ -3,7 +3,7 @@ import Image from "next/image";
 import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
-import Button from "@/components/Button";
+import TrackedLink from "@/components/TrackedLink";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import StepCards from "@/components/StepCards";
@@ -158,12 +158,15 @@ export default function PersonaPage({ content }: PersonaPageProps) {
           </p>
 
           <div className="kx-ctarow mt-[30px]">
-            <Button variant="primary" size="lg" href="/">
+            {/* Task 15: this page is a Server Component -- TrackedLink is
+                the client boundary that lets these CTAs fire
+                cta_clicked{location:"hero"} (see its own doc comment). */}
+            <TrackedLink variant="primary" size="lg" href="/" trackLocation="hero">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </Button>
-            <Button variant="ghost" size="lg" href="/">
+            </TrackedLink>
+            <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
               {content.hero.secondaryCta}
-            </Button>
+            </TrackedLink>
           </div>
 
           <div className="mt-[30px] flex flex-wrap items-center justify-center gap-[26px] text-[15px] text-on-dark-4">
@@ -341,12 +344,12 @@ export default function PersonaPage({ content }: PersonaPageProps) {
             {content.closing.subhead}
           </p>
           <div className="kx-ctarow">
-            <Button variant="primary" size="xl" href="/">
+            <TrackedLink variant="primary" size="xl" href="/" trackLocation="closing">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </Button>
-            <Button variant="ghost" size="xl" href="/">
+            </TrackedLink>
+            <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
               {content.closing.secondaryCta}
-            </Button>
+            </TrackedLink>
           </div>
         </div>
       </section>

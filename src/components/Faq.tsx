@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Faq as FaqItem } from "@/content/types";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 interface FaqProps {
@@ -33,7 +34,14 @@ export function Faq({ items }: FaqProps) {
               type="button"
               aria-expanded={open}
               aria-controls={panelId}
-              onClick={() => setOpenIndex(open ? null : index)}
+              onClick={() => {
+                // Only on open, not close -- decided from the outer `open`
+                // (this render's value), same reasoning as
+                // ShowcaseCycler's pin tracking: side effects don't belong
+                // inside a setState updater.
+                if (!open) track("faq_opened", { question: item.question });
+                setOpenIndex(open ? null : index);
+              }}
               className="flex min-h-[56px] w-full items-center justify-between gap-4 px-6 py-3 text-left text-[17px] font-semibold text-ink"
             >
               <span className="text-balance">{item.question}</span>

@@ -8,6 +8,7 @@ import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
 import { home } from "@/content/home";
 import { PERSONAS, type Persona } from "@/lib/personas";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 /**
@@ -196,7 +197,10 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
                     <Link
                       key={s.persona}
                       href={personaHref(s.persona)}
-                      onClick={closeSolutions}
+                      onClick={() => {
+                        track("solutions_nav_clicked", { persona: s.persona });
+                        closeSolutions();
+                      }}
                       className="flex items-start gap-[11px] rounded-[10px] px-3 py-[11px] hover:bg-[rgba(255,255,255,.06)]"
                     >
                       <PersonaDot persona={s.persona} className="mt-[6px]" />
@@ -225,7 +229,7 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               </Link>
             ))}
 
-            <Button variant="primary" href="/">
+            <Button variant="primary" href="/" trackLocation="nav">
               {ctaLabel}
             </Button>
           </div>
@@ -253,7 +257,10 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               <Link
                 key={s.persona}
                 href={personaHref(s.persona)}
-                onClick={closeMobile}
+                onClick={() => {
+                  track("solutions_nav_clicked", { persona: s.persona });
+                  closeMobile();
+                }}
                 className="flex min-h-[52px] items-center gap-[11px] border-b border-[rgba(255,255,255,.07)] py-[15px]"
               >
                 <PersonaDot persona={s.persona} />
@@ -278,6 +285,7 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               variant="primary"
               href="/"
               className="mt-4 w-full"
+              trackLocation="mobile-sheet"
               onClick={closeMobile}
             >
               {ctaLabel}

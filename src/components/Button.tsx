@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { track } from "@/lib/analytics";
 
 export type ButtonVariant = "primary" | "ghost" | "accent" | "outline-light" | "fill-dark";
 export type ButtonSize = "md" | "lg" | "xl";
@@ -15,6 +16,19 @@ interface ButtonProps {
   type?: "button" | "submit" | "reset";
   /** Optional click handler, e.g. closing a mobile sheet on navigation. */
   onClick?: () => void;
+  /**
+   * Task 15: when set, fires `cta_clicked {location: trackLocation}` on
+   * click, in addition to any `onClick` above (both run). Button itself
+   * still carries no "use client" directive -- this only does anything
+   * useful when Button ends up bundled into a Client Component's tree at
+   * runtime (a client caller like Nav passing it directly, or a server
+   * caller going through the `TrackedLink` wrapper). A Server Component
+   * passing `trackLocation` to Button *directly* (no TrackedLink) would
+   * still render, but the click handler this prop implies can't actually
+   * attach in a purely server-rendered subtree -- see TrackedLink.tsx's own
+   * doc comment for the full explanation and which call sites need it.
+   */
+  trackLocation?: string;
 }
 
 const BASE = "inline-flex items-center justify-center gap-2 font-sans font-semibold";
@@ -76,19 +90,34 @@ export default function Button({
   children,
   type = "button",
   onClick,
+  trackLocation,
 }: ButtonProps) {
   const classes = cn(BASE, SIZES[size], VARIANTS[variant], className);
 
+  // Deliberately left `undefined` (not a defined-but-empty closure) when
+  // neither prop is set, matching the pre-Task-15 behavior exactly: a
+  // Server Component caller that passes neither (still the common case --
+  // see PersonaCard/PricingSection/hero-closing before their TrackedLink
+  // conversion) must keep getting a plain, non-interactive `undefined`
+  // onClick here, not a function value.
+  const handleClick =
+    trackLocation || onClick
+      ? () => {
+          if (trackLocation) track("cta_clicked", { location: trackLocation });
+          onClick?.();
+        }
+      : undefined;
+
   if (href) {
     return (
-      <Link href={href} className={classes} onClick={onClick}>
+      <Link href={href} className={classes} onClick={handleClick}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} className={classes} onClick={onClick}>
+    <button type={type} className={classes} onClick={handleClick}>
       {children}
     </button>
   );

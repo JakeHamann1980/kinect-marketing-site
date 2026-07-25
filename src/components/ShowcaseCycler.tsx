@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { PERSONA_IDS, type Persona } from "@/lib/personas";
 import { clickLabel, type CyclerState } from "@/lib/cycler";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 /**
@@ -66,7 +67,19 @@ export default function ShowcaseCycler({ labels }: ShowcaseCyclerProps) {
             key={persona}
             type="button"
             aria-pressed={state.pinned === i}
-            onClick={() => setState((s) => clickLabel(s, i))}
+            onClick={() => {
+              // Decided from the outer `state` (not inside the setState
+              // updater below -- React may invoke updater functions more
+              // than once, e.g. under StrictMode's dev double-render, which
+              // would double-fire this side effect). state.pinned !== i
+              // means this click transitions INTO pinned-at-i (a pin);
+              // state.pinned === i means it's already pinned here and this
+              // click resumes auto-cycling instead (clickLabel's own doc
+              // comment) -- matches the Task 15 brief's "only when
+              // pinning, not unpinning".
+              if (state.pinned !== i) track("screenshot_pinned", { persona });
+              setState((s) => clickLabel(s, i));
+            }}
             className={cn(
               LABEL_CLASS[i],
               // NOTE: no Tailwind `transition-colors` here -- see the

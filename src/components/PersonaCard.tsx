@@ -1,4 +1,4 @@
-import Button from "@/components/Button";
+import TrackedLink from "@/components/TrackedLink";
 import { PERSONAS, type Persona } from "@/lib/personas";
 
 interface PersonaCardProps {
@@ -110,10 +110,21 @@ export default function PersonaCard({
           leaves above it, so all three cards' CTAs land on one line
           regardless of how much body/feature copy precedes them. */}
       <div className="mt-auto pt-6">
-        <Button variant="accent" href={personaHref(persona)}>
+        {/* Task 15: PersonaCard is a Server Component (this file has no
+            "use client") -- TrackedLink is the client boundary that lets
+            this CTA fire persona_card_clicked on click; see its own doc
+            comment. No trackLocation here: the "nav/hero/pricing/closing/
+            mobile-sheet" cta_clicked locations don't include the persona
+            picker cards, so this fires only the more specific event. */}
+        <TrackedLink
+          variant="accent"
+          href={personaHref(persona)}
+          event="persona_card_clicked"
+          eventProps={{ persona }}
+        >
           {cta}
           <span aria-hidden="true">{"→"}</span>
-        </Button>
+        </TrackedLink>
       </div>
     </div>
   );

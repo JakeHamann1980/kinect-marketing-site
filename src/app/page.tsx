@@ -1,7 +1,7 @@
 import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
-import Button from "@/components/Button";
+import TrackedLink from "@/components/TrackedLink";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import LogoStrip from "@/components/LogoStrip";
@@ -134,12 +134,15 @@ export default function Home() {
           </p>
 
           <div className="kx-ctarow mt-[30px]">
-            <Button variant="primary" size="lg" href="/">
+            {/* Task 15: this page is a Server Component -- TrackedLink is
+                the client boundary that lets these CTAs fire
+                cta_clicked{location:"hero"} (see its own doc comment). */}
+            <TrackedLink variant="primary" size="lg" href="/" trackLocation="hero">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </Button>
-            <Button variant="ghost" size="lg" href="/">
+            </TrackedLink>
+            <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
               {home.hero.secondaryCta}
-            </Button>
+            </TrackedLink>
           </div>
         </div>
       </section>
@@ -316,12 +319,12 @@ export default function Home() {
             {home.closing.subhead}
           </p>
           <div className="kx-ctarow">
-            <Button variant="primary" size="xl" href="/">
+            <TrackedLink variant="primary" size="xl" href="/" trackLocation="closing">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </Button>
-            <Button variant="ghost" size="xl" href="/">
+            </TrackedLink>
+            <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
               {home.hero.secondaryCta}
-            </Button>
+            </TrackedLink>
           </div>
         </div>
       </section>
