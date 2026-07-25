@@ -1,26 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --dark-bg: #05070C; --dark-canvas: #070B12; --dark-panel: #0B1017; --dropdown-bg: #0E141F;
+  --light-canvas: #F5F7FA; --surface: #FFFFFF; --border: #E4E9F0; --divider: #F0F3F7;
+  --on-dark: #EEF2F8; --on-dark-2: #C7CEDA; --on-dark-3: #A2ABBC; --on-dark-4: #8B95A7; --on-dark-5: #5A6478;
+  --ink: #0C1220; --ink-2: #3B4658; --ink-3: #5A6577; --muted: #96A0B2;
+  --cyan: #35D6E8; --amber: #F0913A; --coral: #EC5242; --violet: #C7A0C0;
+  --cyan-light: #0E93AC; --coral-light: #C4501F; --violet-light: #6E5AA8;
+  --rule-strong: rgba(255,255,255,.22); --rule: rgba(255,255,255,.16); --rule-soft: rgba(255,255,255,.12);
+  --rule-faint: rgba(255,255,255,.09); --rule-ghost: rgba(255,255,255,.06);
+  --grid-line: rgba(255,255,255,.016); --grid-dot: rgba(255,255,255,.05);
+  --text-gradient: linear-gradient(95deg, #F5A15A, #EC5242 45%, #35D6E8);
+  --cta-gradient: linear-gradient(135deg, #F0913A, #EC5242);
+  --accent: var(--cyan); --accent-light: var(--cyan-light); --accent-tint: rgba(14,147,172,.12);
 }
+.kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media print { .kx-grad { color: #EC5242; } }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-ink-3: var(--ink-3); --color-muted: var(--muted);
+  --color-surface: var(--surface); --color-border: var(--border); --color-light-canvas: var(--light-canvas);
+  --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
+  --color-on-dark: var(--on-dark); --color-on-dark-2: var(--on-dark-2); --color-on-dark-3: var(--on-dark-3);
+  --color-on-dark-4: var(--on-dark-4); --color-on-dark-5: var(--on-dark-5);
+  --color-cyan: var(--cyan); --color-amber: var(--amber); --color-coral: var(--coral); --color-violet: var(--violet);
+  --color-accent: var(--accent);
+  --font-display: var(--font-display); --font-sans: var(--font-sans); --font-mono: var(--font-mono);
 }
