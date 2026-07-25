@@ -3,13 +3,13 @@ import { PERSONAS, personaFromHost } from "./personas";
 
 describe("personaFromHost", () => {
   it("maps subdomains to personas", () => {
-    expect(personaFromHost("agency.kinectapp.ai")).toBe("agency");
-    expect(personaFromHost("coach.kinectapp.ai")).toBe("coach");
-    expect(personaFromHost("consultant.kinectapp.ai")).toBe("consultant");
+    expect(personaFromHost("agency.kinectnow.com")).toBe("agency");
+    expect(personaFromHost("coach.kinectnow.com")).toBe("coach");
+    expect(personaFromHost("consultant.kinectnow.com")).toBe("consultant");
   });
   it("maps root and unknown hosts to null (home)", () => {
-    expect(personaFromHost("kinectapp.ai")).toBeNull();
-    expect(personaFromHost("www.kinectapp.ai")).toBeNull();
+    expect(personaFromHost("kinectnow.com")).toBeNull();
+    expect(personaFromHost("www.kinectnow.com")).toBeNull();
     expect(personaFromHost("localhost:3000")).toBeNull();
   });
   it("supports *.localhost for dev", () => {

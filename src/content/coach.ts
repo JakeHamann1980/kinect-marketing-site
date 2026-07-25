@@ -101,10 +101,35 @@ export const coach: PersonaPageContent = {
     ],
   },
 
-  // NEEDS_CONTEXT: no persona-specific FAQ copy exists in the design source
-  // for the coach subdomain page. See agency.ts for the same note; the
-  // .dc.html only implements an FAQ section on the home page.
-  faq: [],
+  // Persona FAQs were absent from the design source (it only ships home-page
+  // FAQs). This copy was drafted new and approved by Jake on 2026-07-25.
+  faq: [
+    {
+      question: "Will my clients actually check in?",
+      answer:
+        "Check-ins live in the same place as their program and progress, so completing one is part of the routine, not an extra chore. And you can see at a glance who is engaged and who is drifting, before the slow fade becomes a goodbye.",
+    },
+    {
+      question: "Does my price go up as my roster grows?",
+      answer:
+        "No. Every plan is flat. Ten clients or fifty, the monthly price is the monthly price.",
+    },
+    {
+      question: "What do my clients see?",
+      answer:
+        "Their program, their progress, and their check-ins in one clean portal with your name on it, not a PDF lost in their downloads folder.",
+    },
+    {
+      question: "Does KINECT replace my programming software?",
+      answer:
+        "KINECT is the client relationship layer: check-ins, progress, accountability, and communication. If a dedicated program builder is core to your workflow, KINECT works alongside it.",
+    },
+    {
+      question: "What does the AI do for a coach?",
+      answer:
+        "It turns raw check-in data into the read you would give it yourself: who is on track, who needs a nudge, and what changed this week.",
+    },
+  ],
 
   closing: {
     headline: "Coach the work. Let KINECT prove it.",

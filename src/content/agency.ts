@@ -101,13 +101,35 @@ export const agency: PersonaPageContent = {
     ],
   },
 
-  // NEEDS_CONTEXT: no persona-specific FAQ copy exists in the design source
-  // for the agency subdomain page. The .dc.html only implements an FAQ
-  // section on the home page (`faqDefs` in the shared render function); the
-  // per-persona `subs.agency` object has no `faq` key, and the section is
-  // not rendered at all for subdomain pages. Left empty rather than
-  // fabricated. See report for detail.
-  faq: [],
+  // Persona FAQs were absent from the design source (it only ships home-page
+  // FAQs). This copy was drafted new and approved by Jake on 2026-07-25.
+  faq: [
+    {
+      question: "Will my clients actually open it?",
+      answer:
+        "That is the whole point. KINECT is built around the client's login, not your admin panel: clients see live task boards, deliverables, and results the moment they sign in, so checking the portal beats waiting for the monthly report email.",
+    },
+    {
+      question: "Why doesn't KINECT charge per seat or per client?",
+      answer:
+        "Because your portal should get more valuable as more people use it, not more expensive. Every plan is a flat monthly price. Add clients, add teammates, the bill stays the same.",
+    },
+    {
+      question: "Does this replace our project management tool?",
+      answer:
+        "No. Your team can keep running work wherever it runs today. KINECT is the client-facing layer: the polished view your clients log into instead of a \"client view\" bolted onto an internal tool.",
+    },
+    {
+      question: "What does the AI actually do?",
+      answer:
+        "It explains the work in plain language. Instead of a dashboard clients squint at, they get the story behind the numbers: what happened, why it matters, and what happens next.",
+    },
+    {
+      question: "Is reporting really built in?",
+      answer:
+        "Yes. Performance, time, and budget live in the portal, always current. You stop assembling reports; clients stop asking for them.",
+    },
+  ],
 
   closing: {
     headline: "Be the agency that shows, not the one that tells.",

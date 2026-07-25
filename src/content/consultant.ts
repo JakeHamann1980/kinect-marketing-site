@@ -101,10 +101,35 @@ export const consultant: PersonaPageContent = {
     ],
   },
 
-  // NEEDS_CONTEXT: no persona-specific FAQ copy exists in the design source
-  // for the consultant subdomain page. See agency.ts for the same note; the
-  // .dc.html only implements an FAQ section on the home page.
-  faq: [],
+  // Persona FAQs were absent from the design source (it only ships home-page
+  // FAQs). This copy was drafted new and approved by Jake on 2026-07-25.
+  faq: [
+    {
+      question: "How is this better than sending deliverables by email?",
+      answer:
+        "Email tells you it was delivered. KINECT shows the work on a board your client can open any time, with engagement tracking, so your work stops disappearing into inboxes.",
+    },
+    {
+      question: "Will clients actually log in?",
+      answer:
+        "Yes, because the portal answers the question they always have: where do things stand? Status, deliverables, and progress are there before they think to ask.",
+    },
+    {
+      question: "Why flat pricing?",
+      answer:
+        "Consulting revenue is lumpy enough. KINECT costs the same flat price every month, whatever your engagement count, with no per-seat math.",
+    },
+    {
+      question: "What does the AI do?",
+      answer:
+        "It explains your deliverables in your client's language: what this analysis says, why it matters to their business, what to look at next. Your thinking, made easier to absorb.",
+    },
+    {
+      question: "Can it handle multiple engagements at once?",
+      answer:
+        "Yes. Each client gets their own portal view; you get one place to see every engagement and who is actually engaging.",
+    },
+  ],
 
   closing: {
     headline: "Advice is easy to doubt. Evidence is not.",

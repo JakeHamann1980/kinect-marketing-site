@@ -16,21 +16,21 @@ export const PERSONAS: Record<
     accent: "#35D6E8",
     accentLight: "#0E93AC",
     tint: "rgba(14,147,172,.12)",
-    hostname: "agency.kinectapp.ai",
+    hostname: "agency.kinectnow.com",
   },
   coach: {
     name: "Coach",
     accent: "#F0913A",
     accentLight: "#C4501F",
     tint: "rgba(240,145,58,.16)",
-    hostname: "coach.kinectapp.ai",
+    hostname: "coach.kinectnow.com",
   },
   consultant: {
     name: "Consultant",
     accent: "#C7A0C0",
     accentLight: "#6E5AA8",
     tint: "rgba(139,120,192,.18)",
-    hostname: "consultant.kinectapp.ai",
+    hostname: "consultant.kinectnow.com",
   },
 };
 

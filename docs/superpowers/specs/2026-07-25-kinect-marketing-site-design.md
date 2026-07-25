@@ -10,10 +10,10 @@ The public marketing site for KINECT, a client-portal SaaS sold to three persona
 
 | Page | Hostname | Audience |
 |---|---|---|
-| Home | `kinectapp.ai` | Anyone; routes visitors to their lane |
-| Agency | `agency.kinectapp.ai` | Marketing / creative agencies (primary) |
-| Coach | `coach.kinectapp.ai` | Fitness coaches and trainers |
-| Consultant | `consultant.kinectapp.ai` | Consultants and mentors |
+| Home | `kinectnow.com` | Anyone; routes visitors to their lane |
+| Agency | `agency.kinectnow.com` | Marketing / creative agencies (primary) |
+| Coach | `coach.kinectnow.com` | Fitness coaches and trainers |
+| Consultant | `consultant.kinectnow.com` | Consultants and mentors |
 
 The KINECT application is a separate build (separate handoff, separate session). The marketing site shares only design tokens and the logo lockup with it.
 
@@ -27,10 +27,10 @@ The KINECT application is a separate build (separate handoff, separate session).
 
 ## 2. Routing & Persona Resolution
 
-- **Middleware reads the hostname** and rewrites persona subdomains to internal routes: `agency.kinectapp.ai` → `/agency`, `coach.` → `/coach`, `consultant.` → `/consultant`. Root domain serves the home route. (Implemented as `src/proxy.ts` — Next.js 16 renamed the middleware convention to proxy.)
+- **Middleware reads the hostname** and rewrites persona subdomains to internal routes: `agency.kinectnow.com` → `/agency`, `coach.` → `/coach`, `consultant.` → `/consultant`. Root domain serves the home route. (Implemented as `src/proxy.ts` — Next.js 16 renamed the middleware convention to proxy.)
 - **One persona page template** rendered from persona config; personas differ only in content, accent color, and screenshot.
-- **Canonical URLs are the subdomains.** Direct path access in production (`kinectapp.ai/agency`) 308-redirects to the subdomain, preserving any remaining path and query (`/coach/pricing?x=1` → `coach.kinectapp.ai/pricing?x=1`).
-- **`www.kinectapp.ai` 308-redirects to the apex** with path and query preserved, so www never serves duplicate content.
+- **Canonical URLs are the subdomains.** Direct path access in production (`kinectnow.com/agency`) 308-redirects to the subdomain, preserving any remaining path and query (`/coach/pricing?x=1` → `coach.kinectnow.com/pricing?x=1`).
+- **`www.kinectnow.com` 308-redirects to the apex** with path and query preserved, so www never serves duplicate content.
 - **Proxy exclusions are segment-anchored** (`/api/...` excluded; a future `/apiary` page still routes through the proxy).
 - **Local dev:** path routes work directly; `*.localhost` hostnames exercise the middleware.
 

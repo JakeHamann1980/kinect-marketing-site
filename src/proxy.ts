@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { personaFromHost, PERSONA_IDS } from "@/lib/personas";
 
-const PROD_ROOT = "kinectapp.ai";
+const PROD_ROOT = "kinectnow.com";
 
 export function proxy(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
