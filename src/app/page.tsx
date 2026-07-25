@@ -167,7 +167,12 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 kx-md:grid-cols-2 kx-lg:grid-cols-3">
+          {/* 3-col grid: holds 3 columns from kx-md straight through to
+              desktop, no kx-lg tier -- see the matching comment in
+              PillarCards.tsx for the prototype evidence (dc.html's
+              max-width:1024px block only overrides the literal
+              `repeat(4,1fr)` selector, never `repeat(3,1fr)`). */}
+          <div className="grid grid-cols-1 gap-4 kx-md:grid-cols-3">
             {home.personaCards.map((card) => (
               <PersonaCard key={card.persona} {...card} />
             ))}

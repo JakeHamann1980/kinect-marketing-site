@@ -67,7 +67,22 @@ function PillarIcon({ paths, color }: { paths: string[]; color: string }) {
 export default function PillarCards({ pillars, bento }: PillarCardsProps) {
   return (
     <div>
-      <div className="grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-lg:grid-cols-3">
+      {/*
+        3-col grids hold 3 columns from kx-md (860px) straight through to
+        desktop -- no kx-lg tier. Verified against the prototype's own
+        responsive CSS (KINECT Marketing Site.dc.html <style>): the
+        max-width:1024px block's grid override only matches the exact
+        literal selector `[style*="grid-template-columns:repeat(4,1fr)"]`
+        (line ~78), never `repeat(3,1fr)`, so 3-col grids are untouched at
+        1024 and only collapse once the max-width:860px "every multi-col
+        grid stacks" rule (line 85, which explicitly lists
+        `repeat(3,1fr)` alongside `repeat(2,1fr)`/`repeat(4,1fr)`) forces
+        them to 1fr. README's own wording ("<=1024px -- 4-column grids
+        become 2") agrees: it never claims a 2-col step for 3-col grids
+        either. StepCards' 4-col grid is the one family that legitimately
+        gets the kx-md:2/kx-lg:4 intermediate step.
+      */}
+      <div className="grid grid-cols-1 gap-[18px] kx-md:grid-cols-3">
         {pillars.map((pillar, i) => {
           const icon = PILLAR_ICONS[i] ?? FALLBACK_ICON;
           return (

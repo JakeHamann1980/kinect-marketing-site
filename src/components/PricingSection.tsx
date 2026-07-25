@@ -38,7 +38,7 @@ export default function PricingSection({
   tiers,
 }: PricingSectionProps) {
   return (
-    <div className="kx-sec bg-light-canvas">
+    <section className="kx-sec bg-light-canvas">
       <div className="mx-auto max-w-[1000px]">
         <div className="text-center">
           <SectionHead context="light">{headline}</SectionHead>
@@ -47,7 +47,12 @@ export default function PricingSection({
           </p>
         </div>
 
-        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-lg:grid-cols-3">
+        {/* 3-col grid: holds 3 columns from kx-md straight through to
+            desktop, no kx-lg tier -- see the matching comment in
+            PillarCards.tsx for the prototype evidence (dc.html's
+            max-width:1024px block only overrides the literal
+            `repeat(4,1fr)` selector, never `repeat(3,1fr)`). */}
+        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-3">
           {tiers.map((tier) => (
             <div
               key={tier.name}
@@ -96,6 +101,6 @@ export default function PricingSection({
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

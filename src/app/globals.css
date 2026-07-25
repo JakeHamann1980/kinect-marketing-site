@@ -152,10 +152,21 @@
  * Shared hero/closing CTA row (README: "Gap 11px. On mobile they stack full
  * width."). `> *` targets Button's rendered <a>/<button> directly since
  * Button has no size-independent "full width" class of its own.
+ *
+ * The row itself also needs `width: 100%` at this breakpoint, not just its
+ * children: the hero mounts `.kx-ctarow` inside a `flex flex-col
+ * items-center` content wrapper (page.tsx), and `align-items: center` on
+ * that ancestor sizes `.kx-ctarow` to its own max-content width as a flex
+ * item -- `align-items: stretch` declared here only governs how *this*
+ * row's own children (the two buttons) fill *its* box, it can't reach
+ * outward to override the parent's stretch behavior for the row itself.
+ * Without an explicit width the row (and its "full width" buttons inside
+ * it) stayed shrunk to ~content size instead of the column. The closing
+ * section's wrapper has no `items-center`, so it never hit this.
  */
 .kx-ctarow { display: flex; gap: 11px; justify-content: center; }
 @media (max-width: 860px) {
-  .kx-ctarow { flex-direction: column; align-items: stretch; }
+  .kx-ctarow { flex-direction: column; align-items: stretch; width: 100%; }
   .kx-ctarow > * { width: 100%; }
 }
 
