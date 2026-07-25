@@ -56,6 +56,12 @@ interface NavProps {
    * same mechanism as AsteriskMark/Lockup's own `var(--accent)` default.
    */
   badge?: string;
+  /**
+   * Pages with no dark hero behind the nav (e.g. the light legal pages)
+   * pass true so the nav always wears its solid "stuck" treatment; the
+   * transparent-at-top behavior only makes sense over a dark canvas.
+   */
+  forceSolid?: boolean;
 }
 
 /**
@@ -69,7 +75,7 @@ interface NavProps {
  * breaks `position: sticky` -- a real bug in the prototype). The root
  * layout already uses `overflow-x: clip`; nothing here adds clipping.
  */
-export default function Nav({ badge }: NavProps) {
+export default function Nav({ badge, forceSolid = false }: NavProps) {
   const { sentinelRef, stuck } = useStuck();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
@@ -132,7 +138,7 @@ export default function Nav({ badge }: NavProps) {
           id="kx-nav"
           className={cn(
             "flex items-center gap-[14px] px-[60px] py-[22px]",
-            stuck && "kx-stuck",
+            (stuck || forceSolid) && "kx-stuck",
           )}
         >
           <div className="flex items-center gap-2">

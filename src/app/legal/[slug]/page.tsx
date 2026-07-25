@@ -57,7 +57,8 @@ export default async function LegalPageRoute({
 
   return (
     <div className="bg-light-canvas">
-      <Nav />
+      {/* No dark hero on prose pages: nav wears its solid treatment always. */}
+      <Nav forceSolid />
 
       <section className="kx-sec">
         <div className="mx-auto max-w-[68ch]">
