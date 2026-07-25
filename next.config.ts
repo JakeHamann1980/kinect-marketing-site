@@ -10,9 +10,26 @@ const nextConfig: NextConfig = {
   // everything else under `/ph/*` is the ingestion API. See
   // src/components/PostHogProvider.tsx's `api_host: "/ph"` for the
   // consuming side.
+  //
+  // `/ph/array/*` (post-launch fix, adversarial review 2026-07-25): added
+  // ahead of the general `/ph/*` catch-all -- Next applies these rules in
+  // order and stops at the first match, so a more specific prefix must
+  // precede a broader one it would otherwise shadow. PostHog's own SDK
+  // requests its remote bootstrap config from this exact path at startup
+  // on every session (`/array/<token>/config` and `/array/<token>/config.js`),
+  // and routes it through its "assets" endpoint category, not the
+  // ingestion API -- confirmed directly in the installed package,
+  // node_modules/posthog-js/dist/module.js: `t.requestRouter.endpointFor
+  // ("assets", "/array/" + t.config.token + "/config.js")` (and the JSON
+  // `/config` variant is fetched the same way by the SDK's remote-config
+  // loader). Before this fix, the general `/ph/*` rule below caught
+  // `/ph/array/*` first and forwarded it to the ingestion host
+  // (`us.i.posthog.com`), which doesn't serve that path -> a 404 on every
+  // session's bootstrap request.
   async rewrites() {
     return [
       { source: "/ph/static/:path*", destination: "https://us-assets.i.posthog.com/static/:path*" },
+      { source: "/ph/array/:path*", destination: "https://us-assets.i.posthog.com/array/:path*" },
       { source: "/ph/:path*", destination: "https://us.i.posthog.com/:path*" },
     ];
   },
