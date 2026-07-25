@@ -37,6 +37,75 @@
 [data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
 
+/*
+ * Sticky nav (see src/components/Nav.tsx, src/hooks/useStuck.ts).
+ * Per design-reference/README.md "Global Elements -> Sticky transparent
+ * nav" / "--nav-stuck" token: exact composite values, not tokenized further.
+ * IMPORTANT: no ancestor of the nav's sticky wrapper may set
+ * `overflow-x: hidden` -- it breaks `position: sticky` (a real bug in the
+ * prototype). The root layout uses `overflow-x: clip` instead; keep it that
+ * way and never add `overflow-x: hidden` anywhere in this tree.
+ */
+#kx-nav {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .25s ease, border-color .25s ease;
+}
+#kx-nav.kx-stuck {
+  background: rgba(11,15,23,.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: rgba(255,255,255,.09);
+}
+@media (max-width: 860px) {
+  /* Overrides the nav's px-[60px] Tailwind utility: #kx-nav's id
+     specificity wins over the class-based utility regardless of source
+     order, so this doesn't need `!important`. */
+  #kx-nav { padding-left: 20px; padding-right: 20px; }
+}
+
+/* Desktop link group (Solutions dropdown, nav links, CTA). Hidden below
+   860px in favor of the hamburger + mobile sheet. */
+.kx-nav-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Hamburger trigger, mobile only. */
+.kx-burger {
+  display: none;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 11px;
+  background: rgba(255,255,255,.04);
+  cursor: pointer;
+}
+.kx-burger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #EEF2F8;
+}
+
+/* Full-width mobile sheet. Kept `display:none` above 860px even if React
+   state is stale (e.g. a resize while open), so desktop can never show it
+   from a JS-only guard. */
+.kx-mobile-sheet { display: none; }
+
+@media (max-width: 860px) {
+  .kx-nav-links { display: none; }
+  .kx-burger { display: flex; }
+  .kx-mobile-sheet { display: block; }
+}
+
 @theme inline {
   --color-dark-bg: var(--dark-bg); --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
   --color-dropdown-bg: var(--dropdown-bg);

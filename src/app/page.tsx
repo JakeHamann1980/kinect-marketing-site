@@ -2,13 +2,16 @@ import Lockup from "@/components/Lockup";
 import Button from "@/components/Button";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
+import Nav from "@/components/Nav";
 
 // NOTE: this page remains placeholder content for verifying Task 6's shared
-// primitives (Lockup, Button, Eyebrow, SectionHead). It will be replaced by
-// the real home page in Task 12.
+// primitives (Lockup, Button, Eyebrow, SectionHead) and Task 7's Nav. It
+// will be replaced by the real home page in Task 12.
 export default function Home() {
   return (
-    <main className="flex flex-1 flex-col items-center gap-4 px-6 py-32 text-center">
+    <>
+      <Nav />
+      <main className="flex flex-1 flex-col items-center gap-4 px-6 py-32 text-center">
       <h1 className="font-display text-4xl font-bold">
         Built for the <span className="kx-grad">agentic</span> era
       </h1>
@@ -39,5 +42,6 @@ export default function Home() {
         </Button>
       </section>
     </main>
+    </>
   );
 }

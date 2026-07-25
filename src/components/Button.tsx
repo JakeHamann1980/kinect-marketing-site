@@ -11,6 +11,8 @@ interface ButtonProps {
   className?: string;
   children: ReactNode;
   type?: "button" | "submit" | "reset";
+  /** Optional click handler, e.g. closing a mobile sheet on navigation. */
+  onClick?: () => void;
 }
 
 const BASE =
@@ -23,26 +25,32 @@ const VARIANTS: Record<ButtonVariant, string> = {
   accent: "bg-accent-light text-white",
 };
 
-/** Shared button/link primitive. Server component -- no client interactivity yet. */
+/**
+ * Shared button/link primitive. Has no "use client" directive of its own,
+ * so it renders as a Server Component when used from server trees; the
+ * optional `onClick` only fires when a parent Client Component (e.g. Nav)
+ * wires one up.
+ */
 export default function Button({
   variant = "primary",
   href,
   className = "",
   children,
   type = "button",
+  onClick,
 }: ButtonProps) {
   const classes = cn(BASE, VARIANTS[variant], className);
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} className={classes} onClick={onClick}>
         {children}
       </Link>
     );
   }
 
   return (
-    <button type={type} className={classes}>
+    <button type={type} className={classes} onClick={onClick}>
       {children}
     </button>
   );
