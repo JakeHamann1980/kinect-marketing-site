@@ -25,5 +25,5 @@
   --color-on-dark-4: var(--on-dark-4); --color-on-dark-5: var(--on-dark-5);
   --color-cyan: var(--cyan); --color-amber: var(--amber); --color-coral: var(--coral); --color-violet: var(--violet);
   --color-accent: var(--accent);
-  --font-display: var(--font-display); --font-sans: var(--font-sans); --font-mono: var(--font-mono);
+  --font-display: var(--font-hanken); --font-sans: var(--font-instrument); --font-mono: var(--font-plex-mono);
 }
