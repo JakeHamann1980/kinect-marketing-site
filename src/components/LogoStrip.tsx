@@ -29,7 +29,7 @@ export default function LogoStrip({ eyebrow, logos = [] }: LogoStripProps) {
   if (logos.length === 0) return null;
 
   return (
-    <div className="border-b border-[rgba(255,255,255,.06)] bg-dark-canvas px-[60px] pt-[26px] pb-[64px]">
+    <section className="border-b border-[rgba(255,255,255,.06)] bg-dark-canvas px-[60px] pt-[26px] pb-[64px]">
       <div className="mx-auto max-w-[1080px]">
         <Eyebrow context="dark" className="block text-center text-[12px]">
           {eyebrow}
@@ -47,6 +47,6 @@ export default function LogoStrip({ eyebrow, logos = [] }: LogoStripProps) {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
