@@ -254,3 +254,133 @@
 @media (prefers-reduced-motion: reduce) {
   .kx-orb, .kx-trace { animation: none !important; }
 }
+
+/*
+ * Screenshot showcase cycler (Task 10; see src/components/ShowcaseCycler.tsx
+ * and design-reference/README.md "5. Product showcase with cycling
+ * screenshots"). Keyframes and per-layer/label delays are transcribed
+ * verbatim from design-reference/KINECT Marketing Site.dc.html lines 31-46
+ * (`kx-cycle`/`kx-cyclab`/`kx-shotglow` keyframes, the `kx-cyc-2`/`-3` and
+ * `kx-lab-2`/`-3` 5s/10s delay classes, and the `kx-pin-N` pinned-state
+ * overrides) and lines 263-274 (the frame's composite box-shadow, the
+ * glow's three-stop gradient + blur amount, and the label row layout).
+ *
+ * Pinning is real React state (src/lib/cycler.ts's `clickLabel`), not a
+ * CSS-only toggle: ShowcaseCycler applies a `kx-pin-1`/`kx-pin-2`/`kx-pin-3`
+ * class to the two ancestor wrappers (the image stage and the label row)
+ * matching the pinned index, mirroring the prototype's `shotPinClass`
+ * mechanism below.
+ */
+@keyframes kx-cycle { 0%, 26% { opacity: 1; } 33%, 93% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes kx-cyclab { 0%, 26% { color: #EEF2F8; opacity: 1; } 33%, 93% { color: #5A6478; opacity: .6; } 100% { color: #EEF2F8; opacity: 1; } }
+@keyframes kx-shotglow { 0%, 100% { opacity: .9; } 50% { opacity: 1; } }
+
+.kx-cyc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: kx-cycle 15s ease-in-out infinite;
+}
+.kx-cyc-2 { animation-delay: -5s; }
+.kx-cyc-3 { animation-delay: -10s; }
+
+.kx-lab {
+  animation: kx-cyclab 15s ease-in-out infinite;
+  color: #8B95A7; /* base color, only visible once the animation above is disabled (reduced motion) */
+  /*
+   * background/border-color are set here (rather than via Tailwind's
+   * `bg-transparent`/`border-transparent` utilities on the element) so the
+   * `.kx-pin-N .kx-lab:nth-child(N)` override below reliably wins: those
+   * Tailwind utilities live inside `@layer utilities`, and this project's
+   * automation browser was observed NOT giving unlayered author rules
+   * priority over layered ones for this property (background stayed
+   * transparent under a pin even though the unlayered, higher-specificity
+   * override rule matched) -- keeping both declarations unlayered and in
+   * this file sidesteps the discrepancy entirely.
+   */
+  background: transparent;
+  border: 1px solid transparent;
+}
+.kx-lab-2 { animation-delay: -5s; }
+.kx-lab-3 { animation-delay: -10s; }
+
+/*
+ * Pinned state. `animation-play-state: paused` lands on every layer/label
+ * (verifiable via computed style) rather than removing the animation
+ * outright, per the Task 10 spec. Because a running/paused CSS animation's
+ * value still wins over a plain author declaration, forcing the pinned
+ * layer visible (and the others hidden) needs `!important` -- the one
+ * origin that outranks animations in the cascade. Labels instead fully
+ * stop (`animation: none`) since their pinned/unpinned colors must render
+ * deterministically rather than freezing at whatever frame the 15s cycle
+ * happened to be paused on.
+ *
+ * The pinned label's `background`/`border-color` also carry `!important`.
+ * Without it they lost, in this project's automation browser, to Tailwind
+ * preflight's `button { background-color: transparent }` reset even though
+ * this rule is unlayered, higher-specificity, and later in source than
+ * that (layered) reset -- which should already be a win on every count.
+ * `!important` sidesteps that discrepancy rather than depending on it.
+ */
+.kx-pin-1 .kx-cyc, .kx-pin-2 .kx-cyc, .kx-pin-3 .kx-cyc {
+  animation-play-state: paused;
+  opacity: 0 !important;
+}
+.kx-pin-1 .kx-cyc:nth-child(1),
+.kx-pin-2 .kx-cyc:nth-child(2),
+.kx-pin-3 .kx-cyc:nth-child(3) {
+  opacity: 1 !important;
+}
+.kx-pin-1 .kx-lab, .kx-pin-2 .kx-lab, .kx-pin-3 .kx-lab {
+  animation: none;
+  color: #5A6478;
+}
+.kx-pin-1 .kx-lab:nth-child(1),
+.kx-pin-2 .kx-lab:nth-child(2),
+.kx-pin-3 .kx-lab:nth-child(3) {
+  color: #EEF2F8;
+  background: rgba(255, 255, 255, .08) !important;
+  border-color: rgba(255, 255, 255, .22) !important;
+}
+
+/*
+ * Frame + glow (design-reference/README.md "Frame"/"Glow" bullets under
+ * section 5). The base drop shadow (`0 26px 70px rgba(0,0,0,.55)`) and the
+ * glow's `inset` are given explicitly by the README (used verbatim below);
+ * the cyan rim-glow ring and the glow's three gradient stops + blur amount
+ * are only described qualitatively there ("plus a cyan rim glow" / "heavy
+ * blur"), so those exact values are recovered from
+ * `KINECT Marketing Site.dc.html` line 263-264 instead -- blue-dominant
+ * over orange as specified: a large cyan pool right, a warm coral
+ * secondary left, and a wide blue base wash, at blur(44px).
+ */
+.kx-shot-frame {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, .55),
+    0 0 0 1px rgba(255, 255, 255, .04),
+    0 0 80px rgba(53, 214, 232, .26);
+}
+.kx-shot-glow {
+  position: absolute;
+  inset: -30px -18px -12px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 320px at 78% 42%, rgba(53, 214, 232, .72), transparent 66%),
+    radial-gradient(600px 300px at 22% 56%, rgba(236, 82, 66, .58), transparent 66%),
+    radial-gradient(760px 380px at 50% 50%, rgba(41, 169, 224, .34), transparent 72%);
+  filter: blur(44px);
+  animation: kx-shotglow 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kx-cyc, .kx-lab, .kx-shot-glow { animation: none !important; }
+  .kx-cyc-2, .kx-cyc-3 { opacity: 0; }
+}

@@ -5,6 +5,7 @@ import SectionHead from "@/components/SectionHead";
 import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import { Faq } from "@/components/Faq";
+import ShowcaseCycler from "@/components/ShowcaseCycler";
 import { home } from "@/content/home";
 
 // NOTE: this page remains placeholder content for verifying Task 6's shared
@@ -68,6 +69,20 @@ export default function Home() {
             </div>
           </section>
         </main>
+      </section>
+
+      {/*
+        Task 10 verification section: placeholder-until-Task-12. Mounts
+        ShowcaseCycler on a dark canvas (the frame/glow treatment assumes
+        the dark section background it lives in per the design reference)
+        so the cross-fade, pinning, and glow are eyeballable ahead of the
+        real home page layout landing in Task 12.
+      */}
+      <section className="bg-dark-canvas px-6 py-24">
+        <Eyebrow context="dark">Showcase cycler (Task 10 placeholder)</Eyebrow>
+        <div className="mt-10">
+          <ShowcaseCycler labels={home.showcase.labels} />
+        </div>
       </section>
     </>
   );
