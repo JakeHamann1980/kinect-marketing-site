@@ -4,6 +4,8 @@ import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
+import { Faq } from "@/components/Faq";
+import { home } from "@/content/home";
 
 // NOTE: this page remains placeholder content for verifying Task 6's shared
 // primitives (Lockup, Button, Eyebrow, SectionHead), Task 7's Nav, and
@@ -51,6 +53,19 @@ export default function Home() {
             <Button variant="accent" href="/">
               Accent button
             </Button>
+          </section>
+
+          {/*
+            Task 9 verification block: placeholder-until-Task-12. Renders
+            the real home FAQ copy through the new Faq accordion so it's
+            eyeballable against the design reference; will be folded into
+            the real home page layout in Task 12.
+          */}
+          <section className="w-full max-w-3xl rounded-2xl border border-border bg-surface px-8 py-10 text-left text-ink">
+            <Eyebrow context="light">FAQ accordion (Task 9 placeholder)</Eyebrow>
+            <div className="mt-4">
+              <Faq items={home.faq} />
+            </div>
           </section>
         </main>
       </section>
