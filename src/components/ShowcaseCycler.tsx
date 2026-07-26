@@ -23,7 +23,11 @@ import { cn } from "@/lib/cn";
  * identically regardless of its native width.
  */
 const SCREENSHOTS: Record<Persona, { src: string; alt: string }> = {
-  agency: { src: "/screenshots/portal-board.png", alt: "KINECT agency portal dashboard" },
+  /* user-directed 2026-07-25: agency slot shows the analytics dashboard so
+     all three rotating shots are the same view type (dashboards); the
+     agency PAGE keeps the task-board shot. analytics-full is 2918x1996 vs
+     the stage's 2962/1996 ratio -- 1.5% narrower, absorbed by fill+cover. */
+  agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
   coach: { src: "/screenshots/coach-hq.png", alt: "KINECT coach program dashboard" },
   consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
 };

@@ -186,9 +186,12 @@ export default async function Home() {
             <WaitlistCta variant="primary" size="lg" trackLocation="hero">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
             </WaitlistCta>
-            <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
+            {/* user-directed 2026-07-25: "View demo" also opens the waitlist
+                (no demo asset exists yet; the dialog is the one conversion
+                path pre-launch). */}
+            <WaitlistCta variant="ghost" size="lg" trackLocation="hero">
               {home.hero.secondaryCta}
-            </TrackedLink>
+            </WaitlistCta>
           </div>
         </div>
       </section>
@@ -370,9 +373,11 @@ export default async function Home() {
             <WaitlistCta variant="primary" size="xl" trackLocation="closing">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
             </WaitlistCta>
-            <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
+            {/* user-directed 2026-07-25: "View demo" opens the waitlist too
+                (same rationale as the hero pair). */}
+            <WaitlistCta variant="ghost" size="xl" trackLocation="closing">
               {home.hero.secondaryCta}
-            </TrackedLink>
+            </WaitlistCta>
           </div>
         </div>
       </section>
