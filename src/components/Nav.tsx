@@ -136,16 +136,22 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
     <>
       {/* Fix (final review, M7): skip link, first focusable element on every
           page Nav mounts on (home, all three persona pages, legal pages).
-          `sr-only` hides it visually until it receives keyboard focus
-          (`focus:not-sr-only`), at which point it's pinned to the top-left
-          corner in the site's dark-surface/on-dark token pair so it's
-          legible against whatever section happens to be behind it. Targets
+          `sr-only` hides it visually until it receives KEYBOARD-INTENT focus
+          (`focus-visible:not-sr-only`, not plain `focus:` -- the App Router
+          programmatically focuses the top of the page after client-side
+          navigation, which landed on this first-focusable link and made it
+          flash visible after e.g. persona page -> home; user-reported
+          2026-07-25. `:focus-visible` stays false for router/mouse-derived
+          focus but true for Tab, which is the only case that should reveal
+          it). When revealed it's pinned to the top-left corner in the site's
+          dark-surface/on-dark token pair so it's legible against whatever
+          section happens to be behind it. Targets
           `#main`, the `<main id="main">` landmark each page template now
           wraps its body content in (see (site)/page.tsx, PersonaPage.tsx,
           legal/[slug]/page.tsx). */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[8px] focus:bg-dark-bg focus:px-4 focus:py-2 focus:font-sans focus:text-[15px] focus:text-on-dark focus:outline focus:outline-2 focus:outline-offset-2"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-[8px] focus-visible:bg-dark-bg focus-visible:px-4 focus-visible:py-2 focus-visible:font-sans focus-visible:text-[15px] focus-visible:text-on-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         style={{ outlineColor: "var(--accent, #35D6E8)" }}
       >
         Skip to content
