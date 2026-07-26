@@ -60,8 +60,15 @@ describe("websiteLd", () => {
 });
 
 describe("softwareApplicationLd", () => {
+  // Fix (final review, I2): softwareApplicationLd now takes `tiers` as a
+  // required parameter instead of importing the local `settings` module
+  // itself (see jsonld.ts's own doc comment: the real single source of
+  // truth is whatever `fetchSettings()` resolves to, which the `(site)`
+  // layout fetches and passes in -- the local `settings.pricing.tiers` used
+  // here is this test's own stand-in for "whatever tiers the caller
+  // passed", same as the real caller's fetched-or-fallback value would be).
   it("is a schema.org SoftwareApplication referencing the org @id", () => {
-    const app = softwareApplicationLd();
+    const app = softwareApplicationLd(settings.pricing.tiers);
     expect(app["@context"]).toBe("https://schema.org");
     expect(app["@type"]).toBe("SoftwareApplication");
     expect(app.name).toBe("KINECT");
@@ -71,27 +78,28 @@ describe("softwareApplicationLd", () => {
     expect(app.publisher).toEqual({ "@id": ORG_ID });
   });
 
-  it("derives AggregateOffer numbers from settings.pricing.tiers, not hardcoded literals", () => {
+  it("derives AggregateOffer numbers from the passed-in tiers, not hardcoded literals", () => {
     const tiers = settings.pricing.tiers;
     const expectedLow = Math.min(...tiers.map((t) => t.price));
     const expectedHigh = Math.max(...tiers.map((t) => t.price));
 
-    const app = softwareApplicationLd();
+    const app = softwareApplicationLd(tiers);
     const offers = app.offers;
 
     expect(offers["@type"]).toBe("AggregateOffer");
     expect(offers.priceCurrency).toBe("USD");
     // Mutate-resistant: compared against derived settings values, so this
     // test still passes (correctly) if the tier prices ever change, and
-    // still fails (correctly) if the builder stops deriving from settings.
+    // still fails (correctly) if the builder stops deriving from its
+    // `tiers` argument.
     expect(offers.lowPrice).toBe(String(expectedLow));
     expect(offers.highPrice).toBe(String(expectedHigh));
     expect(offers.offerCount).toBe(String(tiers.length));
   });
 
-  it("lists one Offer per settings tier, with matching name/price/currency", () => {
+  it("lists one Offer per passed-in tier, with matching name/price/currency", () => {
     const tiers = settings.pricing.tiers;
-    const app = softwareApplicationLd();
+    const app = softwareApplicationLd(tiers);
     const offerList = app.offers.offers;
 
     expect(offerList).toHaveLength(tiers.length);
@@ -105,13 +113,17 @@ describe("softwareApplicationLd", () => {
     });
   });
 
-  it("still matches the spec's launch numbers today (149/799/3) via settings, not a literal in the builder", () => {
+  it("still matches the spec's launch numbers today (149/799/3) via settings.pricing.tiers", () => {
     // Belt-and-suspenders: spec §8a promotes exactly these numbers
-    // (lowPrice 149, highPrice 799, offerCount 3). This assertion is
-    // expected to track settings.ts, which is the single source of truth --
-    // if settings.ts's tiers ever change, this test (not just the
+    // (lowPrice 149, highPrice 799, offerCount 3), which is also the
+    // launch-pricing invariant scripts/validate-jsonld.ts asserts against
+    // the live rendered HTML (see that script's own comment on why it keeps
+    // these numbers hardcoded rather than importing settings.ts: it
+    // validates the actually-shipped HTML independent of any one content
+    // source, Sanity or local). This assertion is expected to track
+    // settings.ts's tiers -- if they ever change, this test (not just the
     // settings-derived one above) should be updated deliberately.
-    const app = softwareApplicationLd();
+    const app = softwareApplicationLd(settings.pricing.tiers);
     expect(app.offers.lowPrice).toBe("149");
     expect(app.offers.highPrice).toBe("799");
     expect(app.offers.offerCount).toBe("3");
@@ -149,7 +161,7 @@ describe("JSON serialization", () => {
   const builders: { name: string; build: () => object }[] = [
     { name: "organizationLd", build: organizationLd },
     { name: "websiteLd", build: websiteLd },
-    { name: "softwareApplicationLd", build: softwareApplicationLd },
+    { name: "softwareApplicationLd", build: () => softwareApplicationLd(settings.pricing.tiers) },
     { name: "faqPageLd", build: () => faqPageLd([{ question: "Q", answer: "A" }]) },
   ];
 

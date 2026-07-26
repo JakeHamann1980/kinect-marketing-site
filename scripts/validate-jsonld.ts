@@ -253,6 +253,14 @@ async function checkPage(target: PageTarget, failures: string[]): Promise<void> 
     if (!offers || offers["@type"] !== "AggregateOffer") {
       failures.push(`[${target.label}] SoftwareApplication.offers is not an AggregateOffer`);
     } else {
+      // Fix (final review, I2): deliberately hardcoded, not imported from
+      // settings.ts or jsonld.ts -- this script validates the actually
+      // -shipped HTML (whatever content source produced it, Sanity or the
+      // local fallback) against the spec's launch-pricing invariant (§8a:
+      // lowPrice 149 / highPrice 799 / offerCount 3), independent of
+      // whichever module happens to be the runtime source of truth at fetch
+      // time. If these numbers ever change deliberately, update them here
+      // too, same as jsonld.test.ts's own belt-and-suspenders assertion.
       const expected = { lowPrice: "149", highPrice: "799", offerCount: "3", priceCurrency: "USD" };
       for (const [key, value] of Object.entries(expected)) {
         if (offers[key] !== value) {

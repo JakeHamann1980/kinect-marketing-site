@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { personaFromHost, PERSONA_IDS } from "@/lib/personas";
+import { personaFromHost, PERSONAS, PERSONA_IDS, type Persona } from "@/lib/personas";
 
 const PROD_ROOT = "kinectnow.com";
 
@@ -20,6 +20,41 @@ export function proxy(req: NextRequest) {
       url.pathname = `/${persona}`;
       return NextResponse.rewrite(url);
     }
+
+    // Fix (final review, I5): a persona subdomain host has no real content
+    // under another (or its own) persona segment -- persona roots only
+    // exist, at "/". Previously a path like agency.kinectnow.com/coach fell
+    // straight through to "shared routes serve as-is" below and 404'd
+    // (there is no `/coach` route mounted under the `/agency`-hosted app),
+    // and agency.kinectnow.com/agency similarly served nothing useful.
+    // Redirect both cases to the correct persona's own canonical subdomain
+    // root: a *different* persona segment sends the visitor to that
+    // persona's real page; the *same* persona segment canonicalizes to this
+    // host's own root (e.g. agency.kinectnow.com/agency ->
+    // https://agency.kinectnow.com/), matching how personaHref's relative
+    // `/${persona}` paths resolve when clicked from a different persona's
+    // subdomain (see src/lib/personas.ts's own doc comment on personaHref).
+    //
+    // Mirrors the apex branch's own narrowing below exactly (same
+    // `PERSONA_IDS.includes(seg)` check, same "only the exact persona root,
+    // never a deeper path" `rest === "/"` guard) so this does NOT touch:
+    //   - shared routes (legal, api, studio, ph -- excluded from this
+    //     middleware entirely by `config.matcher` below, so they never even
+    //     reach this function), and
+    //   - this persona's own deeper paths, most notably its colocated
+    //     `opengraph-image` route (e.g. `/agency/opengraph-image-<hash>` on
+    //     agency.kinectnow.com) -- `rest` there is the hashed suffix, not
+    //     "/", so it falls through to `NextResponse.next()` and serves in
+    //     place exactly as before.
+    const personaSeg = pathname.split("/")[1];
+    if ((PERSONA_IDS as readonly string[]).includes(personaSeg)) {
+      const personaRest = pathname.slice(personaSeg.length + 1) || "/";
+      if (personaRest === "/") {
+        const targetHostname = PERSONAS[personaSeg as Persona].hostname;
+        return NextResponse.redirect(`https://${targetHostname}/`, 308);
+      }
+    }
+
     return NextResponse.next(); // shared routes (legal, api) serve as-is
   }
 

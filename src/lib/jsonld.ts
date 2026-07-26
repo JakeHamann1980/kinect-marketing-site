@@ -1,5 +1,4 @@
-import { settings } from "@/content/settings";
-import type { Faq } from "@/content/types";
+import type { Faq, Tier } from "@/content/types";
 import { PERSONA_IDS } from "@/lib/personas";
 import { SITE_URL, personaUrl } from "@/lib/seo";
 
@@ -83,13 +82,24 @@ export function websiteLd() {
  * cleanest rich-snippet opportunity available" -- this is the highest
  * -value block in the file.
  *
- * Tier names/prices are derived from `settings.pricing.tiers` (the single
- * source of truth the pricing section itself renders from) rather than
- * duplicated as literals here, so a future pricing change updates both the
- * visible pricing table and this structured data from one edit.
+ * Fix (final review, I2): `tiers` is now a required parameter rather than an
+ * import of the local `settings` module. Every real caller (the `(site)`
+ * layout) fetches `settings` via `fetchSettings()` (Sanity-or-local
+ * -fallback -- see src/lib/sanity.ts), so the single source of truth for
+ * these numbers is whatever that fetch resolves to -- NOT the local
+ * `src/content/settings.ts` module this file used to import directly. That
+ * local module is only the seed source (`scripts/seed-sanity.ts`) and the
+ * offline fallback for when Sanity is unreachable; before this fix, editing
+ * a tier's price in the Studio silently left this JSON-LD block showing the
+ * stale, un-fetched local numbers while the visible pricing table (which
+ * already rendered from the fetched settings) showed the edited ones -- a
+ * drift the "single source of truth" comment here used to claim didn't
+ * exist. Passing `tiers` explicitly makes this a pure function again (no
+ * import-time coupling to any one content source) and makes the drift
+ * impossible: whatever tiers the caller fetched are exactly what this
+ * builder derives lowPrice/highPrice/offerCount from.
  */
-export function softwareApplicationLd() {
-  const tiers = settings.pricing.tiers;
+export function softwareApplicationLd(tiers: Tier[]) {
   const prices = tiers.map((tier) => tier.price);
   const lowPrice = Math.min(...prices);
   const highPrice = Math.max(...prices);

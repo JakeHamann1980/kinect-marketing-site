@@ -1,5 +1,5 @@
 import TrackedLink from "@/components/TrackedLink";
-import { PERSONAS, type Persona } from "@/lib/personas";
+import { PERSONAS, personaHref, type Persona } from "@/lib/personas";
 
 interface PersonaCardProps {
   persona: Persona;
@@ -7,16 +7,6 @@ interface PersonaCardProps {
   body: string;
   features?: string[];
   cta: string;
-}
-
-/**
- * TODO(Task 19): production should route to the persona's own subdomain
- * (`https://${PERSONAS[persona].hostname}/`). Mirrors the same placeholder
- * convention as `personaHref` in src/components/Nav.tsx -- link within the
- * current app until environment-aware URLs are wired up.
- */
-function personaHref(persona: Persona): string {
-  return `/${persona}`;
 }
 
 /**
@@ -75,9 +65,10 @@ export default function PersonaCard({
     // parent grid), but that only sizes THIS element's box to the row's
     // tallest cell -- h-full makes the box explicitly fill that stretched
     // height rather than relying on stretch alone, so the mt-auto CTA below
-    // has real free space to consume. Jake flagged 2026-07-25 that the
-    // three "Pick your lane" cards were rendering unequal heights with the
-    // CTA immediately trailing the shortest card's content.
+    // has real free space to consume. user-directed 2026-07-25: Jake
+    // flagged that the three "Pick your lane" cards were rendering unequal
+    // heights with the CTA immediately trailing the shortest card's
+    // content.
     <div className="flex h-full flex-col rounded-[18px] border border-border bg-surface p-[32px_30px] shadow-[0_1px_3px_rgba(12,18,32,.05)]">
       <div
         className="mb-[22px] flex h-[52px] w-[52px] flex-none items-center justify-center rounded-[14px]"
@@ -130,7 +121,4 @@ export default function PersonaCard({
   );
 }
 
-// Re-export so callers that only need the link convention (e.g. a future
-// persona index) don't have to duplicate the TODO(Task 19) resolution.
-export { personaHref };
 export type { PersonaCardProps };

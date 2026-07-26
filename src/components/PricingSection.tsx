@@ -81,7 +81,12 @@ export default function PricingSection({
   const dark = tone === "dark";
 
   return (
-    <section className={cn("kx-sec relative overflow-hidden", dark ? "kx-grid" : "bg-light-canvas")}>
+    // id="pricing": Fix (final review, I1) -- the nav's "Pricing" link
+    // (settings.ts) now points at the in-page `#pricing` anchor. Every page
+    // that renders Nav also mounts this section (home via page.tsx, all
+    // three persona pages via PersonaPage.tsx), so a bare same-page hash
+    // resolves correctly regardless of which page it's clicked from.
+    <section id="pricing" className={cn("kx-sec relative overflow-hidden", dark ? "kx-grid" : "bg-light-canvas")}>
       {dark ? (
         <div
           aria-hidden="true"

@@ -154,6 +154,10 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
       <JsonLd data={faqPageLd(content.faq)} />
       <Nav badge={content.navBadge} />
 
+      {/* Fix (final review, M7): `<main id="main">` -- see the matching
+          comment in (site)/page.tsx for why this landmark excludes both
+          Nav and Footer. */}
+      <main id="main">
       {/* 1 - HERO (dark) */}
       <section className="kx-grid kx-hero-sec relative overflow-hidden">
         <HeroBackdrop />
@@ -203,8 +207,8 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
           prototype's dark quiet-card version (originally recovered from
           KINECT Marketing Site.dc.html's PAIN instance, ~line 391-399:
           bg rgba(255,255,255,.03), border rgba(255,255,255,.09), a coral
-          "✕" mark). Jake asked for this section to flip to light so the
-          page doesn't stack five dark sections in a row right after the
+          "✕" mark). user-directed 2026-07-25: Jake asked for this section
+          to flip to light so the page doesn't stack five dark sections in a row right after the
           hero (pain -> capabilities+screenshot -> workflow -> steps ->
           [pricing, itself staying light on persona pages -- see section 7
           below]); a light section directly under the hero restores some
@@ -378,6 +382,7 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </div>

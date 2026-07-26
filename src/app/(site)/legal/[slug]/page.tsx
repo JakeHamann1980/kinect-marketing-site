@@ -81,6 +81,10 @@ export default async function LegalPageRoute({
       {/* No dark hero on prose pages: nav wears its solid treatment always. */}
       <Nav forceSolid />
 
+      {/* Fix (final review, M7): `<main id="main">` -- see the matching
+          comment in (site)/page.tsx for why this landmark excludes both
+          Nav and Footer. */}
+      <main id="main">
       <section className="kx-sec">
         <div className="mx-auto max-w-[68ch]">
           <SectionHead context="light" as="h1">
@@ -111,6 +115,7 @@ export default async function LegalPageRoute({
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </div>

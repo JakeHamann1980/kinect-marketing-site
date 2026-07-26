@@ -125,7 +125,7 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
 
           <div className="flex flex-col gap-[18px]">
             {/*
-              User-directed 2026-07-25: the prototype rendered this card
+              user-directed 2026-07-25: the prototype rendered this card
               dark (#0C1220, dc.html line 311); Jake asked for the same
               light warm-to-cool gradient wash the product UI uses on its
               plan cards (sampled from the "Practice plan" card in

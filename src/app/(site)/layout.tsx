@@ -1,8 +1,10 @@
+import { Analytics } from "@vercel/analytics/next";
 import PostHogProvider from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
 import WaitlistDialog from "@/components/WaitlistDialog";
 import JsonLd from "@/components/JsonLd";
 import { organizationLd, websiteLd, softwareApplicationLd } from "@/lib/jsonld";
+import { fetchSettings } from "@/lib/sanity";
 
 /**
  * Task 17 (Sanity Schemas + Studio): marketing-site chrome moved here from
@@ -20,7 +22,14 @@ import { organizationLd, websiteLd, softwareApplicationLd } from "@/lib/jsonld";
  * may define those) and forwards its own children through unchanged aside
  * from the JsonLd scripts and the two fixed-position overlays.
  */
-export default function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function SiteLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Fix (final review, I2): fetched (Sanity-or-local-fallback) settings, not
+  // the local `src/content/settings.ts` module -- see softwareApplicationLd's
+  // own doc comment in src/lib/jsonld.ts for why this fetch (the same one
+  // PricingSection itself renders from) is the actual single source of
+  // truth for these numbers.
+  const settings = await fetchSettings();
+
   return (
     <>
       {/* Task 20: Organization + WebSite + SoftwareApplication JSON-LD
@@ -33,7 +42,7 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
           no FAQ content. */}
       <JsonLd data={organizationLd()} />
       <JsonLd data={websiteLd()} />
-      <JsonLd data={softwareApplicationLd()} />
+      <JsonLd data={softwareApplicationLd(settings.pricing.tiers)} />
 
       {/* Task 15: PostHogProvider wraps every marketing page so it can apply
           already-recorded consent (and react to live changes) regardless of
@@ -46,6 +55,13 @@ export default function SiteLayout({ children }: Readonly<{ children: React.Reac
       <PostHogProvider>{children}</PostHogProvider>
       <ConsentBanner />
       <WaitlistDialog />
+      {/* Fix (final review, I4): Vercel Analytics is cookieless and does not
+          set any persistent identifier (see src/content/legal/cookies.ts's
+          "Cookieless performance analytics" section, which already
+          discloses it) -- it runs unconditionally, independent of the
+          cookie-consent gate that PostHogProvider/ConsentBanner enforce for
+          PostHog above. */}
+      <Analytics />
     </>
   );
 }

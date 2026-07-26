@@ -7,19 +7,9 @@ import WaitlistCta from "@/components/WaitlistCta";
 import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
 import { home } from "@/content/home";
-import { PERSONAS, type Persona } from "@/lib/personas";
+import { PERSONAS, personaHref, type Persona } from "@/lib/personas";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
-
-/**
- * TODO(Task 19): production should route each Solutions/persona row to that
- * persona's own subdomain (`https://${PERSONAS[persona].hostname}/`). Until
- * environment-aware URLs are wired up (dev vs. prod host resolution), link
- * within the current app instead so the rows are functional now.
- */
-function personaHref(persona: Persona): string {
-  return `/${persona}`;
-}
 
 /**
  * The persona accent dot is the only markup genuinely identical between the
@@ -144,6 +134,22 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
 
   return (
     <>
+      {/* Fix (final review, M7): skip link, first focusable element on every
+          page Nav mounts on (home, all three persona pages, legal pages).
+          `sr-only` hides it visually until it receives keyboard focus
+          (`focus:not-sr-only`), at which point it's pinned to the top-left
+          corner in the site's dark-surface/on-dark token pair so it's
+          legible against whatever section happens to be behind it. Targets
+          `#main`, the `<main id="main">` landmark each page template now
+          wraps its body content in (see (site)/page.tsx, PersonaPage.tsx,
+          legal/[slug]/page.tsx). */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-[8px] focus:bg-dark-bg focus:px-4 focus:py-2 focus:font-sans focus:text-[15px] focus:text-on-dark focus:outline focus:outline-2 focus:outline-offset-2"
+        style={{ outlineColor: "var(--accent, #35D6E8)" }}
+      >
+        Skip to content
+      </a>
       <span ref={sentinelRef} style={{ display: "block", height: 1 }} />
       {/* height: 0 removes the wrapper from flow height so the hero canvas
           extends up behind the transparent nav (the prototype achieves the

@@ -146,6 +146,12 @@ export default async function Home() {
       <JsonLd data={faqPageLd(home.faq)} />
       <Nav />
 
+      {/* Fix (final review, M7): `<main id="main">` is the skip link's
+          target (Nav.tsx) and the page's single main-landmark region,
+          wrapping every section between Nav and Footer -- neither of which
+          belongs inside the landmark (Nav is site chrome; Footer is its own
+          `<footer>` landmark). */}
+      <main id="main">
       {/* 1 - HERO (dark). Parent carries `.kx-grid` per HeroBackdrop's own
           JSDoc contract; content is `relative z-10` so it paints above the
           orbs/traces (z-0) HeroBackdrop renders. Deliberately no product
@@ -370,6 +376,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </>

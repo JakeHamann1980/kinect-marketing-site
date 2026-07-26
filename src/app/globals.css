@@ -6,7 +6,8 @@
  * pretty to body copy... Widows and orphans were deliberately minimized").
  * Task 12/13 had only applied this per-component (`.kx-section-head`,
  * `.kx-hero-head`, `.kx-hero-sub`, etc.) rather than sitewide as the README
- * asks; Jake flagged this gap 2026-07-25 reviewing the live home page.
+ * asks; user-directed 2026-07-25: Jake flagged this gap reviewing the live
+ * home page.
  * `@layer base` keeps these as the lowest-priority layer Tailwind defines,
  * so every existing unlayered class in this file (the `.kx-*` rules below)
  * and every Tailwind utility (`@layer utilities`, e.g. a future

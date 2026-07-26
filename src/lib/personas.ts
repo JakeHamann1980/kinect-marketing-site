@@ -41,3 +41,23 @@ export function personaFromHost(host: string): Persona | null {
     ? (sub as Persona)
     : null;
 }
+
+/**
+ * Fix (final review, I5): single definition of the "link to a persona's own
+ * page" convention, deduped from what used to be two near-identical local
+ * `personaHref` functions (Nav.tsx and PersonaCard.tsx each had their own
+ * copy with a TODO(Task 19) about needing environment-aware absolute URLs
+ * in production). Both TODOs are resolved by this fix, not by making the
+ * URLs absolute: a plain relative `/${persona}` path is correct EVERYWHERE
+ * this app renders -- home, and every persona subdomain -- because
+ * src/proxy.ts's persona-host branch now canonicalizes any cross-persona (or
+ * same-persona) segment hit on a persona subdomain host with a 308 redirect
+ * to that other persona's real subdomain root (e.g. clicking a "For
+ * Coaches" row while on agency.kinectnow.com navigates the browser to
+ * `/coach`, and the proxy immediately redirects that to
+ * `https://coach.kinectnow.com/`). No client-side host detection or
+ * environment-aware URL construction is needed for that to work correctly.
+ */
+export function personaHref(persona: Persona): string {
+  return `/${persona}`;
+}

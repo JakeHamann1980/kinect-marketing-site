@@ -19,8 +19,18 @@ import type { SiteSettings } from "./types";
  */
 export const settings: SiteSettings = {
   navLinks: [
+    // Fix (final review, I1): "Product" and "Docs" have no real destination
+    // page anywhere in this app yet, so they stay "#" (see docs/LAUNCH.md's
+    // recounted "#" link inventory). "Pricing" now points at the in-page
+    // `#pricing` anchor -- every page that renders this nav (home and all
+    // three persona pages) also mounts PricingSection, which carries
+    // `id="pricing"` (see PricingSection.tsx), so a bare same-page hash
+    // works correctly from anywhere: no `/#pricing`-style absolute path is
+    // needed (that would incorrectly force a persona-page visitor back to
+    // the home page's pricing section instead of scrolling to their own
+    // page's).
     { label: "Product", href: "#" },
-    { label: "Pricing", href: "#" },
+    { label: "Pricing", href: "#pricing" },
     { label: "Docs", href: "#" },
   ],
 
@@ -81,9 +91,13 @@ export const settings: SiteSettings = {
       {
         heading: "Solutions",
         links: [
-          { label: "For agencies", href: "#" },
-          { label: "For coaches", href: "#" },
-          { label: "For consultants", href: "#" },
+          // Fix (final review, I1): these three route to the matching
+          // persona's own page (dedupe'd `personaHref`-equivalent relative
+          // paths -- see src/lib/personas.ts); "Compare plans" has no
+          // dedicated destination anywhere in the app, so it stays "#".
+          { label: "For agencies", href: "/agency" },
+          { label: "For coaches", href: "/coach" },
+          { label: "For consultants", href: "/consultant" },
           { label: "Compare plans", href: "#" },
         ],
       },
@@ -109,18 +123,28 @@ export const settings: SiteSettings = {
       {
         heading: "Company",
         links: [
+          // Fix (final review, I1): "Security" now routes to the real
+          // /legal/security page (same destination as the "Security" entry
+          // in legalLinks below). About/Contact/Status have no dedicated
+          // pages, so they stay "#".
           { label: "About", href: "#" },
-          { label: "Security", href: "#" },
+          { label: "Security", href: "/legal/security" },
           { label: "Contact", href: "#" },
           { label: "Status", href: "#" },
         ],
       },
     ],
+    // Fix (final review, I6): real hrefs sourced directly from content, not
+    // a separate `LEGAL_HREFS` label-keyed map in Footer.tsx (deleted --
+    // Footer now renders `link.href` directly). DPA and Accessibility have
+    // no route yet, so they stay "#" with a TODO (post-launch backlog, see
+    // docs/LAUNCH.md §7).
     legalLinks: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms & Conditions", href: "#" },
-      { label: "Security", href: "#" },
-      { label: "Cookie Policy", href: "#" },
+      { label: "Privacy Policy", href: "/legal/privacy" },
+      { label: "Terms & Conditions", href: "/legal/terms" },
+      { label: "Security", href: "/legal/security" },
+      { label: "Cookie Policy", href: "/legal/cookies" },
+      // TODO(Task 14 backlog): DPA and Accessibility pages don't have a route yet.
       { label: "DPA", href: "#" },
       { label: "Accessibility", href: "#" },
     ],

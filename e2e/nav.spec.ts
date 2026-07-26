@@ -52,8 +52,27 @@ test.describe("Nav: sticky transparent -> stuck transition", () => {
     await page.goto("/");
     const nav = page.locator("#kx-nav");
 
+    // Fix (final review, M1): wait for hydration before scrolling. This test
+    // was flaky because `window.scrollTo` could fire before React had
+    // attached the IntersectionObserver useStuck relies on (goto's
+    // "load"/networkidle-ish default wait settles on the initial HTML/CSS/JS
+    // response, not on React having finished hydrating and running effects)
+    // -- a scroll that lands before the observer exists never gets seen, so
+    // `stuck` never flips and the very next assertion below flakes. Waiting
+    // for a real interactive element (the Solutions button, which only
+    // renders meaningfully once its client-side handlers are attached) is a
+    // cheap, real signal that hydration has completed.
+    await expect(page.getByRole("button", { name: /solutions/i })).toBeVisible();
+
     await page.evaluate(() => window.scrollTo(0, 400));
-    await expect(nav).toHaveClass(/kx-stuck/);
+    // Confirm the scroll itself actually landed before asserting on its
+    // effect -- same flakiness class as above, just for the scroll call
+    // rather than hydration.
+    await page.waitForFunction(() => window.scrollY > 0);
+
+    await expect(async () => {
+      await expect(nav).toHaveClass(/kx-stuck/);
+    }).toPass({ timeout: 2000 });
     // #kx-nav's background/border-color carry a .25s CSS transition; let it
     // settle before reading the computed color, or this reads a mid-fade
     // value instead of the final one.

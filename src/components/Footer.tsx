@@ -66,28 +66,6 @@ function SocialIcon({ label, path }: { label: string; path: React.ReactNode }) {
 }
 
 /**
- * Legal link hrefs. Per the Task 11 brief, Privacy Policy/Terms/Cookie
- * Policy already have their Task 14 destinations known now; Security joins
- * them as part of Task 14 itself (an approved-spec addition to
- * `settings.footer.legalLinks` -- the design-reference README's own footer
- * description lists "Privacy Policy, Terms and Conditions, Security, and
- * Cookie Preferences", ~line 94). DPA and Accessibility don't have a route
- * yet, so those two stay "#" with a TODO (post-launch backlog). Keyed by
- * `settings.footer.legalLinks[].label` rather than array index so a
- * reorder of that content array can't silently mismatch a link with the
- * wrong destination.
- */
-const LEGAL_HREFS: Record<string, string> = {
-  "Privacy Policy": "/legal/privacy",
-  "Terms & Conditions": "/legal/terms",
-  Security: "/legal/security",
-  "Cookie Policy": "/legal/cookies",
-  // TODO(Task 14 backlog): DPA and Accessibility pages don't have a route yet.
-  DPA: "#",
-  Accessibility: "#",
-};
-
-/**
  * Site footer (design-reference/README.md "Footer"). Dark, brand block
  * (lockup + one-line positioning + four social squares) at left, four link
  * columns pushed right; a bottom bar with copyright and legal links.
@@ -165,10 +143,17 @@ export default async function Footer() {
         <div className="kx-footer-bar flex flex-wrap items-center gap-[26px] border-t border-[rgba(255,255,255,.07)] pt-[26px]">
           <div className="text-[13px] text-on-dark-5">{copyright}</div>
           <div className="kx-footer-legal ml-auto flex flex-wrap items-center gap-[22px]">
+            {/* Fix (final review, I6): renders `link.href` straight from
+                content -- the label-keyed `LEGAL_HREFS` map that used to
+                live in this file is gone. `settings.footer.legalLinks` now
+                carries real hrefs directly (see src/content/settings.ts and
+                the matching Sanity `legalLink` schema field, which already
+                required `href`), so this component no longer needs to
+                duplicate that mapping. */}
             {legalLinks.map((link) => (
               <Link
                 key={link.label}
-                href={LEGAL_HREFS[link.label] ?? "#"}
+                href={link.href}
                 className="text-[13px] text-[#707B8E]"
               >
                 {link.label}

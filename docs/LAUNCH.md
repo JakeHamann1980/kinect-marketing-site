@@ -8,7 +8,7 @@ Every item lists an owner: **[Jake]** founder-only (accounts, money, legal), **[
 npm run build:check && npm run test:e2e
 ```
 
-`build:check` = production build + typecheck + 66 unit tests + structured-data validation against a live server. `test:e2e` = 37 Playwright tests (nav, interactions, waitlist, consent, routing, responsive) against a production build.
+`build:check` = production build + typecheck + unit tests + structured-data validation against a live server. `test:e2e` = 39+ Playwright tests (nav, interactions, waitlist, consent, routing, responsive) against a production build.
 
 ## 1. Infrastructure
 
@@ -21,6 +21,7 @@ npm run build:check && npm run test:e2e
 - [ ] **[both]** Supabase: apply `supabase/migrations/0001_waitlist.sql` to the chosen project (RLS on, no public policies — writes go through the server action only).
 - [ ] **[Jake]** Resend: verify `kinectnow.com` as sending domain (SPF + DKIM records); confirm `hello@kinectnow.com` works as from-address.
 - [ ] **[dev]** End-to-end waitlist test with real creds: submit → row appears in `waitlist_signups` with persona/UTM → confirmation email arrives → duplicate submit returns the "already on the list" state.
+- [ ] **[dev]** BLOCKING before Resend goes live: add per-IP rate limiting to the waitlist server action (`src/app/actions/waitlist.ts`). Today the only anti-abuse checks are a honeypot field and a client-controlled render-to-submit timing gate (`src/lib/waitlist-validation.ts`) -- both are trivially bypassed by anything that doesn't run the client JS, so nothing currently caps how many distinct-address emails one caller can trigger Resend to send. Wire this up (e.g. a Supabase-backed counter keyed by IP, or an edge-level rate limit) before `RESEND_API_KEY` is set in production.
 
 ## 3. CMS (Tasks 17–18)
 
@@ -36,13 +37,15 @@ npm run build:check && npm run test:e2e
   7. Leave "Include drafts" off (published dataset only -- this project has no draft workflow).
   8. Save, then trigger any document edit in the Studio and confirm the webhook's delivery log (same manage console page) shows a `200` from `/api/revalidate`.
 - [ ] **[Jake]** Studio access granted to the team (invite collaborators in the Sanity manage console).
+- **What Sanity edits do NOT reach** (read before assuming an editorial change will show up everywhere): OG images (`opengraph-image.tsx` per route -- static, code-driven, not a Sanity field); `public/llms.txt` (a static file, not generated from any fetched content); Nav chrome labels/links (`navLinks`, the Solutions dropdown rows) come from `settings` inside `src/components/Nav.tsx`, a Client Component that deliberately stays on the local content module rather than fetching Sanity client-side (see that file's own doc comment) -- editing Site Settings in the Studio changes the footer and pricing section but not the nav links or Solutions dropdown copy; and the copy-voice guardrails (`src/content/content.test.ts` -- no em dashes, no exclamation points, no emoji) only run against the local `src/content/*.ts` modules at test time, never against live Sanity content, so an editor publishing a change through the Studio gets no automated check that it still follows the voice guide -- that has to be enforced manually during editorial review.
 
 ## 4. Analytics
 
 - [ ] **[Jake]** PostHog: create a dedicated "KINECT marketing" project (separate from the app's); provide the project API key.
 - [ ] **[dev]** With the real key: verify consent-gated init, events flowing, reverse proxy working in production (no ad-blocker losses on `/ph/*`).
 - [ ] **[dev]** Build the spec §6 funnels in PostHog: core (pageview → cta_clicked → waitlist_submitted by persona/UTM source), lane-routing (home → persona_card/solutions → persona pageview → signup); launch dashboard (signups by persona, conversion by page, top UTM sources, FAQ engagement).
-- [ ] **[dev]** Enable Vercel Analytics (cookieless) on the project.
+- [x] **[dev]** Vercel Analytics (cookieless) wired in code: `@vercel/analytics` is installed and `<Analytics />` mounts in the `(site)` layout next to `PostHogProvider` (unconditional, no consent gate needed -- see `src/content/legal/cookies.ts`'s "Cookieless performance analytics" disclosure).
+- [ ] **[Jake]** Remaining: enable Analytics for this project in the Vercel dashboard (Project → Analytics → Enable) so the already-mounted `<Analytics />` component actually has somewhere to report to.
 
 ## 5. Search & AI discoverability
 
@@ -58,7 +61,7 @@ npm run build:check && npm run test:e2e
 
 - [ ] **[Jake]** Add the company legal name and registered address to the four policies once the entity is formalized (2026-07-25: entity still forming; contact lines currently use hello@kinectnow.com, governing law set to the State of Texas).
 - [ ] **[Jake]** Counsel review of all four policies (drafts match actual data practices but are not legal advice).
-- [ ] Post-launch backlog: DPA and Accessibility pages (footer links currently "#").
+- [ ] Post-launch backlog: DPA and Accessibility pages (footer legal links currently "#").
 
 ## 8. Performance & devices
 
@@ -72,3 +75,8 @@ npm run build:check && npm run test:e2e
 - Post-launch content roadmap (spec §8a-ii): comparison pages, "clients never open the portal" answer page, extra FAQ entries via Sanity.
 - Persona-segment deep paths serve in place on the apex (Task 21 narrowing); a tripwire comment in `src/proxy.ts` flags revisiting if persona content sub-pages are ever added.
 - `CTA_MODE` in `src/lib/cta.ts` flips waitlist → real signup URL when the app launches.
+- Recounted "#" (no real destination) links remaining after the final review round's dead-link fixes (I1/I6 fixed the footer Solutions column, Company "Security", and all four legal links; the ones below are unaddressed, no destination page exists for any of them yet):
+  - Nav: "Product", "Docs" (`src/content/settings.ts` `navLinks`).
+  - Footer legal: "DPA", "Accessibility" (`src/content/settings.ts` `footer.legalLinks`).
+  - Footer social icons: X, LinkedIn, Instagram, YouTube (`SOCIAL_ICONS` in `src/components/Footer.tsx`) -- 4 links, no real profiles exist yet (see §5's off-site action list).
+  - Also still "#", out of this round's scope: footer "Compare plans" (Solutions column), the entire Platform column (5 links), the entire Resources column (4 links), and Company "About"/"Contact"/"Status" -- none of these have a built destination page.

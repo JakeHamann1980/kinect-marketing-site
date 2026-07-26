@@ -80,6 +80,36 @@ test("a deep path under a persona segment on the apex host serves in place (no r
   expect(res.status()).toBe(200);
 });
 
+/**
+ * Fix (final review, I5): src/proxy.ts's persona-host branch now redirects
+ * a persona segment path hit on ANY persona subdomain host -- both a
+ * different persona (cross-persona) and this same persona (canonicalizing a
+ * stray `/agency`-shaped path back to the subdomain root) -- to the correct
+ * persona's own canonical subdomain root. Both cases from the fix's own
+ * examples.
+ */
+test("a different persona's segment on a persona subdomain host redirects (308) to that persona's own subdomain", async ({
+  request,
+}) => {
+  const res = await request.get("/coach", {
+    headers: { Host: `agency.${PROD_ROOT}` },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(308);
+  expect(res.headers()["location"]).toBe(`https://coach.${PROD_ROOT}/`);
+});
+
+test("the same persona's own segment on its own subdomain host redirects (308) to its canonical root", async ({
+  request,
+}) => {
+  const res = await request.get("/agency", {
+    headers: { Host: `agency.${PROD_ROOT}` },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(308);
+  expect(res.headers()["location"]).toBe(`https://agency.${PROD_ROOT}/`);
+});
+
 test("www is canonicalized (308) to the apex domain", async ({ request }) => {
   const res = await request.get("/", {
     headers: { Host: `www.${PROD_ROOT}` },
