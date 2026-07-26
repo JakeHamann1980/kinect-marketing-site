@@ -40,7 +40,10 @@
 .kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 @media print { .kx-grad { color: #EC5242; } }
 
-/* Section headline scale: 38px / 1.14 -> 27px @860 -> 24px @480. See SectionHead.tsx. */
+/* Section headline scale: 38px / 1.14 -> 30px @860 -> 26px @480. See
+   SectionHead.tsx. (Handoff said 27/24; user-directed 2026-07-25: bumped so
+   mobile section headlines sit clearly above card titles [20px mobile]
+   while staying under the hero's 34px @860 / 29px @480.) */
 .kx-section-head {
   font-weight: 700;
   font-size: 38px;
@@ -48,10 +51,10 @@
   text-wrap: balance;
 }
 @media (max-width: 860px) {
-  .kx-section-head { font-size: 27px; }
+  .kx-section-head { font-size: 30px; }
 }
 @media (max-width: 480px) {
-  .kx-section-head { font-size: 24px; }
+  .kx-section-head { font-size: 26px; }
 }
 
 /* Traces animate transform/opacity like the orbs; same compositor hint. */
