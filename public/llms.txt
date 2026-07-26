@@ -1,0 +1,36 @@
+<!--
+Task 19 (Metadata, Robots, Sitemaps, Canonicals). Spec §8b/§8a: llms.txt
+ships as low-cost hygiene, not strategy -- research cited in the spec found
+AI crawlers fetch this file about 0.1% of the time and no lab commits to
+reading it, so it is demoted from any load-bearing SEO/AEO role. It still
+ships because the cost of doing so is near zero.
+-->
+
+# KINECT
+
+KINECT is client portal software for agencies, coaches and consultants: a
+branded portal your clients actually open, with analytics and AI that
+explains the work sitting right next to it.
+
+## Persona sites
+
+- https://agency.kinectnow.com/ - Client portal, campaign analytics and AI
+  reporting for marketing and creative agencies.
+- https://coach.kinectnow.com/ - Program delivery, check-ins and progress
+  proof for fitness coaches and trainers.
+- https://consultant.kinectnow.com/ - Engagements, deliverables and
+  billable hours for consultants and advisors.
+
+## Pricing
+
+Flat monthly pricing, no per-seat fees: Starter $149, Growth $399, Scale
+$799.
+
+## Status
+
+KINECT is pre-launch. The waitlist is open at https://kinectnow.com/; the
+product itself is not yet publicly available.
+
+## Contact
+
+hello@kinectnow.com

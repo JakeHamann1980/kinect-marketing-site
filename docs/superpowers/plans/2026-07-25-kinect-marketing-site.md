@@ -119,13 +119,13 @@ import { PERSONAS, personaFromHost } from "./personas";
 
 describe("personaFromHost", () => {
   it("maps subdomains to personas", () => {
-    expect(personaFromHost("agency.kinectapp.ai")).toBe("agency");
-    expect(personaFromHost("coach.kinectapp.ai")).toBe("coach");
-    expect(personaFromHost("consultant.kinectapp.ai")).toBe("consultant");
+    expect(personaFromHost("agency.kinectnow.com")).toBe("agency");
+    expect(personaFromHost("coach.kinectnow.com")).toBe("coach");
+    expect(personaFromHost("consultant.kinectnow.com")).toBe("consultant");
   });
   it("maps root and unknown hosts to null (home)", () => {
-    expect(personaFromHost("kinectapp.ai")).toBeNull();
-    expect(personaFromHost("www.kinectapp.ai")).toBeNull();
+    expect(personaFromHost("kinectnow.com")).toBeNull();
+    expect(personaFromHost("www.kinectnow.com")).toBeNull();
     expect(personaFromHost("localhost:3000")).toBeNull();
   });
   it("supports *.localhost for dev", () => {
@@ -150,9 +150,9 @@ export const PERSONAS: Record<Persona, {
   name: string; accent: string; accentLight: string; tint: string;
   hostname: string; dotClass: string;
 }> = {
-  agency:     { name: "Agency",     accent: "#35D6E8", accentLight: "#0E93AC", tint: "rgba(14,147,172,.12)",  hostname: "agency.kinectapp.ai",     dotClass: "bg-[#35D6E8]" },
-  coach:      { name: "Coach",      accent: "#F0913A", accentLight: "#C4501F", tint: "rgba(240,145,58,.16)",  hostname: "coach.kinectapp.ai",      dotClass: "bg-[#F0913A]" },
-  consultant: { name: "Consultant", accent: "#C7A0C0", accentLight: "#6E5AA8", tint: "rgba(139,120,192,.18)", hostname: "consultant.kinectapp.ai", dotClass: "bg-[#C7A0C0]" },
+  agency:     { name: "Agency",     accent: "#35D6E8", accentLight: "#0E93AC", tint: "rgba(14,147,172,.12)",  hostname: "agency.kinectnow.com",     dotClass: "bg-[#35D6E8]" },
+  coach:      { name: "Coach",      accent: "#F0913A", accentLight: "#C4501F", tint: "rgba(240,145,58,.16)",  hostname: "coach.kinectnow.com",      dotClass: "bg-[#F0913A]" },
+  consultant: { name: "Consultant", accent: "#C7A0C0", accentLight: "#6E5AA8", tint: "rgba(139,120,192,.18)", hostname: "consultant.kinectnow.com", dotClass: "bg-[#C7A0C0]" },
 };
 
 export function personaFromHost(host: string): Persona | null {
@@ -186,7 +186,7 @@ Add to `globals.css`:
 import { NextRequest, NextResponse } from "next/server";
 import { personaFromHost, PERSONA_IDS } from "@/lib/personas";
 
-const PROD_ROOT = "kinectapp.ai";
+const PROD_ROOT = "kinectnow.com";
 
 export function middleware(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
@@ -495,7 +495,7 @@ alter table waitlist_signups enable row level security;
 ```
 
 - [ ] **Step 2: TDD the validation** — extract `parseWaitlistInput(formData)` pure function; tests: rejects bad email, rejects filled honeypot field `company`, rejects submissions faster than 2s after `renderedAt`, accepts valid input. Run FAIL → implement → PASS.
-- [ ] **Step 3: Server action** `src/app/actions/waitlist.ts` (`"use server"`): validate → insert via `@supabase/supabase-js` with `SUPABASE_SERVICE_ROLE_KEY` → on unique-violation return `{ ok: true, already: true }` → send Resend confirmation (`npm i resend`; from `hello@kinectapp.ai`, plain-text on-voice confirmation, no em dashes) → return `{ ok: true }`. Never expose service key client-side.
+- [ ] **Step 3: Server action** `src/app/actions/waitlist.ts` (`"use server"`): validate → insert via `@supabase/supabase-js` with `SUPABASE_SERVICE_ROLE_KEY` → on unique-violation return `{ ok: true, already: true }` → send Resend confirmation (`npm i resend`; from `hello@kinectnow.com`, plain-text on-voice confirmation, no em dashes) → return `{ ok: true }`. Never expose service key client-side.
 - [ ] **Step 4: Dialog** — accessible modal opened by every "Start free" (single config: `src/lib/cta.ts` exporting `CTA_MODE: "waitlist" | "signup-url"`); email field + honeypot (`className="hidden"` + `tabIndex={-1}` + `autoComplete="off"`) + hidden `renderedAt`; success state on-voice ("You are on the list."). Fires `waitlist_opened` / `waitlist_submitted`.
 - [ ] **Step 5:** `.env.example` with `NEXT_PUBLIC_POSTHOG_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL`. Verify a real submission end-to-end in dev. Commit: `git commit -am "feat: waitlist with Supabase storage and Resend confirmation"`.
 
@@ -536,7 +536,7 @@ alter table waitlist_signups enable row level security;
 - [ ] **Step 1: TDD builders** in `src/lib/jsonld.ts`:
 
 ```ts
-export function organizationLd(): object   // @id "https://kinectapp.ai/#org", sameAs: the three subdomain roots + social URLs from settings
+export function organizationLd(): object   // @id "https://kinectnow.com/#org", sameAs: the three subdomain roots + social URLs from settings
 export function softwareApplicationLd(): object
 export function faqPageLd(faqs: Faq[]): object
 ```
@@ -579,7 +579,7 @@ Tests assert: `softwareApplicationLd()` contains `"@type":"SoftwareApplication"`
 
 - [ ] Write `docs/LAUNCH.md` enumerating, with owners:
   1. Vercel project + all four domains attached; env vars set (list from `.env.example`).
-  2. Supabase migration applied in prod; Resend domain (`kinectapp.ai`) verified with SPF/DKIM.
+  2. Supabase migration applied in prod; Resend domain (`kinectnow.com`) verified with SPF/DKIM.
   3. Sanity: production dataset seeded; revalidation webhook configured; Studio access for the team.
   4. PostHog: marketing project created; funnels + launch dashboard from spec §6 built; key in env.
   5. Search Console properties for all four hostnames; sitemaps submitted.

@@ -1,0 +1,632 @@
+@import "tailwindcss";
+
+/*
+ * Site-wide widows/orphans control (design-reference/README.md
+ * "Typography": "Apply text-wrap: balance to headlines and text-wrap:
+ * pretty to body copy... Widows and orphans were deliberately minimized").
+ * Task 12/13 had only applied this per-component (`.kx-section-head`,
+ * `.kx-hero-head`, `.kx-hero-sub`, etc.) rather than sitewide as the README
+ * asks; user-directed 2026-07-25: Jake flagged this gap reviewing the live
+ * home page.
+ * `@layer base` keeps these as the lowest-priority layer Tailwind defines,
+ * so every existing unlayered class in this file (the `.kx-*` rules below)
+ * and every Tailwind utility (`@layer utilities`, e.g. a future
+ * `text-nowrap`) continues to win over these defaults without needing
+ * `!important` anywhere -- CSS cascade layers always let an unlayered or
+ * later-layer declaration win over an earlier layer regardless of
+ * selector specificity.
+ */
+@layer base {
+  p { text-wrap: pretty; }
+  h1, h2, h3, h4 { text-wrap: balance; }
+}
+
+:root {
+  --dark-bg: #05070C; --dark-canvas: #070B12; --dark-panel: #0B1017; --dropdown-bg: #0E141F;
+  --light-canvas: #F5F7FA; --surface: #FFFFFF; --border: #E4E9F0; --divider: #F0F3F7;
+  --on-dark: #EEF2F8; --on-dark-2: #C7CEDA; --on-dark-3: #A2ABBC; --on-dark-4: #8B95A7; --on-dark-5: #5A6478;
+  --ink: #0C1220; --ink-2: #3B4658; --ink-3: #5A6577; --muted: #96A0B2;
+  --cyan: #35D6E8; --amber: #F0913A; --coral: #EC5242; --violet: #C7A0C0;
+  --cyan-light: #0E93AC; --coral-light: #C4501F; --violet-light: #6E5AA8;
+  --rule-strong: rgba(255,255,255,.22); --rule: rgba(255,255,255,.16); --rule-soft: rgba(255,255,255,.12);
+  --rule-faint: rgba(255,255,255,.09); --rule-ghost: rgba(255,255,255,.06);
+  --grid-line: rgba(255,255,255,.016); --grid-dot: rgba(255,255,255,.05);
+  /* gradients are intentionally CSS-var-only; they cannot be Tailwind color tokens */
+  --text-gradient: linear-gradient(95deg, #F5A15A, #EC5242 45%, #35D6E8);
+  --cta-gradient: linear-gradient(135deg, #F0913A, #EC5242);
+  /* persona accent, overridden via [data-persona] on the page root */
+  --accent: var(--cyan); --accent-light: var(--cyan-light); --accent-tint: rgba(14,147,172,.12);
+}
+.kx-grad { background: var(--text-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+@media print { .kx-grad { color: #EC5242; } }
+
+/* Section headline scale: 38px / 1.14 -> 27px @860 -> 24px @480. See SectionHead.tsx. */
+.kx-section-head {
+  font-weight: 700;
+  font-size: 38px;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-section-head { font-size: 27px; }
+}
+@media (max-width: 480px) {
+  .kx-section-head { font-size: 24px; }
+}
+
+/* Traces animate transform/opacity like the orbs; same compositor hint. */
+.kx-trace { will-change: transform, opacity; }
+
+/*
+ * Task 12 (Home Page Assembly) section-rhythm utilities. Plain max-width
+ * media queries, matching the pre-existing `.kx-section-head` convention,
+ * rather than the kx-sm/kx-md/kx-lg Tailwind breakpoints above (those are
+ * reserved for grid column counts per their own comment in the `@theme`
+ * block). Values transcribed from design-reference/README.md "Responsive"
+ * and "Spacing", cross-checked against KINECT Marketing Site.dc.html's own
+ * authored `<style>` responsive block.
+ */
+
+/*
+ * Standard full-bleed section padding, used by every home section other
+ * than the hero/closing CTA (persona selector, steps, showcase, pillars,
+ * FAQ): 124px 60px desktop; <=1024 drops horizontal only to 34px (the
+ * prototype's own responsive CSS overrides padding-left/right only at this
+ * tier); <=860 collapses to a full 68px 20px; <=480 to a full 56px 16px.
+ */
+.kx-sec { padding: 124px 60px; }
+@media (max-width: 1024px) {
+  .kx-sec { padding-left: 34px; padding-right: 34px; }
+}
+@media (max-width: 860px) {
+  .kx-sec { padding: 68px 20px; }
+}
+@media (max-width: 480px) {
+  .kx-sec { padding: 56px 16px; }
+}
+
+/*
+ * Hero padding cascade (README "1. Hero" + "Responsive"). Deliberately has
+ * no <=1024 tier: the prototype's own responsive CSS has no bucket matching
+ * "152px 60px 62px" at max-width:1024px, jumping straight from the full
+ * desktop value to the <=860 override, and the README's own responsive
+ * bullet list agrees ("hero padding <=860 = 104px 20px 56px") without
+ * mentioning an intermediate step.
+ */
+.kx-hero-sec { padding: 152px 60px 62px; }
+@media (max-width: 860px) {
+  .kx-hero-sec { padding: 104px 20px 56px; }
+}
+@media (max-width: 480px) {
+  .kx-hero-sec { padding: 92px 16px 48px; }
+}
+
+/*
+ * Closing CTA padding. README section 9 says the closing canvas "matches
+ * the hero" (same kx-grid, same orbs) but doesn't give its own padding
+ * figure; the desktop value here (132px 60px) is recovered verbatim from
+ * the prototype's home "GRADIENT CTA WASH" instance, which is close to but
+ * not identical to the hero's 152px top padding (a shorter, punchier
+ * bookend section). The <=860/<=480 steps reuse the hero's own cascade
+ * numbers, consistent with README's "matches the hero" framing, since the
+ * prototype's own responsive CSS has no bucket at all for "132px 60px"
+ * (it never shrinks in the reference) and README gives no alternative.
+ */
+.kx-closing-sec { padding: 132px 60px; }
+@media (max-width: 860px) {
+  .kx-closing-sec { padding: 104px 20px 56px; }
+}
+@media (max-width: 480px) {
+  .kx-closing-sec { padding: 92px 16px 48px; }
+}
+
+/* Hero headline: 66px / 1.06 / -.02em -> 34px / 1.12 / -.01em @860 -> 29px @480. */
+.kx-hero-head {
+  font-weight: 700;
+  font-size: 66px;
+  line-height: 1.06;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-hero-head { font-size: 34px; line-height: 1.12; letter-spacing: -.01em; }
+}
+@media (max-width: 480px) {
+  .kx-hero-head { font-size: 29px; }
+}
+
+/* Hero subhead: 20px -> 17px @860 (no further @480 step in the reference). */
+.kx-hero-sub { font-size: 20px; line-height: 1.6; text-wrap: pretty; }
+@media (max-width: 860px) {
+  .kx-hero-sub { font-size: 17px; }
+}
+
+/*
+ * Closing headline: 52px / 1.08 -> 30px / 1.14 @860. Recovered from the
+ * prototype's `h2[style*="font-size:52px"]{font-size:30px !important;
+ * line-height:1.14 !important}` rule (max-width:860px block); no further
+ * @480 step exists there either, so it holds at 30px down to the smallest
+ * viewport.
+ */
+.kx-closing-head {
+  font-weight: 700;
+  font-size: 52px;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+@media (max-width: 860px) {
+  .kx-closing-head { font-size: 30px; line-height: 1.14; }
+}
+
+/*
+ * Closing subhead: 17px single line desktop (`white-space:nowrap`, per
+ * README section 9 verbatim), released to normal wrapping <=860 per the
+ * README "Responsive" bullet ("white-space:nowrap ... are released so
+ * nothing overflows").
+ */
+.kx-closing-sub { font-size: 17px; line-height: 1.55; white-space: nowrap; }
+@media (max-width: 860px) {
+  .kx-closing-sub { white-space: normal; }
+}
+
+/*
+ * Shared hero/closing CTA row (README: "Gap 11px. On mobile they stack full
+ * width."). `> *` targets Button's rendered <a>/<button> directly since
+ * Button has no size-independent "full width" class of its own.
+ *
+ * The row itself also needs `width: 100%` at this breakpoint, not just its
+ * children: the hero mounts `.kx-ctarow` inside a `flex flex-col
+ * items-center` content wrapper (page.tsx), and `align-items: center` on
+ * that ancestor sizes `.kx-ctarow` to its own max-content width as a flex
+ * item -- `align-items: stretch` declared here only governs how *this*
+ * row's own children (the two buttons) fill *its* box, it can't reach
+ * outward to override the parent's stretch behavior for the row itself.
+ * Without an explicit width the row (and its "full width" buttons inside
+ * it) stayed shrunk to ~content size instead of the column. The closing
+ * section's wrapper has no `items-center`, so it never hit this.
+ */
+.kx-ctarow { display: flex; gap: 11px; justify-content: center; }
+@media (max-width: 860px) {
+  .kx-ctarow { flex-direction: column; align-items: stretch; width: 100%; }
+  .kx-ctarow > * { width: 100%; }
+}
+
+/* Hero/closing asterisk badge: 78px circle, shrinks to 60px @860 (dc.html `.kx-heromark`). */
+.kx-hero-badge { width: 78px; height: 78px; }
+@media (max-width: 860px) {
+  .kx-hero-badge { width: 60px; height: 60px; }
+}
+
+/*
+ * Section intro row shared by the persona-selector and pillars sections
+ * (KINECT Marketing Site.dc.html lines 217-221, 306-309): title and
+ * supporting paragraph side by side, each holding a minimum width so they
+ * wrap onto their own line rather than squeezing, with that minimum
+ * released <=860 (dc.html's own `[style*="min-width:340px"],
+ * [style*="min-width:300px"]{min-width:0 !important}` rule) so the stacked
+ * mobile layout isn't held open.
+ */
+.kx-intro-row { display: flex; align-items: flex-end; gap: 40px; flex-wrap: wrap; }
+.kx-intro-title { flex: 1 1 340px; min-width: 340px; }
+.kx-intro-body { flex: 1 1 300px; min-width: 300px; }
+@media (max-width: 860px) {
+  .kx-intro-title, .kx-intro-body { min-width: 0; }
+}
+
+[data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
+[data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
+[data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
+
+/*
+ * Sticky nav (see src/components/Nav.tsx, src/hooks/useStuck.ts).
+ * Per design-reference/README.md "Global Elements -> Sticky transparent
+ * nav" / "--nav-stuck" token: exact composite values, not tokenized further.
+ * IMPORTANT: no ancestor of the nav's sticky wrapper may set
+ * `overflow-x: hidden` -- it breaks `position: sticky` (a real bug in the
+ * prototype). The root layout uses `overflow-x: clip` instead; keep it that
+ * way and never add `overflow-x: hidden` anywhere in this tree.
+ */
+#kx-nav {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background .25s ease, border-color .25s ease;
+}
+#kx-nav.kx-stuck {
+  background: rgba(11,15,23,.82);
+  border-bottom-color: rgba(255,255,255,.09);
+}
+/*
+ * The unprefixed and -webkit- prefixed backdrop-filter declarations are
+ * split into separate rules (same selector) rather than sitting side by
+ * side in one declaration block. When they're in the same block, the
+ * production build's CSS minifier (Lightning CSS) "collapses" the pair
+ * and drops the unprefixed standard property, leaving only
+ * -webkit-backdrop-filter -- which non-WebKit browsers (e.g. Firefox)
+ * don't understand, silently turning the blur off for them. Verified via
+ * `grep -o "#kx-nav\.kx-stuck{[^}]*}" .next/static/chunks/*.css` on the
+ * compiled output; splitting the rules keeps both declarations intact.
+ */
+#kx-nav.kx-stuck { -webkit-backdrop-filter: blur(14px); }
+#kx-nav.kx-stuck { backdrop-filter: blur(14px); }
+@media (max-width: 860px) {
+  /* Overrides the nav's px-[60px] Tailwind utility: #kx-nav's id
+     specificity wins over the class-based utility regardless of source
+     order, so this doesn't need `!important`. */
+  #kx-nav { padding-left: 20px; padding-right: 20px; }
+}
+
+/* Desktop link group (Solutions dropdown, nav links, CTA). Hidden below
+   860px in favor of the hamburger + mobile sheet. */
+.kx-nav-links {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* Hamburger trigger, mobile only. */
+.kx-burger {
+  display: none;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 11px;
+  background: rgba(255,255,255,.04);
+  cursor: pointer;
+}
+.kx-burger-line {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #EEF2F8;
+}
+
+/* Full-width mobile sheet. Kept `display:none` above 860px even if React
+   state is stale (e.g. a resize while open), so desktop can never show it
+   from a JS-only guard. */
+.kx-mobile-sheet { display: none; }
+
+@media (max-width: 860px) {
+  .kx-nav-links { display: none; }
+  .kx-burger { display: flex; }
+  .kx-mobile-sheet { display: block; }
+}
+
+/*
+ * Footer responsive stacking (see src/components/Footer.tsx and
+ * design-reference/README.md "Footer" -> "Responsive"). 860px matches the
+ * nav's breakpoint above and isn't one of Tailwind's default steps, so
+ * (per the same convention as `.kx-section-head` and the nav rules above)
+ * this uses a plain media query rather than a Tailwind variant. Class
+ * names and behavior are transcribed from `KINECT Marketing Site.dc.html`
+ * lines 101-104 (`.kx-footer-top`/`.kx-footer-cols`/`.kx-footer-legal`/
+ * `.kx-footer-bar`), whose own surrounding `@media (max-width:860px)`
+ * block (line 60) confirms the same breakpoint.
+ */
+@media (max-width: 860px) {
+  .kx-footer-top { flex-direction: column; gap: 38px; }
+  .kx-footer-cols { margin-left: 0; gap: 34px; width: 100%; }
+  .kx-footer-legal { margin-left: 0; gap: 14px; }
+  .kx-footer-bar { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
+
+@theme inline {
+  --color-dark-bg: var(--dark-bg); --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
+  --color-dropdown-bg: var(--dropdown-bg);
+  --color-light-canvas: var(--light-canvas); --color-surface: var(--surface); --color-border: var(--border);
+  --color-divider: var(--divider);
+  --color-on-dark: var(--on-dark); --color-on-dark-2: var(--on-dark-2); --color-on-dark-3: var(--on-dark-3);
+  --color-on-dark-4: var(--on-dark-4); --color-on-dark-5: var(--on-dark-5);
+  --color-ink: var(--ink); --color-ink-2: var(--ink-2); --color-ink-3: var(--ink-3); --color-muted: var(--muted);
+  --color-cyan: var(--cyan); --color-amber: var(--amber); --color-coral: var(--coral); --color-violet: var(--violet);
+  --color-cyan-light: var(--cyan-light); --color-coral-light: var(--coral-light); --color-violet-light: var(--violet-light);
+  --color-rule-strong: var(--rule-strong); --color-rule: var(--rule); --color-rule-soft: var(--rule-soft);
+  --color-rule-faint: var(--rule-faint); --color-rule-ghost: var(--rule-ghost);
+  --color-grid-line: var(--grid-line); --color-grid-dot: var(--grid-dot);
+  --color-accent: var(--accent); --color-accent-light: var(--accent-light); --color-accent-tint: var(--accent-tint);
+  --font-display: var(--font-hanken); --font-sans: var(--font-instrument); --font-mono: var(--font-plex-mono);
+
+  /*
+   * Design-system breakpoints (design-reference/README.md "Responsive": 1024,
+   * 860, 480). Tailwind's own default `md`/`lg` (768/1024) don't land on
+   * 860, so multi-column grids using `md:`/`lg:` collapse at the wrong
+   * width. Tailwind v4 generates `kx-sm:`/`kx-md:`/`kx-lg:` min-width
+   * variants from these `--breakpoint-kx-*` theme keys (sorted by value at
+   * build time regardless of declaration order here), giving a mobile-first
+   * cascade whose steps land exactly on the documented breakpoints: base
+   * (<480) -> kx-sm (>=480) -> kx-md (>=860) -> kx-lg (>=1024). Reserved for
+   * grid column counts; section padding/type scale keep using plain
+   * max-width media queries (see `.kx-sec`/`.kx-hero-sec` etc. below),
+   * matching the pre-existing `.kx-section-head` convention.
+   */
+  --breakpoint-kx-sm: 30rem;   /* 480px */
+  --breakpoint-kx-md: 53.75rem; /* 860px */
+  --breakpoint-kx-lg: 64rem;   /* 1024px */
+}
+
+/*
+ * Hero backdrop, layer 1: grid + dots (see HeroBackdrop.tsx and
+ * design-reference/README.md "Hero (dark) -> Background, three layers").
+ * Values transcribed verbatim -- do not "clean up".
+ *
+ * HARD CONSTRAINT: never set a `background` SHORTHAND on any element
+ * carrying `.kx-grid` (directly, via a later rule, or via a Tailwind
+ * `bg-*` utility that resolves to the shorthand) -- it resets
+ * background-image/-position/-size to `initial` and wipes the entire
+ * pattern. Use `background-color` only. This was a real bug in the
+ * prototype and cost real debugging time.
+ *
+ * The dot layer's 312px tile (3x the 104px line grid) and its
+ * `-156px -52px` offset exist so dots land EXACTLY on grid-line
+ * intersections and so the top row of the grid has no dots. Getting dots
+ * onto the corners rather than floating mid-square took the designer
+ * several passes; keep the numbers exactly as given.
+ */
+.kx-grid {
+  background-color: var(--dark-canvas);
+  background-image:
+    radial-gradient(var(--grid-dot) 1px, transparent 1.6px),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 312px 312px, 104px 104px, 104px 104px;
+  background-position: -156px -52px, 0 0, 0 0;
+}
+
+/*
+ * Hero backdrop, layer 2: orbs (rendered by HeroBackdrop.tsx).
+ * Gradient stops/sizes/positions transcribed verbatim from the design
+ * prototype's hero-instance `.kx-orb` / `.kx-orb-b` elements
+ * (design-reference/KINECT Marketing Site.dc.html lines 182-183) -- warm
+ * coral+blue wash on the left, cyan on the right. Both sit at
+ * `z-index:-1`, well behind content.
+ *
+ * Breathe timing (scale + opacity) follows the README "Motion" spec of
+ * independent ~18s / ~23s cycles with offset negative delays. Note: the
+ * prototype's own CSS instead reuses one 16s keyframe with the second orb
+ * played in `reverse`; that shortcut reads as synced/mirrored rather than
+ * independent, so here each orb gets its own duration/delay per the
+ * README's explicit numbers while keeping the prototype's exact visual
+ * (gradient) values.
+ */
+@keyframes kx-orb-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+}
+.kx-orb {
+  position: absolute;
+  inset: -10%;
+  z-index: -1;
+  pointer-events: none;
+  animation: kx-orb-breathe 18s ease-in-out infinite;
+  animation-delay: -6s;
+  will-change: transform, opacity;
+}
+.kx-orb-left {
+  background: radial-gradient(820px 520px at 14% 12%, rgba(236, 82, 66, 0.42), transparent 64%),
+    radial-gradient(760px 460px at 50% -8%, rgba(130, 160, 240, 0.26), transparent 66%);
+}
+.kx-orb-right {
+  background: radial-gradient(820px 520px at 86% 16%, rgba(53, 214, 232, 0.4), transparent 64%);
+  animation-duration: 23s;
+  animation-delay: -11s;
+}
+
+/*
+ * Hero backdrop, layer 3: trace lines (rendered by HeroBackdrop.tsx).
+ * Per-line top/left offsets, durations, delays, lengths and opacities
+ * transcribed verbatim from the prototype's hero instance (KINECT
+ * Marketing Site.dc.html lines 24-27, 185-190): six lines, staggered
+ * negative/positive delays and varied 23-41s durations, so no two ever
+ * sync. Positions are multiples of 104px so each line overlays a real
+ * `.kx-grid` line. Handoff acceptance criterion, verbatim: "these should
+ * read as almost subliminal; if you notice them, they are too strong."
+ */
+@keyframes kx-trace-x {
+  0% { transform: translateX(-30%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+@keyframes kx-trace-y {
+  0% { transform: translateY(-30%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(130%); opacity: 0; }
+}
+.kx-trace {
+  position: absolute;
+  pointer-events: none;
+}
+.kx-trace-h {
+  left: 0;
+  width: 38%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.13) 50%, transparent);
+  animation-name: kx-trace-x;
+  animation-duration: 26s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.kx-trace-v {
+  top: 0;
+  width: 1px;
+  height: 34%;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.11) 50%, transparent);
+  animation-name: kx-trace-y;
+  animation-duration: 31s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kx-orb, .kx-trace { animation: none !important; }
+}
+
+/*
+ * Screenshot showcase cycler (Task 10; see src/components/ShowcaseCycler.tsx
+ * and design-reference/README.md "5. Product showcase with cycling
+ * screenshots"). Keyframes are transcribed verbatim from
+ * design-reference/KINECT Marketing Site.dc.html lines 31-46
+ * (`kx-cycle`/`kx-cyclab`/`kx-shotglow`, and the `kx-pin-N` pinned-state
+ * overrides) and lines 263-274 (the frame's composite box-shadow, the
+ * glow's three-stop gradient + blur amount, and the label row layout).
+ *
+ * The `kx-cyc-2`/`-3` and `kx-lab-2`/`-3` delays are NOT verbatim: the
+ * prototype uses positive delays (`animation-delay:5s`/`10s`). A positive
+ * delay with the default `animation-fill-mode: none` leaves an element on
+ * its pre-animation style until the delay elapses -- since `.kx-cyc`/
+ * `.kx-lab` don't set a static `opacity`/`color` outside the animation,
+ * that pre-animation style is fully opaque/default-colored, so all three
+ * layers (and labels) would sit stacked at full opacity for the first 5s
+ * of every page load, a latent bug in the prototype. Negative delays
+ * (`-5s`/`-10s`, used below) start each layer as if it had already been
+ * playing for that long, landing immediately in the correct offset phase
+ * of the cycle. This is a deliberate, disclosed fix, not a transcription
+ * error.
+ *
+ * Pinning is real React state (src/lib/cycler.ts's `clickLabel`), not a
+ * CSS-only toggle: ShowcaseCycler applies a `kx-pin-1`/`kx-pin-2`/`kx-pin-3`
+ * class to the two ancestor wrappers (the image stage and the label row)
+ * matching the pinned index, mirroring the prototype's `shotPinClass`
+ * mechanism below.
+ */
+@keyframes kx-cycle { 0%, 26% { opacity: 1; } 33%, 93% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes kx-cyclab { 0%, 26% { color: #EEF2F8; opacity: 1; } 33%, 93% { color: #5A6478; opacity: .6; } 100% { color: #EEF2F8; opacity: 1; } }
+@keyframes kx-shotglow { 0%, 100% { opacity: .9; } 50% { opacity: 1; } }
+
+.kx-cyc {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: kx-cycle 15s ease-in-out infinite;
+}
+.kx-cyc-2 { animation-delay: -5s; }
+.kx-cyc-3 { animation-delay: -10s; }
+
+.kx-lab {
+  animation: kx-cyclab 15s ease-in-out infinite;
+  color: #8B95A7; /* base color, only visible once the animation above is disabled (reduced motion) */
+  /*
+   * background/border-color are set here (rather than via Tailwind's
+   * `bg-transparent`/`border-transparent` utilities on the element) so the
+   * `.kx-pin-N .kx-lab:nth-child(N)` override below reliably wins on
+   * specificity/source-order alone: those Tailwind utilities live inside
+   * `@layer utilities`, and keeping both declarations unlayered and in
+   * this file avoids any question of layered-vs-unlayered precedence.
+   */
+  background: transparent;
+  border: 1px solid transparent;
+  /*
+   * `color`-only transition (NOT Tailwind's `transition-colors`, which is
+   * applied to the element in ShowcaseCycler.tsx -- deliberately omitted
+   * there). `transition-colors` would also transition background-color/
+   * border-color, and the pinned-state override below intentionally does
+   * NOT use `!important` on those two properties (see that rule's
+   * comment), so nothing here should stand between an ordinary cascade
+   * win and the computed value. Scoping the transition to `color` keeps
+   * the pin/unpin swap for background/border instant and avoids relying
+   * on transitioning into a value from a higher-specificity rule at all.
+   */
+  transition: color .2s ease;
+}
+.kx-lab-2 { animation-delay: -5s; }
+.kx-lab-3 { animation-delay: -10s; }
+
+/*
+ * Pinned state. `animation-play-state: paused` lands on every layer/label
+ * (verifiable via computed style) rather than removing the animation
+ * outright, per the Task 10 spec. Because a running/paused CSS animation's
+ * value still wins over a plain author declaration, forcing the pinned
+ * layer visible (and the others hidden) needs `!important` -- the one
+ * origin that outranks animations in the cascade. Labels instead fully
+ * stop (`animation: none`) since their pinned/unpinned colors must render
+ * deterministically rather than freezing at whatever frame the 15s cycle
+ * happened to be paused on.
+ *
+ * The pinned label's `background`/`border-color` deliberately do NOT carry
+ * `!important` (re-audited after fixing a real bug: the label previously
+ * also carried Tailwind's `transition-colors`, which transitions
+ * background-color/border-color too, and animating INTO an
+ * `!important`-declared end value is a known cross-browser weak spot --
+ * the computed value never left its pre-pin state). Now that the element
+ * has no `background`/`border-color` transition (see the `.kx-lab`
+ * comment above) and no longer carries the competing Tailwind
+ * `bg-transparent`/`border-transparent` utilities, this rule's higher
+ * specificity plus later source order is sufficient on its own.
+ */
+.kx-pin-1 .kx-cyc, .kx-pin-2 .kx-cyc, .kx-pin-3 .kx-cyc {
+  animation-play-state: paused;
+  opacity: 0 !important;
+}
+.kx-pin-1 .kx-cyc:nth-child(1),
+.kx-pin-2 .kx-cyc:nth-child(2),
+.kx-pin-3 .kx-cyc:nth-child(3) {
+  opacity: 1 !important;
+}
+.kx-pin-1 .kx-lab, .kx-pin-2 .kx-lab, .kx-pin-3 .kx-lab {
+  animation: none;
+  color: #5A6478;
+}
+.kx-pin-1 .kx-lab:nth-child(1),
+.kx-pin-2 .kx-lab:nth-child(2),
+.kx-pin-3 .kx-lab:nth-child(3) {
+  color: #EEF2F8;
+  background: rgba(255, 255, 255, .08);
+  border-color: rgba(255, 255, 255, .22);
+}
+
+/*
+ * Frame + glow (design-reference/README.md "Frame"/"Glow" bullets under
+ * section 5). The base drop shadow (`0 26px 70px rgba(0,0,0,.55)`) and the
+ * glow's `inset` are given explicitly by the README (used verbatim below);
+ * the cyan rim-glow ring and the glow's three gradient stops + blur amount
+ * are only described qualitatively there ("plus a cyan rim glow" / "heavy
+ * blur"), so those exact values are recovered from
+ * `KINECT Marketing Site.dc.html` line 263-264 instead -- blue-dominant
+ * over orange as specified: a large cyan pool right, a warm coral
+ * secondary left, and a wide blue base wash, at blur(44px).
+ */
+.kx-shot-frame {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 26px 70px rgba(0, 0, 0, .55),
+    0 0 0 1px rgba(255, 255, 255, .04),
+    0 0 80px rgba(53, 214, 232, .26);
+}
+.kx-shot-glow {
+  position: absolute;
+  inset: -30px -18px -12px;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(640px 320px at 78% 42%, rgba(53, 214, 232, .72), transparent 66%),
+    radial-gradient(600px 300px at 22% 56%, rgba(236, 82, 66, .58), transparent 66%),
+    radial-gradient(760px 380px at 50% 50%, rgba(41, 169, 224, .34), transparent 72%);
+  filter: blur(44px);
+  animation: kx-shotglow 9s ease-in-out infinite;
+}
+
+/*
+ * `!important` here (not present in the prototype's equivalent reduced-
+ * motion rule) matches the pre-existing `.kx-orb`/`.kx-trace` pattern
+ * above: it guards against a higher-specificity rule -- most relevantly
+ * `.kx-pin-N .kx-lab` further down, which also sets `animation` and is
+ * more specific than this bare `.kx-cyc, .kx-lab, .kx-shot-glow` selector
+ * -- winning instead. Disabling motion for accessibility should be
+ * unconditional, not dependent on pin state or Tailwind layer ordering.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .kx-cyc, .kx-lab, .kx-shot-glow { animation: none !important; }
+  .kx-cyc-2, .kx-cyc-3 { opacity: 0; }
+}
