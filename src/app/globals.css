@@ -189,11 +189,14 @@
  * section's wrapper has no `items-center`, so it never hit this.
  */
 .kx-ctarow { display: flex; gap: 11px; justify-content: center; }
-/* user-directed 2026-07-25: mobile CTAs sit side by side as one row of two
-   equal columns (overriding the handoff's stacked-full-width treatment). */
+/* user-directed 2026-07-25: mobile CTAs sit side by side as one row
+   (overriding the handoff's stacked-full-width treatment). Labels never
+   wrap: `flex: 1 1 auto` (content-size floor, extra space shared) instead
+   of rigid equal columns, plus nowrap, so the longer label ("Watch the
+   2-min tour") keeps its button at single-line height. */
 @media (max-width: 860px) {
   .kx-ctarow { width: 100%; }
-  .kx-ctarow > * { flex: 1 1 0; min-width: 0; }
+  .kx-ctarow > * { flex: 1 1 auto; white-space: nowrap; }
 }
 
 /* Card titles (persona/pillar/capability/pain cards): 23px desktop per the
@@ -426,6 +429,21 @@
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 312px 312px, 104px 104px, 104px 104px;
   background-position: -156px -52px, 0 0, 0 0;
+}
+/* user-directed 2026-07-25: on phones the desktop dot tile (312px) fits
+   only ~one dot per viewport and the brightened mobile orbs wash it out,
+   reading as "the dots got removed". Densify to a 208px tile below 860px
+   (dots still land EXACTLY on 104px grid intersections: -104 + n*208 is
+   always a multiple of 104; y offset -52 keeps the top row dot-free) and
+   strengthen the dot alpha so they survive the orb wash. Only size/
+   position/custom-prop overrides here -- never a `background` shorthand
+   on .kx-grid (see the hard-constraint note above). */
+@media (max-width: 860px) {
+  .kx-grid {
+    --grid-dot: rgba(255, 255, 255, 0.11);
+    background-size: 208px 208px, 104px 104px, 104px 104px;
+    background-position: -104px -52px, 0 0, 0 0;
+  }
 }
 
 /*
