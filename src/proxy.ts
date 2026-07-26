@@ -21,12 +21,13 @@ export function proxy(req: NextRequest) {
       return NextResponse.rewrite(url);
     }
 
-    // Fix (final review, I5): a persona subdomain host has no real content
-    // under another (or its own) persona segment -- persona roots only
-    // exist, at "/". Previously a path like agency.kinectnow.com/coach fell
-    // straight through to "shared routes serve as-is" below and 404'd
-    // (there is no `/coach` route mounted under the `/agency`-hosted app),
-    // and agency.kinectnow.com/agency similarly served nothing useful.
+    // Fix (final review, I5): one Next app serves every hostname, so
+    // previously a path like agency.kinectnow.com/coach fell through to
+    // "shared routes serve as-is" below and served the COACH page in place
+    // with a 200 -- the URL bar said agency. while the page said coach,
+    // dual-serving persona content on the wrong host. (Do not remove this
+    // redirect on the theory it merely guards a 404; it exists for
+    // canonicalization.)
     // Redirect both cases to the correct persona's own canonical subdomain
     // root: a *different* persona segment sends the visitor to that
     // persona's real page; the *same* persona segment canonicalizes to this

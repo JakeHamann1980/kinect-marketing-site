@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import PostHogProvider from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
 import WaitlistDialog from "@/components/WaitlistDialog";
@@ -62,6 +63,9 @@ export default async function SiteLayout({ children }: Readonly<{ children: Reac
           cookie-consent gate that PostHogProvider/ConsentBanner enforce for
           PostHog above. */}
       <Analytics />
+      {/* Spec §6 names Core Web Vitals specifically; that is Speed Insights
+          (a separate cookieless package from Web Analytics above). */}
+      <SpeedInsights />
     </>
   );
 }
