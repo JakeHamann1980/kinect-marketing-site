@@ -134,28 +134,10 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
 
   return (
     <>
-      {/* Fix (final review, M7): skip link, first focusable element on every
-          page Nav mounts on (home, all three persona pages, legal pages).
-          `sr-only` hides it visually until it receives KEYBOARD-INTENT focus
-          (`focus-visible:not-sr-only`, not plain `focus:` -- the App Router
-          programmatically focuses the top of the page after client-side
-          navigation, which landed on this first-focusable link and made it
-          flash visible after e.g. persona page -> home; user-reported
-          2026-07-25. `:focus-visible` stays false for router/mouse-derived
-          focus but true for Tab, which is the only case that should reveal
-          it). When revealed it's pinned to the top-left corner in the site's
-          dark-surface/on-dark token pair so it's legible against whatever
-          section happens to be behind it. Targets
-          `#main`, the `<main id="main">` landmark each page template now
-          wraps its body content in (see (site)/page.tsx, PersonaPage.tsx,
-          legal/[slug]/page.tsx). */}
-      <a
-        href="#main"
-        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-[8px] focus-visible:bg-dark-bg focus-visible:px-4 focus-visible:py-2 focus-visible:font-sans focus-visible:text-[15px] focus-visible:text-on-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-        style={{ outlineColor: "var(--accent, #35D6E8)" }}
-      >
-        Skip to content
-      </a>
+      {/* user-directed 2026-07-25: the skip-to-content link (added by the
+          final review's a11y pass, M7) was removed at Jake's direction after
+          it kept surfacing during normal navigation. The `<main id="main">`
+          landmarks remain on every page for assistive-tech users. */}
       <span ref={sentinelRef} style={{ display: "block", height: 1 }} />
       {/* height: 0 removes the wrapper from flow height so the hero canvas
           extends up behind the transparent nav (the prototype achieves the
