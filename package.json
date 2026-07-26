@@ -14,6 +14,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "validate:jsonld": "node scripts/validate-jsonld.ts",
     "build:check": "next build && tsc --noEmit && vitest run && npm run validate:jsonld"
   },
@@ -26,6 +27,7 @@
     "resend": "^6.18.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.62.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
