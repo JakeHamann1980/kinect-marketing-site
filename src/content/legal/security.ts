@@ -50,7 +50,7 @@ export const security: LegalPage = {
     {
       heading: "Responsible disclosure",
       paragraphs: [
-        "If you believe you have found a security issue affecting kinectnow.com, our persona subdomains, or the waitlist, please tell us before disclosing it publicly. Contact us at [COMPANY LEGAL NAME AND ADDRESS] with as much detail as you can provide, and we will work to acknowledge and address the issue.",
+        "If you believe you have found a security issue affecting kinectnow.com, our persona subdomains, or the waitlist, please tell us before disclosing it publicly. Contact us at hello@kinectnow.com with as much detail as you can provide, and we will work to acknowledge and address the issue.",
       ],
     },
     {

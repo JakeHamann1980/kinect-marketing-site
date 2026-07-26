@@ -67,13 +67,13 @@ export const terms: LegalPage = {
     {
       heading: "Governing law",
       paragraphs: [
-        "These terms are governed by the laws of [GOVERNING LAW JURISDICTION], without regard to its conflict of law principles.",
+        "These terms are governed by the laws of the State of Texas, without regard to its conflict of law principles.",
       ],
     },
     {
       heading: "Contact us",
       paragraphs: [
-        "If you have questions about these terms, contact us at [COMPANY LEGAL NAME AND ADDRESS].",
+        "If you have questions about these terms, contact us at hello@kinectnow.com.",
       ],
     },
   ],

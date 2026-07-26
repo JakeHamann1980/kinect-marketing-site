@@ -49,7 +49,7 @@ export const cookies: LegalPage = {
     {
       heading: "Changes and contact",
       paragraphs: [
-        "If our use of cookies changes, we will update this page and revise the date shown at the top. Questions about this policy or our privacy practices can be sent to [COMPANY LEGAL NAME AND ADDRESS].",
+        "If our use of cookies changes, we will update this page and revise the date shown at the top. Questions about this policy or our privacy practices can be sent to hello@kinectnow.com.",
       ],
     },
   ],

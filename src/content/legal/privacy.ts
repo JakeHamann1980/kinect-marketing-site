@@ -95,7 +95,7 @@ export const privacy: LegalPage = {
     {
       heading: "Contact us",
       paragraphs: [
-        "If you have questions about this policy or want to exercise any of the rights described above, contact us at [COMPANY LEGAL NAME AND ADDRESS].",
+        "If you have questions about this policy or want to exercise any of the rights described above, contact us at hello@kinectnow.com.",
       ],
     },
   ],

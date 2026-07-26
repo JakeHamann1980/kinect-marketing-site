@@ -46,7 +46,7 @@ npm run build:check && npm run test:e2e
 
 ## 7. Legal (blocking)
 
-- [ ] **[Jake]** Replace `[COMPANY LEGAL NAME AND ADDRESS]` (all four policies) and `[GOVERNING LAW JURISDICTION]` (terms) in `src/content/legal/`.
+- [ ] **[Jake]** Add the company legal name and registered address to the four policies once the entity is formalized (2026-07-25: entity still forming; contact lines currently use hello@kinectnow.com, governing law set to the State of Texas).
 - [ ] **[Jake]** Counsel review of all four policies (drafts match actual data practices but are not legal advice).
 - [ ] Post-launch backlog: DPA and Accessibility pages (footer links currently "#").
 
