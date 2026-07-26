@@ -29,7 +29,7 @@ The KINECT application is a separate build (separate handoff, separate session).
 
 - **Middleware reads the hostname** and rewrites persona subdomains to internal routes: `agency.kinectnow.com` → `/agency`, `coach.` → `/coach`, `consultant.` → `/consultant`. Root domain serves the home route. (Implemented as `src/proxy.ts` — Next.js 16 renamed the middleware convention to proxy.)
 - **One persona page template** rendered from persona config; personas differ only in content, accent color, and screenshot.
-- **Canonical URLs are the subdomains.** Direct path access in production (`kinectnow.com/agency`) 308-redirects to the subdomain, preserving any remaining path and query (`/coach/pricing?x=1` → `coach.kinectnow.com/pricing?x=1`).
+- **Canonical URLs are the subdomains.** Direct persona-root access in production (`kinectnow.com/agency`) 308-redirects to the subdomain root. Deep paths under persona segments serve in place (revised in Task 21: Next's file-convention OG images live under the persona segments and resolve via the apex `metadataBase`, so redirecting them broke persona OG images; no persona content sub-pages exist, and a code tripwire flags revisiting if any are added).
 - **`www.kinectnow.com` 308-redirects to the apex** with path and query preserved, so www never serves duplicate content.
 - **Proxy exclusions are segment-anchored** (`/api/...` excluded; a future `/apiary` page still routes through the proxy).
 - **Local dev:** path routes work directly; `*.localhost` hostnames exercise the middleware.

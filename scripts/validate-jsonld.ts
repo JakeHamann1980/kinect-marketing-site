@@ -61,6 +61,14 @@ let PORT = 0;
  * the port and the server's own output, rather than a silent bogus pass
  * or an opaque timeout.
  *
+ * KNOWN LIMIT (Task 21 review): the collision guard reliably catches the
+ * realistic case (an orphaned dual-stack `next start` holding the port,
+ * which makes the child exit EADDRINUSE fast). A process bound
+ * IPv4-loopback-ONLY on the same port lets the child bind anyway and can
+ * absorb health-check requests, degrading to the slow generic timeout.
+ * Exposure is near-zero with OS-assigned ports; only reachable via the
+ * test-only override below.
+ *
  * `VALIDATE_JSONLD_PORT` is an internal override (not part of the public
  * `npm run validate:jsonld` contract) used only to reproduce the
  * port-in-use failure path in isolation -- see the verification note in

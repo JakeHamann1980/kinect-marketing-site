@@ -26,6 +26,13 @@ export function proxy(req: NextRequest) {
   // Root domain in production: canonicalize path access to the subdomain,
   // preserving the remainder of the path and query string.
   //
+  // TRIPWIRE: if a real CONTENT page is ever added under a persona segment
+  // (e.g. a comparison page at /agency/vs-suitedash), revisit this
+  // narrowing -- deep paths currently serve in place on the apex host with
+  // no redirect to the canonical subdomain, which is fine for infra routes
+  // like opengraph-image but would dual-serve a content page. Reintroduce
+  // path-preserving redirects with an infra-route allowlist at that point.
+  //
   // Fix (Task 21 review): this only fires for the persona's own root path
   // (`rest === "/"`) -- it used to redirect ANY path under a persona
   // segment (e.g. `/agency/whatever`) to the identical path on the
