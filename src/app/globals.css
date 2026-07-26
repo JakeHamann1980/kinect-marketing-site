@@ -211,15 +211,23 @@
    `stroke` declaration on the lines themselves wins over the attribute).
    Decorative motion: disabled under prefers-reduced-motion below, where the
    mark falls back to its static dark stroke. */
+/* Refined (user, same day): the cycle returns to the mark's dark resting
+   stroke between each brand color, and the halo is softer. */
 @keyframes kx-mark-glow {
-  0%, 100% { stroke: #F0913A; }
-  33% { stroke: #EC5242; }
-  66% { stroke: #35D6E8; }
+  0%, 100% { stroke: #0B0F17; }
+  16.5% { stroke: #F0913A; }
+  33% { stroke: #0B0F17; }
+  50% { stroke: #EC5242; }
+  66.5% { stroke: #0B0F17; }
+  83% { stroke: #35D6E8; }
 }
 @keyframes kx-mark-glow-shadow {
-  0%, 100% { filter: drop-shadow(0 0 7px rgba(240, 145, 58, 0.55)); }
-  33% { filter: drop-shadow(0 0 7px rgba(236, 82, 66, 0.55)); }
-  66% { filter: drop-shadow(0 0 7px rgba(53, 214, 232, 0.55)); }
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(240, 145, 58, 0)); }
+  16.5% { filter: drop-shadow(0 0 5px rgba(240, 145, 58, 0.32)); }
+  33% { filter: drop-shadow(0 0 5px rgba(236, 82, 66, 0)); }
+  50% { filter: drop-shadow(0 0 5px rgba(236, 82, 66, 0.32)); }
+  66.5% { filter: drop-shadow(0 0 5px rgba(53, 214, 232, 0)); }
+  83% { filter: drop-shadow(0 0 5px rgba(53, 214, 232, 0.32)); }
 }
 .kx-hero-badge line {
   animation: kx-mark-glow 10s ease-in-out infinite;
