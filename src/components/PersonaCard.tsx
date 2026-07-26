@@ -77,7 +77,7 @@ export default function PersonaCard({
         <PersonaIcon persona={persona} />
       </div>
 
-      <h3 className="font-display text-[23px] font-bold text-ink">{title}</h3>
+      <h3 className="kx-card-title font-display font-bold text-ink">{title}</h3>
       <p className="mt-[11px] text-[17px] leading-[1.6] text-ink-3">{body}</p>
 
       {features && features.length > 0 ? (

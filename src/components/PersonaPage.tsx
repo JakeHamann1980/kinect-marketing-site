@@ -269,7 +269,7 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
                 key={card.title}
                 className="rounded-[18px] border border-[rgba(255,255,255,.1)] bg-[rgba(255,255,255,.035)] p-[30px_28px]"
               >
-                <h3 className="mb-[10px] font-display text-[23px] font-bold text-on-dark">
+                <h3 className="mb-[10px] kx-card-title font-display font-bold text-on-dark">
                   {card.title}
                 </h3>
                 <p className="text-[17px] leading-[1.55] text-on-dark-3">{card.body}</p>

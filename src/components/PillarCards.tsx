@@ -96,7 +96,7 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
               >
                 <PillarIcon paths={icon.paths} color={icon.color} />
               </div>
-              <h3 className="font-display text-[23px] font-bold text-ink">{pillar.title}</h3>
+              <h3 className="kx-card-title font-display font-bold text-ink">{pillar.title}</h3>
               <p className="mt-[10px] text-[16px] leading-[1.55] text-ink-3">{pillar.body}</p>
             </div>
           );
@@ -106,7 +106,7 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
       {bento ? (
         <div className="mt-[18px] grid grid-cols-1 gap-[18px] lg:grid-cols-[1.25fr_1fr]">
           <div className="flex flex-col overflow-hidden rounded-[18px] border border-border bg-surface p-[30px_30px_0]">
-            <h3 className="font-display text-[23px] font-bold text-ink">
+            <h3 className="kx-card-title font-display font-bold text-ink">
               {bento.workVisible.title}
             </h3>
             <p className="mt-2 mb-[22px] max-w-[440px] text-[16px] leading-[1.55] text-ink-3">

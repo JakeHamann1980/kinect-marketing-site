@@ -186,13 +186,50 @@
  * section's wrapper has no `items-center`, so it never hit this.
  */
 .kx-ctarow { display: flex; gap: 11px; justify-content: center; }
+/* user-directed 2026-07-25: mobile CTAs sit side by side as one row of two
+   equal columns (overriding the handoff's stacked-full-width treatment). */
 @media (max-width: 860px) {
-  .kx-ctarow { flex-direction: column; align-items: stretch; width: 100%; }
-  .kx-ctarow > * { width: 100%; }
+  .kx-ctarow { width: 100%; }
+  .kx-ctarow > * { flex: 1 1 0; min-width: 0; }
+}
+
+/* Card titles (persona/pillar/capability/pain cards): 23px desktop per the
+   handoff; user-directed 2026-07-25: drop to 20px below 860px so section
+   headlines (27px @860, 24px @480) stay clearly larger than card headlines
+   on mobile. */
+.kx-card-title { font-size: 23px; }
+@media (max-width: 860px) {
+  .kx-card-title { font-size: 20px; }
 }
 
 /* Hero/closing asterisk badge: 78px circle, shrinks to 60px @860 (dc.html `.kx-heromark`). */
 .kx-hero-badge { width: 78px; height: 78px; }
+/* user-directed 2026-07-25: the asterisk inside the hero badge glows through
+   the brand colors (amber -> coral -> cyan) on a slow ambient cycle, with a
+   soft matching drop-shadow. Stroke is animated on the <line> elements
+   (their stroke ATTRIBUTE would beat an inherited svg-level value; a CSS
+   `stroke` declaration on the lines themselves wins over the attribute).
+   Decorative motion: disabled under prefers-reduced-motion below, where the
+   mark falls back to its static dark stroke. */
+@keyframes kx-mark-glow {
+  0%, 100% { stroke: #F0913A; }
+  33% { stroke: #EC5242; }
+  66% { stroke: #35D6E8; }
+}
+@keyframes kx-mark-glow-shadow {
+  0%, 100% { filter: drop-shadow(0 0 7px rgba(240, 145, 58, 0.55)); }
+  33% { filter: drop-shadow(0 0 7px rgba(236, 82, 66, 0.55)); }
+  66% { filter: drop-shadow(0 0 7px rgba(53, 214, 232, 0.55)); }
+}
+.kx-hero-badge line {
+  animation: kx-mark-glow 10s ease-in-out infinite;
+}
+.kx-hero-badge svg {
+  animation: kx-mark-glow-shadow 10s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kx-hero-badge line, .kx-hero-badge svg { animation: none !important; }
+}
 @media (max-width: 860px) {
   .kx-hero-badge { width: 60px; height: 60px; }
 }
@@ -264,10 +301,13 @@
   gap: 28px;
 }
 
-/* Hamburger trigger, mobile only. */
+/* Hamburger trigger, mobile only. margin-left:auto pins it to the right
+   edge of the nav row (user-directed 2026-07-25: it sat next to the lockup
+   because the auto-margin lived on the hidden desktop link group). */
 .kx-burger {
   display: none;
   flex: none;
+  margin-left: auto;
   width: 42px;
   height: 42px;
   align-items: center;
@@ -414,6 +454,19 @@
   background: radial-gradient(820px 520px at 86% 16%, rgba(53, 214, 232, 0.4), transparent 64%);
   animation-duration: 23s;
   animation-delay: -11s;
+}
+/* user-directed 2026-07-25: on small screens the orbs' fixed-size gradient
+   pools mostly overflow the narrow viewport and the hero read as near-black.
+   Boost the color intensity below 860px so the warm/cyan wash stays visibly
+   present on phones (same hues, higher alpha; desktop untouched). */
+@media (max-width: 860px) {
+  .kx-orb-left {
+    background: radial-gradient(820px 520px at 14% 12%, rgba(236, 82, 66, 0.6), transparent 64%),
+      radial-gradient(760px 460px at 50% -8%, rgba(130, 160, 240, 0.38), transparent 66%);
+  }
+  .kx-orb-right {
+    background: radial-gradient(820px 520px at 86% 16%, rgba(53, 214, 232, 0.58), transparent 64%);
+  }
 }
 
 /*
