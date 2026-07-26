@@ -51,10 +51,10 @@ export function organizationLd() {
     "@id": ORG_ID,
     name: "KINECT",
     url: SITE_URL,
-    // TODO(Task 21): point this at the real favicon/icon asset once it
-    // exists -- there is no public/icon.svg in the repo yet (only
-    // public/favicon.ico, next.svg, vercel.svg, window.svg). This is a
-    // disclosed placeholder path, not a verified asset.
+    // Task 21: public/icon.svg now exists (the KINECT asterisk mark, solid
+    // cyan on transparent -- see that file's own doc comment), so
+    // https://kinectnow.com/icon.svg resolves for real; this is no longer
+    // a placeholder path.
     logo: `${SITE_URL}/icon.svg`,
     sameAs: PERSONA_IDS.map((persona) => `${personaUrl(persona)}/`),
   };

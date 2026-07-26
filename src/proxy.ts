@@ -24,11 +24,36 @@ export function proxy(req: NextRequest) {
   }
 
   // Root domain in production: canonicalize path access to the subdomain,
-  // preserving the remainder of the path and query string
+  // preserving the remainder of the path and query string.
+  //
+  // Fix (Task 21 review): this only fires for the persona's own root path
+  // (`rest === "/"`) -- it used to redirect ANY path under a persona
+  // segment (e.g. `/agency/whatever`) to the identical path on the
+  // subdomain host, which was harmless while `/agency` had no nested
+  // routes of its own. Task 21 added exactly that: each persona segment
+  // now owns a colocated `opengraph-image.tsx` (Next's file-convention
+  // requires the image file live under the same segment as the page it
+  // decorates), reachable internally at `/agency/opengraph-image` etc.
+  // `metadataBase` (src/lib/seo.ts) is deliberately pinned to the apex
+  // origin, so Next resolves that route's `og:image` URL as
+  // `https://kinectnow.com/agency/opengraph-image` -- exactly the shape
+  // the old unconditional redirect mishandled: it 308'd that URL to
+  // `https://agency.kinectnow.com/opengraph-image`, and the subdomain
+  // branch above only rewrites pathname `"/"`, so that arrival path
+  // served the ROOT app's home OG image instead (silently wrong, not a
+  // 404 -- confirmed by diffing the two PNGs byte-for-byte while
+  // verifying this task's link-preview metadata). Restricting the
+  // redirect to the exact persona root and falling through to
+  // `NextResponse.next()` otherwise makes any deeper path under a persona
+  // segment serve in place on whichever host it's requested from --
+  // the same "shared routes serve as-is" rule the subdomain branch above
+  // already applies to non-root paths, now applied symmetrically here.
   const seg = pathname.split("/")[1];
   if (host === PROD_ROOT && (PERSONA_IDS as readonly string[]).includes(seg)) {
     const rest = pathname.slice(seg.length + 1) || "/";
-    return NextResponse.redirect(`https://${seg}.${PROD_ROOT}${rest}${search}`, 308);
+    if (rest === "/") {
+      return NextResponse.redirect(`https://${seg}.${PROD_ROOT}${rest}${search}`, 308);
+    }
   }
   return NextResponse.next();
 }

@@ -16,8 +16,10 @@ import type { Persona } from "@/lib/personas";
  */
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kinectnow.com";
 
-/** The production root domain, derived from SITE_URL (drops protocol/path). */
-const SITE_HOST = new URL(SITE_URL).host;
+/** The production root domain, derived from SITE_URL (drops protocol/path).
+ * Exported (Task 21) so `src/lib/og-template.tsx`'s footer line can reuse
+ * the same derivation instead of re-parsing `SITE_URL` a second time. */
+export const SITE_HOST = new URL(SITE_URL).host;
 
 /**
  * The canonical (production) origin for a persona subdomain, e.g.
@@ -35,6 +37,19 @@ export function personaUrl(persona: Persona): string {
  * canonical URL. `metadataBase` is set to `SITE_URL` on every call so any
  * relative OG/twitter image paths resolve against the production origin
  * even when Next renders this on a preview deployment.
+ *
+ * Task 21 (OG Images + Preview Metadata, spec §8c): adds the `openGraph`/
+ * `twitter` blocks link-preview validators (Slack, LinkedIn, X, iMessage)
+ * actually read. Neither block sets an `images` field here -- each route
+ * has its own sibling `opengraph-image.tsx` file (see
+ * `src/lib/og-template.tsx`), and Next's file-convention resolver merges
+ * that route's rendered image into both `openGraph.images` and
+ * `twitter.images` automatically at request time, resolved against
+ * `metadataBase` into an absolute URL (verified in this task's own build:
+ * see the `curl`-against-`next start` check in this task's verification
+ * notes). Setting `images` here explicitly would either duplicate that
+ * merge or, worse, silently shadow it depending on merge order, so it's
+ * left for the convention to own entirely.
  */
 export function pageMetadata({
   seo,
@@ -49,6 +64,19 @@ export function pageMetadata({
     description: seo.description,
     alternates: {
       canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      url: canonicalUrl,
+      siteName: "KINECT",
+      type: "website",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
     },
   };
 }
