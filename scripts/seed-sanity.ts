@@ -29,6 +29,8 @@
  *      chip lists, legal `paragraphs`) are left as plain arrays -- Sanity
  *      has no `_key`/`_type` concept for scalar array members.
  */
+import { createReadStream } from "node:fs";
+import { basename, join } from "node:path";
 import { getCliClient } from "sanity/cli";
 
 import { home } from "../src/content/home";
@@ -50,35 +52,107 @@ function arr<T extends object>(type: string, items: T[]) {
   return items.map((item, i) => ({ _key: `k${i}`, _type: type, ...item }));
 }
 
-const homeDoc = {
-  _id: "homePage",
-  _type: "homePage",
-  seo: home.seo,
-  hero: home.hero,
-  logoStrip: home.logoStrip,
-  personaSelector: home.personaSelector,
-  personaCards: arr("personaCard", home.personaCards),
-  stepsSection: home.stepsSection,
-  steps: arr("step", home.steps),
-  showcase: {
-    title: home.showcase.title,
-    subhead: home.showcase.subhead,
-    labels: home.showcase.labels,
-    workflow: arr<Card>("card", home.showcase.workflow),
-  },
-  pillarsSection: home.pillarsSection,
-  pillars: arr<Card>("card", home.pillars),
-  bento: {
-    workVisible: home.bento.workVisible,
-    aiInsight: home.bento.aiInsight,
-    stat: home.bento.stat,
-  },
-  faqTitle: home.faqTitle,
-  faq: arr("faq", home.faq),
-  closing: home.closing,
-};
+/**
+ * Screenshots as Sanity image fields (2026-07-25). Uploads each of the four
+ * repo-static PNGs (public/screenshots/*.png) as a Sanity image ASSET,
+ * idempotently: rerunning this script (e.g. every reseed) must not pile up
+ * a fresh duplicate asset per run. The deterministic approach used here is
+ * "query first, upload only on a miss" -- look up an existing
+ * `sanity.imageAsset` by its `originalFilename` (the name Sanity's asset
+ * pipeline stamps from the uploaded filename, stable across runs since the
+ * filename itself never changes) and reuse its `_id` if found; only
+ * `client.assets.upload` when no such asset exists yet. This is simpler
+ * than computing/storing a content hash out-of-band and is exact here
+ * because each of the four filenames is unique and 1:1 with one logical
+ * screenshot -- a real content-hash comparison would only matter if the
+ * same filename could legitimately point at different bytes over time,
+ * which isn't the case for these build assets.
+ */
+async function uploadImageIdempotent(relPath: string): Promise<string> {
+  const filename = basename(relPath);
+  const existing = await client.fetch<{ _id: string } | null>(
+    `*[_type == "sanity.imageAsset" && originalFilename == $filename][0]{_id}`,
+    { filename },
+  );
+  if (existing) {
+    console.log(`[seed-sanity] reusing existing asset for ${filename} (${existing._id})`);
+    return existing._id;
+  }
+  const filePath = join(process.cwd(), "public", relPath);
+  const asset = await client.assets.upload("image", createReadStream(filePath), { filename });
+  console.log(`[seed-sanity] uploaded new asset for ${filename} (${asset._id})`);
+  return asset._id;
+}
 
-function personaDoc(id: string, content: PersonaPageContent) {
+/** Builds a `screenshot` object field value from an already-uploaded asset id. */
+function screenshotField(assetId: string, alt: string, caption?: string) {
+  return {
+    _type: "screenshot",
+    image: { _type: "image", asset: { _type: "reference", _ref: assetId } },
+    alt,
+    ...(caption ? { caption } : {}),
+  };
+}
+
+async function buildHomeDoc() {
+  // The four screenshots this site uses, deduped by underlying asset:
+  // agency's persona-page shot and the home cycler's agency slot are the
+  // SAME analytics-full.png (see ShowcaseCycler.tsx/agency.ts's own
+  // "matches the home cycler" comments), so it is uploaded once here and
+  // its id reused both places -- one asset, multiple document references.
+  const [analyticsFullId, coachCheckinId, consultantHqId, portalBoardId] = await Promise.all([
+    uploadImageIdempotent("/screenshots/analytics-full.png"),
+    uploadImageIdempotent("/screenshots/coach-checkin.png"),
+    uploadImageIdempotent("/screenshots/consultant-hq.png"),
+    uploadImageIdempotent("/screenshots/portal-board.png"),
+  ]);
+
+  const homeDoc = {
+    _id: "homePage",
+    _type: "homePage",
+    seo: home.seo,
+    hero: home.hero,
+    logoStrip: home.logoStrip,
+    personaSelector: home.personaSelector,
+    personaCards: arr("personaCard", home.personaCards),
+    stepsSection: home.stepsSection,
+    steps: arr("step", home.steps),
+    showcase: {
+      title: home.showcase.title,
+      subhead: home.showcase.subhead,
+      labels: home.showcase.labels,
+      workflow: arr<Card>("card", home.showcase.workflow),
+      screenshots: {
+        agency: screenshotField(analyticsFullId, home.showcase.screenshots.agency.alt),
+        coach: screenshotField(coachCheckinId, home.showcase.screenshots.coach.alt),
+        consultant: screenshotField(consultantHqId, home.showcase.screenshots.consultant.alt),
+      },
+    },
+    pillarsSection: home.pillarsSection,
+    pillars: arr<Card>("card", home.pillars),
+    bento: {
+      workVisible: {
+        title: home.bento.workVisible.title,
+        body: home.bento.workVisible.body,
+        features: home.bento.workVisible.features,
+        image: screenshotField(portalBoardId, home.bento.workVisible.image.alt),
+      },
+      aiInsight: home.bento.aiInsight,
+      stat: home.bento.stat,
+    },
+    faqTitle: home.faqTitle,
+    faq: arr("faq", home.faq),
+    closing: home.closing,
+  };
+
+  return { homeDoc, analyticsFullId, coachCheckinId, consultantHqId };
+}
+
+function personaDoc(
+  id: string,
+  content: PersonaPageContent,
+  screenshotAssetId: string,
+) {
   return {
     _id: id,
     _type: "personaPage",
@@ -93,7 +167,7 @@ function personaDoc(id: string, content: PersonaPageContent) {
       intro: content.capabilities.intro,
       cards: arr<Card>("card", content.capabilities.cards),
     },
-    screenshot: content.screenshot,
+    screenshot: screenshotField(screenshotAssetId, content.screenshot.alt, content.screenshot.caption),
     workflow: content.workflow,
     steps: { title: content.steps.title, items: arr("step", content.steps.items) },
     faq: arr("faq", content.faq),
@@ -138,19 +212,25 @@ function legalDoc(id: string, content: LegalPage) {
   };
 }
 
-const documents = [
-  homeDoc,
-  settingsDoc,
-  personaDoc("personaPage-agency", agency),
-  personaDoc("personaPage-coach", coach),
-  personaDoc("personaPage-consultant", consultant),
-  legalDoc("legalPage-privacy", privacy),
-  legalDoc("legalPage-terms", terms),
-  legalDoc("legalPage-security", security),
-  legalDoc("legalPage-cookies", cookies),
-];
-
 async function run() {
+  // Screenshot assets are uploaded/resolved once up front (idempotently --
+  // see uploadImageIdempotent's doc comment) and their ids reused across
+  // whichever documents reference them, rather than re-uploaded per
+  // document.
+  const { homeDoc, analyticsFullId, coachCheckinId, consultantHqId } = await buildHomeDoc();
+
+  const documents = [
+    homeDoc,
+    settingsDoc,
+    personaDoc("personaPage-agency", agency, analyticsFullId),
+    personaDoc("personaPage-coach", coach, coachCheckinId),
+    personaDoc("personaPage-consultant", consultant, consultantHqId),
+    legalDoc("legalPage-privacy", privacy),
+    legalDoc("legalPage-terms", terms),
+    legalDoc("legalPage-security", security),
+    legalDoc("legalPage-cookies", cookies),
+  ];
+
   const tx = client.transaction();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   for (const doc of documents) tx.createOrReplace(doc as any);

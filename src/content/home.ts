@@ -103,6 +103,14 @@ export const home: HomeContent = {
       coach: "coach",
       consultant: "consultant",
     },
+    // Fallback screenshot paths (see src/lib/sanity.ts's fetchHome fallback
+    // contract) -- alts match the ones ShowcaseCycler used to hardcode
+    // directly before screenshots became Sanity image fields.
+    screenshots: {
+      agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
+      coach: { src: "/screenshots/coach-checkin.png", alt: "KINECT coach check-in dashboard" },
+      consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
+    },
     workflow: [
       {
         title: "Ten-minute setup",
@@ -152,6 +160,7 @@ export const home: HomeContent = {
     workVisible: {
       title: "The work, visible",
       body: "Board, list and timeline views your client can actually follow, with AI flagging what is about to slip.",
+      image: { src: "/screenshots/portal-board.png", alt: "KINECT task board" },
     },
     aiInsight: {
       eyebrow: "AI insight",

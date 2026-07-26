@@ -1,6 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Screenshots as Sanity image fields (2026-07-25): product screenshots
+  // now resolve to dereferenced cdn.sanity.io URLs (see src/lib/sanity.ts's
+  // SCREENSHOT_PROJECTION) rather than only local /screenshots/*.png paths,
+  // so next/image needs this host allow-listed or it 400s. `search` is
+  // pinned to the exact `?auto=format` query string the projection always
+  // appends (see this version's stricter remotePatterns doc,
+  // node_modules/next/dist/docs/.../images.md "Query Strings") rather than
+  // left unset -- unset also works (an implicit `**` wildcard) but is
+  // explicitly flagged there as "not recommended" since it would optimize
+  // any query string, not just the one this app ever produces.
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        port: "",
+        pathname: "/images/**",
+        search: "?auto=format",
+      },
+    ],
+  },
   // Task 15: reverse-proxy PostHog so browser calls go to our own origin
   // (`/ph/...`) instead of `*.i.posthog.com` directly -- first-party
   // requests are far less likely to be dropped by ad blockers/browser

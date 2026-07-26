@@ -7,11 +7,15 @@ import { defineField, defineType } from "sanity";
  * (enforced editorially; Sanity has no native "max one document per enum
  * value" constraint).
  *
- * `screenshot` (src/alt/caption) stays plain strings, not a Sanity `image`
- * asset: per the spec's Out-of-Scope note, product screenshots are
- * versioned build assets re-captured from the live app (not editorial
- * uploads), so they continue to live as static files in the repo/public
- * directory and this field only stores the reference path/alt/caption.
+ * `screenshot` uses the shared `screenshot` object (a real Sanity `image`
+ * asset + alt + caption) rather than a hand-typed source path. User-directed
+ * 2026-07-25: reversed from the original "repo-static build asset" decision
+ * (see git history for that prior comment) so editors can upload/replace a
+ * persona's product screenshot from the Studio without a deploy. The
+ * frontend's `src/lib/sanity.ts` projection dereferences `image.asset->url`
+ * back into a plain `src` string, so `PersonaPageContent`'s existing
+ * `{ src, alt, caption }` contract (and every component that consumes it)
+ * is unchanged.
  */
 export default defineType({
   name: "personaPage",
@@ -80,15 +84,8 @@ export default defineType({
     defineField({
       name: "screenshot",
       title: "Screenshot",
-      type: "object",
-      description:
-        "References a static build asset (src/app/*, public/*) rather than a Sanity " +
-        "image upload -- see the schema file's top comment for why.",
-      fields: [
-        defineField({ name: "src", title: "Source Path", type: "string", validation: (r) => r.required() }),
-        defineField({ name: "alt", type: "string", validation: (r) => r.required() }),
-        defineField({ name: "caption", type: "string", validation: (r) => r.required() }),
-      ],
+      type: "screenshot",
+      validation: (r) => r.required(),
     }),
     defineField({
       name: "workflow",

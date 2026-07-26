@@ -70,6 +70,20 @@ export default defineType({
           ],
         }),
         defineField({
+          name: "screenshots",
+          title: "Screenshots (per persona)",
+          type: "object",
+          description:
+            "The three cross-fading product screenshots ShowcaseCycler cycles through, " +
+            "one per persona. Each is a real Sanity image upload (see the shared " +
+            "`screenshot` object type) so editors can replace them without a deploy.",
+          fields: [
+            defineField({ name: "agency", type: "screenshot", validation: (r) => r.required() }),
+            defineField({ name: "coach", type: "screenshot", validation: (r) => r.required() }),
+            defineField({ name: "consultant", type: "screenshot", validation: (r) => r.required() }),
+          ],
+        }),
+        defineField({
           name: "workflow",
           title: "Workflow Callouts",
           type: "array",
@@ -97,7 +111,22 @@ export default defineType({
       title: "Bento",
       type: "object",
       fields: [
-        defineField({ name: "workVisible", title: "Work Visible", type: "card" }),
+        defineField({
+          name: "workVisible",
+          title: "Work Visible",
+          type: "object",
+          description:
+            "Same shape as `card` (title/body/features) plus a required product " +
+            "screenshot -- kept as its own inline object rather than reusing the " +
+            "shared `card` type so the image field doesn't leak into every other " +
+            "card usage (pain/capabilities/pillars/workflow cards have no screenshot).",
+          fields: [
+            defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "body", type: "text", rows: 3, validation: (r) => r.required() }),
+            defineField({ name: "features", title: "Features", type: "array", of: [{ type: "string" }] }),
+            defineField({ name: "image", type: "screenshot", validation: (r) => r.required() }),
+          ],
+        }),
         defineField({
           name: "aiInsight",
           title: "AI Insight",

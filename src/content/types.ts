@@ -102,12 +102,21 @@ export interface HomeContent {
     title: string;
     subhead: string;
     labels: Record<Persona, string>;
+    /**
+     * The three cross-fading screenshots ShowcaseCycler renders, one per
+     * persona. `{ src, alt }` (no caption -- the cycler has no caption UI)
+     * so the component's existing contract is unchanged whether `src`
+     * comes from a dereferenced Sanity image asset or a local /screenshots
+     * fallback path.
+     */
+    screenshots: Record<Persona, { src: string; alt: string }>;
     workflow: Card[];
   };
   pillarsSection: { title: string; intro: string };
   pillars: Card[];
   bento: {
-    workVisible: Card;
+    /** Same as `Card` plus the bento tile's product screenshot. */
+    workVisible: Card & { image: { src: string; alt: string } };
     aiInsight: { eyebrow: string; quote: string };
     stat: { value: string; caption: string };
   };

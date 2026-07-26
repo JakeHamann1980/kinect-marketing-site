@@ -21,31 +21,27 @@ import { cn } from "@/lib/cn";
  * auto-cycling. Screenshots are 2x captures sharing a fixed 2962:1996
  * aspect-ratio stage with `object-fit: cover`, so each is cropped/cover-fit
  * identically regardless of its native width.
+ *
+ * Screenshots as Sanity image fields (2026-07-25): the three images used to
+ * be hardcoded here (`SCREENSHOTS`, see git history). They are now a prop
+ * (`home.showcase.screenshots`, fetched by page.tsx via `fetchHome` --
+ * either a dereferenced Sanity `cdn.sanity.io` URL or the local
+ * /screenshots/*.png fallback path, both already resolved to the same
+ * `{ src, alt }` shape by src/lib/sanity.ts's projection / src/content/
+ * home.ts's fallback) so editors can replace a persona's screenshot from
+ * the Studio without a deploy.
  */
-const SCREENSHOTS: Record<Persona, { src: string; alt: string }> = {
-  /* user-directed 2026-07-25: agency slot shows the analytics dashboard so
-     all three rotating shots are the same view type (dashboards); the
-     agency PAGE keeps the task-board shot. analytics-full is 2918x1996 vs
-     the stage's 2962/1996 ratio -- 1.5% narrower, absorbed by fill+cover. */
-  agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
-  /* user-directed 2026-07-25: the handoff's coach-hq.png was a mislabeled
-     export (it contained the CONSULTANT Practice HQ view -- Northwind
-     Logistics, Advisory badge). coach-checkin.png is the genuine coach
-     view (Coaching HQ, weekly check-in), cropped to the frame's ratio
-     (2356x1588 = top band; the source's bottom third was empty canvas). */
-  coach: { src: "/screenshots/coach-checkin.png", alt: "KINECT coach check-in dashboard" },
-  consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
-};
-
 const LAYER_CLASS: readonly string[] = ["kx-cyc", "kx-cyc kx-cyc-2", "kx-cyc kx-cyc-3"];
 const LABEL_CLASS: readonly string[] = ["kx-lab", "kx-lab kx-lab-2", "kx-lab kx-lab-3"];
 
 interface ShowcaseCyclerProps {
   /** home.showcase.labels -- persona -> display label ("agency", "coach", "consultant"). */
   labels: Record<Persona, string>;
+  /** home.showcase.screenshots -- persona -> { src, alt } for the cycling screenshots. */
+  images: Record<Persona, { src: string; alt: string }>;
 }
 
-export default function ShowcaseCycler({ labels }: ShowcaseCyclerProps) {
+export default function ShowcaseCycler({ labels, images }: ShowcaseCyclerProps) {
   const [state, setState] = useState<CyclerState>({ pinned: null });
   const pinClass = state.pinned !== null ? `kx-pin-${state.pinned + 1}` : "";
 
@@ -60,8 +56,8 @@ export default function ShowcaseCycler({ labels }: ShowcaseCyclerProps) {
           {PERSONA_IDS.map((persona, i) => (
             <Image
               key={persona}
-              src={SCREENSHOTS[persona].src}
-              alt={SCREENSHOTS[persona].alt}
+              src={images[persona].src}
+              alt={images[persona].alt}
               fill
               sizes="(max-width: 860px) 100vw, 880px"
               className={LAYER_CLASS[i]}

@@ -114,8 +114,8 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
             </p>
             <div className="relative aspect-[2962/1996] overflow-hidden rounded-t-[12px] border border-border shadow-[0_-8px_30px_rgba(12,18,32,.1)]">
               <Image
-                src="/screenshots/portal-board.png"
-                alt="KINECT task board"
+                src={bento.workVisible.image.src}
+                alt={bento.workVisible.image.alt}
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover"

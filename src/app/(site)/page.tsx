@@ -271,7 +271,7 @@ export default async function Home() {
         />
         <div className="relative mx-auto max-w-[1080px] text-center">
           <div className="mb-[54px]">
-            <ShowcaseCycler labels={home.showcase.labels} />
+            <ShowcaseCycler labels={home.showcase.labels} images={home.showcase.screenshots} />
           </div>
 
           <SectionHead context="dark">{home.showcase.title}</SectionHead>

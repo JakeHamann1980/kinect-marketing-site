@@ -75,6 +75,25 @@ const STEP_PROJECTION = `{number, title, body}`;
 const FAQ_PROJECTION = `{question, answer}`;
 
 /**
+ * Reshapes the shared `screenshot` object (a Sanity `image` asset + alt [+
+ * caption]) back into the plain `{ src, alt[, caption] }` shape every
+ * component already consumes, so ShowcaseCycler/PersonaPage/PillarCards
+ * needed zero changes to their prop *shape* -- only to where that shape
+ * comes from. `image.asset->url` is the dereferenced CDN URL
+ * (cdn.sanity.io); `?auto=format` asks Sanity's image pipeline to serve the
+ * best format the requester's `Accept` header supports (matches Sanity's
+ * own documented image-URL best practice, see `sanity/schemas/objects/
+ * screenshot.ts`) before Next's own image optimizer applies its further
+ * width/format transform on top. No fixed `w`/`fit` params are appended:
+ * Next's default loader already requests its own set of widths for the
+ * `sizes` each component declares, and a fixed width here would just fight
+ * that. `alt`/`caption` pass through unprojected -- string fields at the
+ * same key name.
+ */
+const SCREENSHOT_SRC = `image.asset->url + "?auto=format"`;
+const SCREENSHOT_PROJECTION = `{"src": ${SCREENSHOT_SRC}, alt}`;
+
+/**
  * Reshapes the `homePage` document back into the exact `HomeContent` shape
  * (see src/content/types.ts) -- explicit field lists rather than `...` so
  * Sanity system fields (`_id`, `_type`, `_rev`, `_createdAt`, `_updatedAt`)
@@ -90,12 +109,20 @@ const HOME_PROJECTION = `{
   "steps": steps[]${STEP_PROJECTION},
   showcase{
     title, subhead, labels,
-    "workflow": workflow[]${CARD_PROJECTION}
+    "workflow": workflow[]${CARD_PROJECTION},
+    screenshots{
+      "agency": agency${SCREENSHOT_PROJECTION},
+      "coach": coach${SCREENSHOT_PROJECTION},
+      "consultant": consultant${SCREENSHOT_PROJECTION}
+    }
   },
   pillarsSection,
   "pillars": pillars[]${CARD_PROJECTION},
   bento{
-    "workVisible": workVisible${CARD_PROJECTION},
+    workVisible{
+      title, body, features,
+      "image": image${SCREENSHOT_PROJECTION}
+    },
     aiInsight, stat
   },
   faqTitle,
@@ -127,7 +154,7 @@ const PERSONA_PROJECTION = `{
   persona, seo, hero, heroExtra, navBadge,
   pain{title, "cards": cards[]${CARD_PROJECTION}},
   capabilities{title, intro, "cards": cards[]${CARD_PROJECTION}},
-  screenshot,
+  screenshot{"src": ${SCREENSHOT_SRC}, alt, caption},
   workflow,
   steps{title, "items": items[]${STEP_PROJECTION}},
   "faq": faq[]${FAQ_PROJECTION},
