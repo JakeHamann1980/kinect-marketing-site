@@ -1,5 +1,6 @@
 import { spawn, type ChildProcessByStdio } from "node:child_process";
 import http from "node:http";
+import net from "node:net";
 import type { Readable } from "node:stream";
 
 /**
@@ -27,9 +28,64 @@ import type { Readable } from "node:stream";
  * package.json, which always runs `next build` first).
  */
 
-const PORT = 4319; // script-chosen; avoid the dev server's default 3000.
-const ORIGIN = `http://127.0.0.1:${PORT}`;
 const ORG_ID = "https://kinectnow.com/#org";
+
+/** Set once by `pickPort()` in `main()`, before the server spawns or `get()`
+ * is ever called. */
+let PORT = 0;
+
+/**
+ * Chore (post-Task-20 review): port-collision guard. `next start` gives no
+ * clean signal when its requested port is already bound by something
+ * else -- it just logs and exits non-zero, and this script used to spawn
+ * it against a single hardcoded port (4319) with no check that the port
+ * was actually free or that the child was still alive before probing.
+ * A collision (e.g. a stray previous run, another `next start`, or any
+ * other process squatting 4319) produced a confusing failure: `get()`
+ * either connects to the WRONG server (whatever already owned the port)
+ * and reports bogus JSON-LD mismatches, or the health-check polling loop
+ * just burns the full 30s timeout before failing with a vague "did not
+ * become ready" message that doesn't point at the real cause.
+ *
+ * Fix, simplest-robust per the brief: bind an ephemeral port ourselves
+ * first (`net.createServer().listen(0, ...)`), read back whatever port the
+ * OS handed us, close that probe server, and pass that specific port to
+ * `next start`. This doesn't eliminate an inherent TOCTOU race (something
+ * else could bind the exact same port in the gap between our probe
+ * closing and `next start` binding it), which is why the second half of
+ * the guard matters just as much: `main()` now tracks the child's `exit`
+ * event and treats any exit before the health check succeeds as fatal,
+ * surfacing the child's captured stdout/stderr immediately instead of
+ * waiting out the rest of the timeout. Between the two, a genuine port
+ * collision now fails fast with a clear, actionable message pointing at
+ * the port and the server's own output, rather than a silent bogus pass
+ * or an opaque timeout.
+ *
+ * `VALIDATE_JSONLD_PORT` is an internal override (not part of the public
+ * `npm run validate:jsonld` contract) used only to reproduce the
+ * port-in-use failure path in isolation -- see the verification note in
+ * this chore's commit message.
+ */
+async function pickPort(): Promise<number> {
+  const override = process.env.VALIDATE_JSONLD_PORT;
+  if (override) return Number(override);
+
+  return new Promise((resolve, reject) => {
+    const probe = net.createServer();
+    probe.unref();
+    probe.on("error", reject);
+    probe.listen(0, "127.0.0.1", () => {
+      const address = probe.address();
+      if (address === null || typeof address === "string") {
+        probe.close();
+        reject(new Error("pickPort: could not determine an ephemeral port"));
+        return;
+      }
+      const { port } = address;
+      probe.close((err) => (err ? reject(err) : resolve(port)));
+    });
+  });
+}
 
 interface PageTarget {
   label: string;
@@ -61,6 +117,15 @@ function get(target: { host: string; path: string }): Promise<{ status: number; 
         path: target.path,
         method: "GET",
         headers: { Host: target.host },
+        // Port-collision guard: bounds every poll to a few seconds so a
+        // stray process that accepts the TCP connection but never answers
+        // (e.g. something else already squatting the port, holding it open
+        // without speaking HTTP) can't starve `waitForServer`'s early-exit
+        // check by leaving this promise pending indefinitely. Without this,
+        // one hung `get()` call blocks the loop from ever re-checking
+        // whether `next start` has already died, defeating the whole point
+        // of that check.
+        timeout: 3_000,
       },
       (res) => {
         let body = "";
@@ -69,15 +134,27 @@ function get(target: { host: string; path: string }): Promise<{ status: number; 
         res.on("end", () => resolve({ status: res.statusCode ?? 0, body }));
       },
     );
+    req.on("timeout", () => req.destroy(new Error(`request to 127.0.0.1:${PORT} timed out waiting for a response`)));
     req.on("error", reject);
     req.end();
   });
 }
 
-async function waitForServer(timeoutMs: number): Promise<void> {
+/**
+ * Polls the server until it answers or `timeoutMs` elapses. `getEarlyExit`
+ * is checked on every iteration (and once more after the loop) so a child
+ * process that has already died -- e.g. `next start` exiting immediately
+ * with EADDRINUSE because something else grabbed the port -- fails fast
+ * with the captured process output instead of silently retrying for the
+ * rest of the timeout window and reporting a generic "did not become
+ * ready" message that hides the real cause.
+ */
+async function waitForServer(timeoutMs: number, getEarlyExit: () => Error | null): Promise<void> {
   const deadline = Date.now() + timeoutMs;
   let lastError: unknown;
   while (Date.now() < deadline) {
+    const early = getEarlyExit();
+    if (early) throw early;
     try {
       const { status } = await get({ host: "kinectnow.com", path: "/" });
       if (status > 0) return;
@@ -86,8 +163,10 @@ async function waitForServer(timeoutMs: number): Promise<void> {
     }
     await new Promise((r) => setTimeout(r, 300));
   }
+  const early = getEarlyExit();
+  if (early) throw early;
   throw new Error(
-    `Server did not become ready on ${ORIGIN} within ${timeoutMs}ms. Last error: ${String(lastError)}`,
+    `Server did not become ready on http://127.0.0.1:${PORT} within ${timeoutMs}ms. Last error: ${String(lastError)}`,
   );
 }
 
@@ -201,19 +280,35 @@ async function main() {
   let shuttingDown = false;
 
   try {
+    PORT = await pickPort();
+
     server = spawn("npx", ["next", "start", "-p", String(PORT)], {
       stdio: ["ignore", "pipe", "pipe"],
     });
     let serverOutput = "";
     server.stdout.on("data", (d) => (serverOutput += String(d)));
     server.stderr.on("data", (d) => (serverOutput += String(d)));
-    server.on("exit", (code) => {
-      if (!shuttingDown && code !== null && code !== 0) {
-        console.error(`next start exited unexpectedly with code ${code}:\n${serverOutput}`);
-      }
+
+    // Port-collision guard (chore, post-Task-20 review): if `next start`
+    // exits before the health check below ever succeeds, that is always
+    // fatal -- most commonly because port `PORT` was already bound by
+    // something else in the gap between `pickPort()`'s probe closing and
+    // `next start` opening its own listener, but a real build/startup
+    // failure produces the same shape too. Either way, capture it here so
+    // `waitForServer` can fail immediately with the real cause instead of
+    // burning the rest of its timeout retrying a socket nothing is
+    // listening on.
+    let earlyExitError: Error | null = null;
+    server.on("exit", (code, signal) => {
+      if (shuttingDown) return; // our own server.kill() below, not a crash.
+      earlyExitError = new Error(
+        `next start exited before the port-${PORT} health check ever succeeded ` +
+          `(code ${code}, signal ${signal}). This almost always means port ${PORT} ` +
+          `was already in use, or the server failed to start. Captured output:\n${serverOutput}`,
+      );
     });
 
-    await waitForServer(30_000);
+    await waitForServer(30_000, () => earlyExitError);
 
     for (const target of TARGETS) {
       await checkPage(target, failures);
