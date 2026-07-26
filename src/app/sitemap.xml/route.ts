@@ -52,6 +52,13 @@ ${urls.map((loc) => `  <url>\n    <loc>${loc}</loc>\n  </url>`).join("\n")}
 `;
 
   return new Response(body, {
-    headers: { "Content-Type": "application/xml" },
+    headers: {
+      "Content-Type": "application/xml",
+      // Pre-step (Task 19 review): sitemaps change rarely (new pages,
+      // occasional legal-slug additions) -- an hour of shared/edge caching
+      // plus a day of stale-while-revalidate keeps crawlers off the origin
+      // for every hostname without ever serving badly stale content.
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+    },
   });
 }
