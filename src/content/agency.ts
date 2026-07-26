@@ -59,11 +59,16 @@ export const agency: PersonaPageContent = {
     ],
   },
 
+  // user-directed 2026-07-25: agency page shows the analytics dashboard so
+  // it matches the home cycler's agency slot (all screenshot surfaces now
+  // show the same view per persona). The task board lives on in the home
+  // bento's "work, visible" card. Caption is NEW copy (drafted to match the
+  // analytics view), pending Jake's read.
   screenshot: {
-    src: "/screenshots/portal-board.png",
-    alt: "KINECT client portal board",
+    src: "/screenshots/analytics-full.png",
+    alt: "KINECT agency analytics dashboard",
     caption:
-      "Kanban, list and timeline views, with the AI flagging what is about to slip.",
+      "Performance, time and budget in one view, with the AI explaining what moved and why.",
   },
 
   workflow: {
