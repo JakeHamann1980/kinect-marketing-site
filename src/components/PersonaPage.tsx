@@ -12,7 +12,7 @@ import PricingSection from "@/components/PricingSection";
 import { Faq } from "@/components/Faq";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { settings } from "@/content/settings";
+import { fetchSettings } from "@/lib/sanity";
 import { renderWithGradient } from "@/lib/renderWithGradient";
 import type { PersonaPageContent } from "@/content/types";
 import { cn } from "@/lib/cn";
@@ -132,8 +132,19 @@ function AccentEyebrow({ children, className }: { children: ReactNode; className
  *      closing section, `PersonaPageContent["closing"]` carries no primary
  *      CTA label of its own -- the same resolution the home page's closing
  *      section already documents for the identical gap.
+ *
+ * Task 18 (Seed Script + Page Wiring + Revalidation): `content` (the page
+ * body -- hero, pain, capabilities, workflow, steps, FAQ, closing) is
+ * fetched by the caller (`fetchPersona`, see src/app/(site)/agency|coach|
+ * consultant/page.tsx) and passed in as before; `settings.pricing` (section
+ * 7 below) is fetched here directly instead, the same self-contained
+ * approach Footer.tsx takes, since all three persona routes share this one
+ * template and would otherwise each need to duplicate the same
+ * `fetchSettings()` call and prop.
  */
-export default function PersonaPage({ content }: PersonaPageProps) {
+export default async function PersonaPage({ content }: PersonaPageProps) {
+  const settings = await fetchSettings();
+
   return (
     <div data-persona={content.persona}>
       {/* Task 20: FAQPage JSON-LD for this persona's own FAQ section (spec

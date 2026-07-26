@@ -14,20 +14,31 @@ import PricingSection from "@/components/PricingSection";
 import { Faq } from "@/components/Faq";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { home } from "@/content/home";
-import { settings } from "@/content/settings";
+import { fetchHome, fetchSettings } from "@/lib/sanity";
 import { renderWithGradient } from "@/lib/renderWithGradient";
 import { cn } from "@/lib/cn";
 import { faqPageLd } from "@/lib/jsonld";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
 
+// Task 18 (Seed Script + Page Wiring + Revalidation): fully static, on
+// -demand revalidated by the "content" tag (see fetchHome/fetchSettings in
+// src/lib/sanity.ts and src/app/api/revalidate/route.ts) rather than any
+// time-based schedule -- there is no content that changes on its own here,
+// only editor-driven Sanity mutations.
+export const revalidate = false;
+
 // Task 19: canonical for the root domain's home page is the apex origin
 // itself (spec §8b/§2 -- canonicals point at the production subdomain/apex
-// URLs, never a path variant).
-export const metadata = pageMetadata({
-  seo: home.seo,
-  canonicalUrl: `${SITE_URL}/`,
-});
+// URLs, never a path variant). Task 18: metadata now comes from the fetched
+// (Sanity-or-local-fallback) `seo` field rather than the local module
+// directly, via its own dedicated `generateMetadata` fetch (Next calls
+// `generateMetadata` and the page component independently, so each fetches
+// its own copy of `home` -- both go through the same cached `fetchHome()`
+// call, deduped by Next's per-request fetch memoization).
+export async function generateMetadata() {
+  const home = await fetchHome();
+  return pageMetadata({ seo: home.seo, canonicalUrl: `${SITE_URL}/` });
+}
 
 /**
  * Workflow-grid icon glyphs (Section 5, "fits how you already work"),
@@ -116,8 +127,16 @@ function WorkflowCell({
  * counts instead use the new kx-sm/kx-md/kx-lg Tailwind breakpoints (see
  * globals.css `@theme` block) added in this same task for exactly this
  * purpose.
+ *
+ * Task 18 (Seed Script + Page Wiring + Revalidation): the page body below
+ * fetches its own `home`/`settings` (Sanity-or-local-fallback -- see
+ * src/lib/sanity.ts) rather than importing the local content modules
+ * directly, so every section (hero, persona cards, steps, showcase,
+ * pillars, pricing, FAQ, closing) is editable from the Studio.
  */
-export default function Home() {
+export default async function Home() {
+  const [home, settings] = await Promise.all([fetchHome(), fetchSettings()]);
+
   return (
     <>
       {/* Task 20: FAQPage JSON-LD for this page's own FAQ section (spec

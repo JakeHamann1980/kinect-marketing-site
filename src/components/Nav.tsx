@@ -66,6 +66,21 @@ interface NavProps {
 }
 
 /**
+ * Task 18 (Seed Script + Page Wiring + Revalidation) content boundary: Nav
+ * keeps its direct `settings`/`home` imports rather than fetching from
+ * Sanity. Nav is a Client Component (`"use client"` above), so wiring it to
+ * Sanity would mean either fetching client-side (an extra request +
+ * loading-state complexity for content that never changes per visit) or
+ * threading `navLinks`/`solutions`/the CTA label down as props from every
+ * page that mounts Nav/PersonaPage -- invasive for what is near-static site
+ * chrome (three nav links, three solutions rows, one CTA label), not
+ * per-page marketing copy. The controller's explicit call: page BODY
+ * content (hero, cards, FAQ, pricing, legal prose, SEO -- see
+ * src/lib/sanity.ts's fetchers) comes from Sanity; this chrome stays local
+ * for now. Making it Sanity-editable too is a reasonable follow-up (e.g. a
+ * small client-side fetch with a static-content cache, or lifting Nav's
+ * data need into a server-rendered slot), just out of scope here.
+ *
  * Sticky site nav: transparent over the hero, gains a blurred dark
  * background once scrolled past (see useStuck + globals.css #kx-nav rules).
  * Houses the Solutions dropdown (hover + keyboard focus) and, below 860px,

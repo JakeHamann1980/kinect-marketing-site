@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Lockup from "@/components/Lockup";
 import { CookiePreferencesButton } from "@/components/ConsentBanner";
-import { settings } from "@/content/settings";
+import { fetchSettings } from "@/lib/sanity";
 
 /**
  * Social icon glyphs recovered verbatim from `design-reference/KINECT
@@ -99,8 +99,19 @@ const LEGAL_HREFS: Record<string, string> = {
  * column links are `#A2ABBC` instead (closer to `on-dark-3`), which reads
  * as a handoff/prototype discrepancy rather than the intended value --
  * README wins per the established precedent.
+ *
+ * Task 18 (Seed Script + Page Wiring + Revalidation): footer content
+ * (positioning line, columns, legal links, copyright) now comes from
+ * `fetchSettings()` rather than importing `settings` directly. Unlike Nav
+ * (a Client Component -- see its own doc comment for why its `settings`
+ * import stays local/static), Footer is a Server Component with no props of
+ * its own today, so fetching here directly is a self-contained, zero
+ * -signature-change way to make its content Sanity-editable without
+ * prop-drilling `settings` through home/persona/legal page.tsx (8 call
+ * sites) for a value every one of them would pass identically.
  */
-export default function Footer() {
+export default async function Footer() {
+  const settings = await fetchSettings();
   const { positioning, columns, legalLinks, copyright } = settings.footer;
 
   return (

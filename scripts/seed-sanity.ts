@@ -1,0 +1,165 @@
+/**
+ * Task 18 (Seed Script + Page Wiring + Revalidation). Maps the local content
+ * modules -- which remain the seed source AND the type contract, per the
+ * controller's graceful-fallback design decision (see src/lib/sanity.ts's
+ * own top comment) -- onto Sanity documents with stable ids, via
+ * `createOrReplace` (so reseeding is idempotent: rerunning this script
+ * overwrites the same nine documents rather than duplicating them).
+ *
+ * Run via `npm run seed:sanity`, which is
+ * `sanity exec scripts/seed-sanity.ts --with-user-token`: `--with-user-token`
+ * has the CLI attach the current `sanity login` session's auth token to the
+ * client `getCliClient()` returns below, so there is no separate token to
+ * manage or leak -- the design decision the controller made for this task.
+ * `getCliClient` (from `sanity/cli`, only resolvable inside a `sanity exec`
+ * context) also reads projectId/dataset from sanity.cli.ts, so this script
+ * needs no env vars of its own.
+ *
+ * Field mapping mirrors the Task 17 schemas (sanity/schemas/*) exactly --
+ * every content module field lines up 1:1 with its schema field (both were
+ * written to mirror `src/content/types.ts` / `src/content/legal/types.ts`),
+ * so the only real work here is:
+ *   1. attaching `_id`/`_type` to each document, and
+ *   2. stamping `_type` + `_key` onto every array-of-object field, matching
+ *      the `of: [{ type: "..." }]` the schema declares for that array, so
+ *      the Studio can render/reorder/edit each item after seeding (the
+ *      write API itself doesn't require this, but omitting it leaves items
+ *      the Studio can't recognize until a manual re-save backfills keys).
+ *      Arrays of primitives (`features: string[]`, `proofPoints`, `items`
+ *      chip lists, legal `paragraphs`) are left as plain arrays -- Sanity
+ *      has no `_key`/`_type` concept for scalar array members.
+ */
+import { getCliClient } from "sanity/cli";
+
+import { home } from "../src/content/home";
+import { settings } from "../src/content/settings";
+import { agency } from "../src/content/agency";
+import { coach } from "../src/content/coach";
+import { consultant } from "../src/content/consultant";
+import { privacy } from "../src/content/legal/privacy";
+import { terms } from "../src/content/legal/terms";
+import { security } from "../src/content/legal/security";
+import { cookies } from "../src/content/legal/cookies";
+import type { Card, PersonaPageContent } from "../src/content/types";
+import type { LegalPage } from "../src/content/legal/types";
+
+const client = getCliClient({ apiVersion: "2026-07-25" });
+
+/** Stamps `_type` + `_key` onto each item of an array-of-objects field. */
+function arr<T extends object>(type: string, items: T[]) {
+  return items.map((item, i) => ({ _key: `k${i}`, _type: type, ...item }));
+}
+
+const homeDoc = {
+  _id: "homePage",
+  _type: "homePage",
+  seo: home.seo,
+  hero: home.hero,
+  logoStrip: home.logoStrip,
+  personaSelector: home.personaSelector,
+  personaCards: arr("personaCard", home.personaCards),
+  stepsSection: home.stepsSection,
+  steps: arr("step", home.steps),
+  showcase: {
+    title: home.showcase.title,
+    subhead: home.showcase.subhead,
+    labels: home.showcase.labels,
+    workflow: arr<Card>("card", home.showcase.workflow),
+  },
+  pillarsSection: home.pillarsSection,
+  pillars: arr<Card>("card", home.pillars),
+  bento: {
+    workVisible: home.bento.workVisible,
+    aiInsight: home.bento.aiInsight,
+    stat: home.bento.stat,
+  },
+  faqTitle: home.faqTitle,
+  faq: arr("faq", home.faq),
+  closing: home.closing,
+};
+
+function personaDoc(id: string, content: PersonaPageContent) {
+  return {
+    _id: id,
+    _type: "personaPage",
+    persona: content.persona,
+    seo: content.seo,
+    hero: content.hero,
+    heroExtra: content.heroExtra,
+    navBadge: content.navBadge,
+    pain: { title: content.pain.title, cards: arr<Card>("card", content.pain.cards) },
+    capabilities: {
+      title: content.capabilities.title,
+      intro: content.capabilities.intro,
+      cards: arr<Card>("card", content.capabilities.cards),
+    },
+    screenshot: content.screenshot,
+    workflow: content.workflow,
+    steps: { title: content.steps.title, items: arr("step", content.steps.items) },
+    faq: arr("faq", content.faq),
+    closing: content.closing,
+  };
+}
+
+const settingsDoc = {
+  _id: "siteSettings",
+  _type: "siteSettings",
+  navLinks: arr("navLink", settings.navLinks),
+  solutions: arr("solutionsEntry", settings.solutions),
+  pricing: {
+    headline: settings.pricing.headline,
+    supporting: settings.pricing.supporting,
+    tiers: arr("tier", settings.pricing.tiers),
+    note: settings.pricing.note,
+  },
+  footer: {
+    positioning: settings.footer.positioning,
+    columns: arr(
+      "footerColumn",
+      settings.footer.columns.map((column) => ({
+        heading: column.heading,
+        links: arr("footerLink", column.links),
+      })),
+    ),
+    legalLinks: arr("legalLink", settings.footer.legalLinks),
+    copyright: settings.footer.copyright,
+  },
+};
+
+function legalDoc(id: string, content: LegalPage) {
+  return {
+    _id: id,
+    _type: "legalPage",
+    slug: content.slug,
+    title: content.title,
+    updated: content.updated,
+    sections: arr("legalSection", content.sections),
+    seo: content.seo,
+  };
+}
+
+const documents = [
+  homeDoc,
+  settingsDoc,
+  personaDoc("personaPage-agency", agency),
+  personaDoc("personaPage-coach", coach),
+  personaDoc("personaPage-consultant", consultant),
+  legalDoc("legalPage-privacy", privacy),
+  legalDoc("legalPage-terms", terms),
+  legalDoc("legalPage-security", security),
+  legalDoc("legalPage-cookies", cookies),
+];
+
+async function run() {
+  const tx = client.transaction();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  for (const doc of documents) tx.createOrReplace(doc as any);
+  await tx.commit();
+  console.log(`[seed-sanity] seeded ${documents.length} documents:`);
+  for (const doc of documents) console.log(`  - ${doc._id}`);
+}
+
+run().catch((err) => {
+  console.error("[seed-sanity] failed:", err);
+  process.exit(1);
+});

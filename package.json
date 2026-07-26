@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "validate:jsonld": "node scripts/validate-jsonld.ts",
-    "build:check": "next build && tsc --noEmit && vitest run && npm run validate:jsonld"
+    "build:check": "next build && tsc --noEmit && vitest run && npm run validate:jsonld",
+    "seed:sanity": "sanity exec scripts/seed-sanity.ts --with-user-token"
   },
   "dependencies": {
     "@sanity/vision": "^6.6.0",

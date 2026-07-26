@@ -18,6 +18,19 @@ import { test, expect } from "@playwright/test";
  * root, which is exactly what the proxy's Task 21 narrowing (redirect only
  * fires on the exact persona root, "/coach", not anything nested under it)
  * is meant to exercise.
+ *
+ * Task 18 (Seed Script + Page Wiring + Revalidation) fix: this test
+ * previously hardcoded the literal path `/coach/opengraph-image`, but Next's
+ * `opengraph-image.tsx` file convention actually serves that route at a
+ * content-hashed sibling path (e.g. `/coach/opengraph-image-1yemz3`) --
+ * confirmed pre-existing on the base commit this task started from (639e492),
+ * so it isn't something Task 18's page-wiring changes introduced, just the
+ * first `test:e2e` run to actually exercise this assertion end to end. Rather
+ * than hardcode a build-specific hash, the test now discovers the real path
+ * from the rendered page's own `og:image` meta tag (absolute, pointing at
+ * this exact hashed route -- see src/lib/og-template.tsx/opengraph-image.tsx),
+ * then confirms requesting that real deep path on the apex host serves it in
+ * place with no redirect, same intent as before.
  */
 
 const PROD_ROOT = "kinectnow.com";
@@ -48,7 +61,19 @@ test("persona root on the production apex host redirects (308) to the persona su
 test("a deep path under a persona segment on the apex host serves in place (no redirect)", async ({
   request,
 }) => {
-  const res = await request.get("/coach/opengraph-image", {
+  // Discover the real (content-hashed) opengraph-image path for /coach from
+  // the rendered page's own og:image meta tag -- see this file's top-level
+  // doc comment. `coach.localhost` is used purely to render the page
+  // without hitting the apex-host persona-root redirect (test above); the
+  // hashed path itself is host-independent (SITE_URL-absolute).
+  const pageRes = await request.get("/", { headers: { Host: "coach.localhost:3200" } });
+  const html = await pageRes.text();
+  const match = html.match(/property="og:image" content="([^"]+)"/);
+  expect(match).not.toBeNull();
+  const ogImageUrl = new URL(match![1]);
+  expect(ogImageUrl.pathname).not.toBe("/coach");
+
+  const res = await request.get(`${ogImageUrl.pathname}${ogImageUrl.search}`, {
     headers: { Host: PROD_ROOT },
     maxRedirects: 0,
   });

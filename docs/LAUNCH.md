@@ -13,7 +13,7 @@ npm run build:check && npm run test:e2e
 ## 1. Infrastructure
 
 - [ ] **[Jake]** Vercel project created; domains attached: `kinectnow.com`, `agency.`, `coach.`, `consultant.kinectnow.com` (plus `www.kinectnow.com` pointed at the same project; the proxy 308s it to apex).
-- [ ] **[both]** Env vars set in Vercel (see `.env.example`): `NEXT_PUBLIC_POSTHOG_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, Sanity vars (Task 17-18).
+- [ ] **[both]** Env vars set in Vercel (see `.env.example`): `NEXT_PUBLIC_POSTHOG_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, `NEXT_PUBLIC_SANITY_PROJECT_ID=gxxphuan`, `NEXT_PUBLIC_SANITY_DATASET=production`, `SANITY_REVALIDATE_SECRET` (Task 17-18; no read token needed -- the dataset is public, see `.env.example`'s own comment).
 - [ ] **[Jake]** DNS: apex + www + three persona subdomains → Vercel.
 
 ## 2. Data & email
@@ -22,10 +22,20 @@ npm run build:check && npm run test:e2e
 - [ ] **[Jake]** Resend: verify `kinectnow.com` as sending domain (SPF + DKIM records); confirm `hello@kinectnow.com` works as from-address.
 - [ ] **[dev]** End-to-end waitlist test with real creds: submit → row appears in `waitlist_signups` with persona/UTM → confirmation email arrives → duplicate submit returns the "already on the list" state.
 
-## 3. CMS (Tasks 17–18, currently pending Sanity access)
+## 3. CMS (Tasks 17–18)
 
-- [ ] **[Jake]** Sanity login/token for project creation.
-- [ ] **[dev]** Schemas + Studio deployed; production dataset seeded from the content modules; revalidation webhook configured; Studio access granted to the team.
+- [x] **[Jake]** Sanity login/token for project creation.
+- [x] **[dev]** Schemas + Studio deployed; `production` dataset flipped to public visibility and seeded from the content modules (`npm run seed:sanity`) with all 9 documents confirmed (`homePage`, `siteSettings`, 3 `personaPage-*`, 4 `legalPage-*`).
+- [ ] **[dev]** Revalidation webhook (below) -- `sanity hooks create` requires interactive prompts (no non-interactive flags for dataset/URL/triggers/secret in this CLI version, confirmed via `--help`), so it wasn't run headlessly here. Create it once via the Sanity manage console instead:
+  1. Go to `https://www.sanity.io/manage/project/gxxphuan/api/webhooks` (or `npx sanity hooks create` interactively from a terminal).
+  2. **Name**: `content-revalidate` (or similar). **Dataset**: `production`.
+  3. **URL**: `https://kinectnow.com/api/revalidate`.
+  4. **Trigger on**: Create, Update, Delete (all three).
+  5. **HTTP method**: POST. **API version**: `v2021-03-25` or later (any recent version -- the payload is just used for its `_id`).
+  6. **Secret**: the exact value of `SANITY_REVALIDATE_SECRET` from the deploy's env vars (generate locally with `openssl rand -hex 32` if the one in `.env.local` shouldn't carry over to prod; either way it must byte-match what's set in Vercel).
+  7. Leave "Include drafts" off (published dataset only -- this project has no draft workflow).
+  8. Save, then trigger any document edit in the Studio and confirm the webhook's delivery log (same manage console page) shows a `200` from `/api/revalidate`.
+- [ ] **[Jake]** Studio access granted to the team (invite collaborators in the Sanity manage console).
 
 ## 4. Analytics
 

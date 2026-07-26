@@ -7,7 +7,12 @@ import { terms } from "@/content/legal/terms";
 import { security } from "@/content/legal/security";
 import { cookies } from "@/content/legal/cookies";
 import type { LegalPage } from "@/content/legal/types";
+import { fetchLegal } from "@/lib/sanity";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
+
+// Task 18 (Seed Script + Page Wiring + Revalidation): fully static,
+// tag-based on-demand revalidation only.
+export const revalidate = false;
 
 /**
  * Task 14 (Legal Pages): a single light-prose template shared by all four
@@ -41,13 +46,19 @@ export function generateStaticParams() {
 // proxy passes through untouched on every hostname (see src/proxy.ts's
 // "shared routes (legal, api) serve as-is" branch), so there is no
 // subdomain variant to canonicalize toward the way persona pages do.
+// Task 18: the page content/seo now comes from `fetchLegal(slug)`
+// (Sanity-or-local-fallback -- see src/lib/sanity.ts); `PAGES` above still
+// supplies the definitive list of the four known slugs for
+// `generateStaticParams` and the "unknown slug" 404 check, since that list
+// doesn't change independent of Sanity content.
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const page = PAGES[slug];
+  if (!PAGES[slug]) return {};
+  const page = await fetchLegal(slug);
   if (!page) return {};
   return pageMetadata({
     seo: page.seo,
@@ -61,7 +72,8 @@ export default async function LegalPageRoute({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const page = PAGES[slug];
+  if (!PAGES[slug]) notFound();
+  const page = await fetchLegal(slug);
   if (!page) notFound();
 
   return (
