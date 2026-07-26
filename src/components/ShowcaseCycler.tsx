@@ -28,7 +28,12 @@ const SCREENSHOTS: Record<Persona, { src: string; alt: string }> = {
      agency PAGE keeps the task-board shot. analytics-full is 2918x1996 vs
      the stage's 2962/1996 ratio -- 1.5% narrower, absorbed by fill+cover. */
   agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
-  coach: { src: "/screenshots/coach-hq.png", alt: "KINECT coach program dashboard" },
+  /* user-directed 2026-07-25: the handoff's coach-hq.png was a mislabeled
+     export (it contained the CONSULTANT Practice HQ view -- Northwind
+     Logistics, Advisory badge). coach-checkin.png is the genuine coach
+     view (Coaching HQ, weekly check-in), cropped to the frame's ratio
+     (2356x1588 = top band; the source's bottom third was empty canvas). */
+  coach: { src: "/screenshots/coach-checkin.png", alt: "KINECT coach check-in dashboard" },
   consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
 };
 

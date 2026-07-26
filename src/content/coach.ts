@@ -59,9 +59,12 @@ export const coach: PersonaPageContent = {
     ],
   },
 
+  // user-directed 2026-07-25: coach-hq.png was a mislabeled handoff export
+  // containing the consultant view; coach-checkin.png is the genuine coach
+  // screenshot (and the existing caption already described it exactly).
   screenshot: {
-    src: "/screenshots/coach-hq.png",
-    alt: "KINECT coaching HQ",
+    src: "/screenshots/coach-checkin.png",
+    alt: "KINECT coach check-in dashboard",
     caption:
       "Weekly check-ins, form review with timestamped cues, and AI that spots the pattern you missed.",
   },
