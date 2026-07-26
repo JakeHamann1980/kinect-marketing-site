@@ -190,9 +190,13 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
             <WaitlistCta variant="primary" size="lg" trackLocation="hero">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
             </WaitlistCta>
-            <TrackedLink variant="ghost" size="lg" href="/" trackLocation="hero">
+            {/* user-directed 2026-07-25: "Watch the 2-min tour" opens the
+                waitlist (no tour video exists yet), same as home's View
+                demo. The closing "Not you? Pick another lane" below stays
+                real navigation back to the persona picker. */}
+            <WaitlistCta variant="ghost" size="lg" trackLocation="hero">
               {content.hero.secondaryCta}
-            </TrackedLink>
+            </WaitlistCta>
           </div>
 
           <div className="mt-[30px] flex flex-wrap items-center justify-center gap-[26px] text-[15px] text-on-dark-4">
