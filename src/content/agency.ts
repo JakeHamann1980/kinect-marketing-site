@@ -2,7 +2,11 @@ import type { PersonaPageContent } from "./types";
 
 export const agency: PersonaPageContent = {
   persona: "agency",
-  seo: { title: "", description: "" },
+  seo: {
+    title: "Client Portal Software for Marketing & Creative Agencies | KINECT",
+    description:
+      "A client portal your clients actually open, with campaign analytics and AI insight built in. Flat pricing from $149 a month, no per-seat fees.",
+  },
 
   hero: {
     headline: "Your best work is invisible until the data agrees.",

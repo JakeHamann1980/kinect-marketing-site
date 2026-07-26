@@ -18,4 +18,11 @@ export interface LegalPage {
   /** ISO date string ("YYYY-MM-DD") rendered as the page's "Last updated" line. */
   updated: string;
   sections: LegalSection[];
+  /**
+   * Task 19 (Metadata, Robots, Sitemaps, Canonicals): per-page SEO fields,
+   * matching the `Seo` shape used by home/persona content. Legal pages get
+   * simple "<Title> | KINECT" titles and a one-line description rather than
+   * the persona-targeted copy the marketing pages carry.
+   */
+  seo: { title: string; description: string };
 }

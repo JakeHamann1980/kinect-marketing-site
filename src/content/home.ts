@@ -1,7 +1,11 @@
 import type { HomeContent } from "./types";
 
 export const home: HomeContent = {
-  seo: { title: "", description: "" },
+  seo: {
+    title: "KINECT | Client Portal Software Clients Actually Open",
+    description:
+      "A branded client portal for agencies, coaches and consultants: task boards, analytics and AI that explains the work. Flat pricing from $149, no per-seat fees.",
+  },
 
   hero: {
     headline:

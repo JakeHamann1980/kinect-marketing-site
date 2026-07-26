@@ -2,7 +2,11 @@ import type { PersonaPageContent } from "./types";
 
 export const consultant: PersonaPageContent = {
   persona: "consultant",
-  seo: { title: "", description: "" },
+  seo: {
+    title: "Client Portal for Consultants | KINECT",
+    description:
+      "Engagements, deliverables and billable hours in one client portal, so renewals start with evidence. Flat pricing from $149 a month, no per-seat fees.",
+  },
 
   hero: {
     headline: "You sell judgment. Show your work.",

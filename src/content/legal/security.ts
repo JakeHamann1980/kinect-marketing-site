@@ -9,6 +9,11 @@ export const security: LegalPage = {
   slug: "security",
   title: "Security",
   updated: "2026-07-25",
+  seo: {
+    title: "Security | KINECT",
+    description:
+      "How KINECT protects data today, and what to expect as the product launches.",
+  },
   sections: [
     {
       heading: "Where we are today",

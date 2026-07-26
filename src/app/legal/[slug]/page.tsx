@@ -7,6 +7,7 @@ import { terms } from "@/content/legal/terms";
 import { security } from "@/content/legal/security";
 import { cookies } from "@/content/legal/cookies";
 import type { LegalPage } from "@/content/legal/types";
+import { pageMetadata, SITE_URL } from "@/lib/seo";
 
 /**
  * Task 14 (Legal Pages): a single light-prose template shared by all four
@@ -35,6 +36,11 @@ export function generateStaticParams() {
   return Object.keys(PAGES).map((slug) => ({ slug }));
 }
 
+// Task 19: canonical is always the root-domain legal path
+// (https://kinectnow.com/legal/<slug>) -- legal pages are shared routes the
+// proxy passes through untouched on every hostname (see src/proxy.ts's
+// "shared routes (legal, api) serve as-is" branch), so there is no
+// subdomain variant to canonicalize toward the way persona pages do.
 export async function generateMetadata({
   params,
 }: {
@@ -43,7 +49,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const page = PAGES[slug];
   if (!page) return {};
-  return { title: `${page.title} · KINECT` };
+  return pageMetadata({
+    seo: page.seo,
+    canonicalUrl: `${SITE_URL}/legal/${page.slug}`,
+  });
 }
 
 export default async function LegalPageRoute({

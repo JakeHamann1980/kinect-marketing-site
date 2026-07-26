@@ -8,6 +8,11 @@ export const terms: LegalPage = {
   slug: "terms",
   title: "Terms and conditions",
   updated: "2026-07-25",
+  seo: {
+    title: "Terms and Conditions | KINECT",
+    description:
+      "The terms governing use of the KINECT marketing site and waitlist.",
+  },
   sections: [
     {
       heading: "Acceptance of these terms",

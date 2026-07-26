@@ -9,6 +9,11 @@ export const cookies: LegalPage = {
   slug: "cookies",
   title: "Cookie policy",
   updated: "2026-07-25",
+  seo: {
+    title: "Cookie Policy | KINECT",
+    description:
+      "What KINECT stores, when, and how to manage your analytics consent.",
+  },
   sections: [
     {
       heading: "What this policy covers",

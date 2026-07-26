@@ -9,6 +9,11 @@ export const privacy: LegalPage = {
   slug: "privacy",
   title: "Privacy policy",
   updated: "2026-07-25",
+  seo: {
+    title: "Privacy Policy | KINECT",
+    description:
+      "How KINECT collects, uses and protects information on the marketing site and waitlist.",
+  },
   sections: [
     {
       heading: "Introduction",

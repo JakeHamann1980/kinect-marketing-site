@@ -3,10 +3,25 @@ import { hanken, instrument, plexMono } from "@/lib/fonts";
 import PostHogProvider from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
 import WaitlistDialog from "@/components/WaitlistDialog";
+import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
+/**
+ * Task 19 (Metadata, Robots, Sitemaps, Canonicals): every route below sets
+ * its own complete `<title>` via `pageMetadata` (home, the three persona
+ * pages, legal pages), so `template` is the identity function ("%s") rather
+ * than appending a site suffix a second time -- page titles are already
+ * absolute ("... | KINECT"). `default` only covers a route that adds no
+ * metadata of its own.
+ */
 export const metadata: Metadata = {
-  title: "KINECT",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "KINECT | Client Portal Software Clients Actually Open",
+    template: "%s",
+  },
+  description:
+    "A branded client portal for agencies, coaches and consultants: task boards, analytics and AI that explains the work. Flat pricing from $149, no per-seat fees.",
 };
 
 export default function RootLayout({

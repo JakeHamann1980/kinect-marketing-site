@@ -2,7 +2,11 @@ import type { PersonaPageContent } from "./types";
 
 export const coach: PersonaPageContent = {
   persona: "coach",
-  seo: { title: "", description: "" },
+  seo: {
+    title: "Client Check-In and Progress Portal for Fitness Coaches | KINECT",
+    description:
+      "Check-ins, program delivery and progress proof for fitness coaches, in one branded portal your clients open. Flat pricing from $149, no per-seat fees.",
+  },
 
   hero: {
     headline: "Your athletes need more than a PDF.",

@@ -17,6 +17,15 @@ import { home } from "@/content/home";
 import { settings } from "@/content/settings";
 import { renderWithGradient } from "@/lib/renderWithGradient";
 import { cn } from "@/lib/cn";
+import { pageMetadata, SITE_URL } from "@/lib/seo";
+
+// Task 19: canonical for the root domain's home page is the apex origin
+// itself (spec §8b/§2 -- canonicals point at the production subdomain/apex
+// URLs, never a path variant).
+export const metadata = pageMetadata({
+  seo: home.seo,
+  canonicalUrl: `${SITE_URL}/`,
+});
 
 /**
  * Workflow-grid icon glyphs (Section 5, "fits how you already work"),
