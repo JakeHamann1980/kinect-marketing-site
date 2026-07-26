@@ -30,7 +30,10 @@
   --cyan-light: #0E93AC; --coral-light: #C4501F; --violet-light: #6E5AA8;
   --rule-strong: rgba(255,255,255,.22); --rule: rgba(255,255,255,.16); --rule-soft: rgba(255,255,255,.12);
   --rule-faint: rgba(255,255,255,.09); --rule-ghost: rgba(255,255,255,.06);
-  --grid-line: rgba(255,255,255,.016); --grid-dot: rgba(255,255,255,.05);
+  /* user-directed 2026-07-25: dot alpha follows the PROTOTYPE's rendered
+     value (.22, dc.html line 20), not README's documented .05 -- at .05 the
+     dots were effectively invisible and read as "removed". */
+  --grid-line: rgba(255,255,255,.016); --grid-dot: rgba(255,255,255,.22);
   /* gradients are intentionally CSS-var-only; they cannot be Tailwind color tokens */
   --text-gradient: linear-gradient(95deg, #F5A15A, #EC5242 45%, #35D6E8);
   --cta-gradient: linear-gradient(135deg, #F0913A, #EC5242);
@@ -195,7 +198,12 @@
    of rigid equal columns, plus nowrap, so the longer label ("Watch the
    2-min tour") keeps its button at single-line height. */
 @media (max-width: 860px) {
-  .kx-ctarow { width: 100%; }
+  /* flex-wrap: short pairs (hero's "Start free" / "Watch the 2-min tour")
+     stay one row of two; a pair whose single-line widths cannot fit the
+     row (persona closing's "Not you? Pick another lane" at xl size) wraps
+     to stacked full-width buttons instead of overflowing the viewport
+     (user-reported clipping 2026-07-25). */
+  .kx-ctarow { width: 100%; flex-wrap: wrap; }
   .kx-ctarow > * { flex: 1 1 auto; white-space: nowrap; }
 }
 
@@ -424,7 +432,9 @@
 .kx-grid {
   background-color: var(--dark-canvas);
   background-image:
-    radial-gradient(var(--grid-dot) 1px, transparent 1.6px),
+    /* dot size 1.5px/2px follows the prototype's own render (dc.html line
+       20), not README's 1px/1.6px -- see the --grid-dot token note. */
+    radial-gradient(var(--grid-dot) 1.5px, transparent 2px),
     linear-gradient(var(--grid-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 312px 312px, 104px 104px, 104px 104px;
@@ -440,7 +450,6 @@
    on .kx-grid (see the hard-constraint note above). */
 @media (max-width: 860px) {
   .kx-grid {
-    --grid-dot: rgba(255, 255, 255, 0.11);
     background-size: 208px 208px, 104px 104px, 104px 104px;
     background-position: -104px -52px, 0 0, 0 0;
   }
