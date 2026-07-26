@@ -11,10 +11,12 @@ import StepCards from "@/components/StepCards";
 import PricingSection from "@/components/PricingSection";
 import { Faq } from "@/components/Faq";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { settings } from "@/content/settings";
 import { renderWithGradient } from "@/lib/renderWithGradient";
 import type { PersonaPageContent } from "@/content/types";
 import { cn } from "@/lib/cn";
+import { faqPageLd } from "@/lib/jsonld";
 
 interface PersonaPageProps {
   content: PersonaPageContent;
@@ -134,6 +136,11 @@ function AccentEyebrow({ children, className }: { children: ReactNode; className
 export default function PersonaPage({ content }: PersonaPageProps) {
   return (
     <div data-persona={content.persona}>
+      {/* Task 20: FAQPage JSON-LD for this persona's own FAQ section (spec
+          §8b: "FAQPage on every page with FAQs"). Shared here (not
+          duplicated per agency/coach/consultant route) since all three
+          persona routes render through this one template. */}
+      <JsonLd data={faqPageLd(content.faq)} />
       <Nav badge={content.navBadge} />
 
       {/* 1 - HERO (dark) */}

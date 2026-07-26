@@ -13,10 +13,12 @@ import PillarCards from "@/components/PillarCards";
 import PricingSection from "@/components/PricingSection";
 import { Faq } from "@/components/Faq";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 import { home } from "@/content/home";
 import { settings } from "@/content/settings";
 import { renderWithGradient } from "@/lib/renderWithGradient";
 import { cn } from "@/lib/cn";
+import { faqPageLd } from "@/lib/jsonld";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
 
 // Task 19: canonical for the root domain's home page is the apex origin
@@ -118,6 +120,11 @@ function WorkflowCell({
 export default function Home() {
   return (
     <>
+      {/* Task 20: FAQPage JSON-LD for this page's own FAQ section (spec
+          §8b: "FAQPage on every page with FAQs"). Mounted per-page (not in
+          layout.tsx) since it describes this page's specific Q&A content,
+          unlike the Organization/WebSite/SoftwareApplication blocks. */}
+      <JsonLd data={faqPageLd(home.faq)} />
       <Nav />
 
       {/* 1 - HERO (dark). Parent carries `.kx-grid` per HeroBackdrop's own

@@ -13,7 +13,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "validate:jsonld": "node scripts/validate-jsonld.ts",
+    "build:check": "next build && tsc --noEmit && vitest run && npm run validate:jsonld"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",

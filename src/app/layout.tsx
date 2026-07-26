@@ -3,6 +3,8 @@ import { hanken, instrument, plexMono } from "@/lib/fonts";
 import PostHogProvider from "@/components/PostHogProvider";
 import ConsentBanner from "@/components/ConsentBanner";
 import WaitlistDialog from "@/components/WaitlistDialog";
+import JsonLd from "@/components/JsonLd";
+import { organizationLd, websiteLd, softwareApplicationLd } from "@/lib/jsonld";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -42,6 +44,19 @@ export default function RootLayout({
           overflowX: "clip",
         }}
       >
+        {/* Task 20: Organization + WebSite + SoftwareApplication JSON-LD
+            mounted site-wide (every hostname, every route) rather than per
+            page -- these three describe the KINECT entity/product itself,
+            not any one page's content, per spec §8b ("Organization (shared
+            @id + sameAs across all four hostnames), WebSite,
+            SoftwareApplication with AggregateOffer ... site-wide").
+            FAQPage JSON-LD is per-page instead (home + persona pages only,
+            see their own page components) since legal pages carry no FAQ
+            content. */}
+        <JsonLd data={organizationLd()} />
+        <JsonLd data={websiteLd()} />
+        <JsonLd data={softwareApplicationLd()} />
+
         {/* Task 15: PostHogProvider wraps every page so it can apply
             already-recorded consent (and react to live changes) regardless
             of which route mounts first; ConsentBanner is a sibling, not a
