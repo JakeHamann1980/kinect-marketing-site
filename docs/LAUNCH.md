@@ -63,6 +63,11 @@ npm run build:check && npm run test:e2e
 - [ ] **[Jake]** Counsel review of all four policies (drafts match actual data practices but are not legal advice).
 - [ ] Post-launch backlog: DPA and Accessibility pages (footer legal links currently "#").
 
+## 7b. Content destinations (user-flagged 2026-07-25)
+
+- [ ] **[Jake/dev]** Nav **Product** link goes nowhere. Either a product/features page gets designed and built, or drop the link from the nav until one exists. Currently "#" (`src/content/settings.ts` navLinks).
+- [ ] **[Jake/dev]** Nav **Docs** link goes nowhere. A docs site does not exist yet (likely ships with the app, not this site). Point at the real docs URL when it exists, or drop from the nav for launch. Currently "#".
+
 ## 8. Performance & devices
 
 - [ ] **[dev]** Lighthouse ≥ 90 performance on `/` and one persona page, throttled mobile.
