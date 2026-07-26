@@ -140,7 +140,11 @@ export default function PillarCards({ pillars, bento }: PillarCardsProps) {
                   "linear-gradient(135deg, #F7EFE8 0%, #F0F4F2 48%, #DFF0EF 100%)",
               }}
             >
-              <div className="mb-3 font-mono text-[11px] uppercase tracking-[.14em] text-coral-light">
+              {/* user-directed 2026-07-25: eyebrow rendered as a pill (same
+                  badge language as the nav's persona pill: mono uppercase on
+                  a tinted, fully rounded chip). Warm amber tint pairs with
+                  the card's cream-to-cyan gradient. */}
+              <div className="mb-3 inline-flex w-fit items-center rounded-full bg-[rgba(240,145,58,.16)] px-[10px] py-[3px] font-mono text-[11px] uppercase tracking-[.14em] text-coral-light">
                 {bento.aiInsight.eyebrow}
               </div>
               <p className="text-[17px] leading-[1.55] text-ink-2">
