@@ -70,6 +70,107 @@ function warnFallback(reason: unknown) {
   console.warn("[sanity] falling back to local content:", reason);
 }
 
+/**
+ * Post-fetch shape validation (release review fix, 2026-07-26).
+ *
+ * GROQ silently turns a hollowed-out required field into `null`/`undefined`
+ * rather than erroring: an editor deleting/unsetting a required object (e.g.
+ * `personaPage.screenshot`, `homePage.bento.workVisible.image`), or any
+ * dereference (`->`) whose target asset no longer resolves, makes that
+ * field disappear from the result instead of failing the query. Before this
+ * fix, `fetchHome`/`fetchPersona`/`fetchSettings`/`fetchLegal` only checked
+ * `!doc` (the whole document missing) -- a malformed-but-present document
+ * sailed through and reached components that dereference fields with no
+ * null-guard (`PersonaPage.tsx`'s `content.screenshot.src`,
+ * `ShowcaseCycler`'s `images[persona].src`, `PillarCards`'
+ * `bento.workVisible.image.src`, `Footer`'s destructured `settings.footer`,
+ * `PricingSection`'s `tiers.map`, the legal template's `page.sections.map`),
+ * producing a render-time `TypeError` -> uncaught 500 in production. This
+ * file's own top comment already promised fallback on "malformed
+ * projection result"; these `assert*Shape` functions make that true by
+ * throwing a descriptive error the surrounding `try/catch` turns into the
+ * existing `warnFallback` + local-content-module path -- no different from
+ * a network error as far as each fetcher's control flow is concerned.
+ *
+ * Deliberately NOT a full recursive schema validator (i.e. not asserting
+ * every string/array leaf in `HomeContent`/`PersonaPageContent`/
+ * `SiteSettings`/`LegalPage`): each function asserts every top-level
+ * required section is present (a cheap, cheap-to-maintain truthy check per
+ * field), plus the specific nested fields identified above whose absence
+ * throws before a single pixel renders. Exported so they can be unit-tested
+ * directly as pure functions, independent of the module's Sanity client
+ * construction (see sanity.test.ts).
+ */
+function required<T>(value: T, path: string): asserts value is NonNullable<T> {
+  if (value === null || value === undefined) {
+    throw new Error(`content shape assertion failed: "${path}" is missing/null`);
+  }
+}
+
+export function assertHomeShape(doc: HomeContent): void {
+  required(doc.seo, "seo");
+  required(doc.hero, "hero");
+  required(doc.logoStrip, "logoStrip");
+  required(doc.personaSelector, "personaSelector");
+  required(doc.personaCards, "personaCards");
+  required(doc.stepsSection, "stepsSection");
+  required(doc.steps, "steps");
+  required(doc.showcase, "showcase");
+  required(doc.showcase?.workflow, "showcase.workflow");
+  required(doc.showcase?.screenshots, "showcase.screenshots");
+  required(doc.showcase?.screenshots?.agency?.src, "showcase.screenshots.agency.src");
+  required(doc.showcase?.screenshots?.coach?.src, "showcase.screenshots.coach.src");
+  required(doc.showcase?.screenshots?.consultant?.src, "showcase.screenshots.consultant.src");
+  required(doc.pillarsSection, "pillarsSection");
+  required(doc.pillars, "pillars");
+  required(doc.bento, "bento");
+  required(doc.bento?.workVisible, "bento.workVisible");
+  required(doc.bento?.workVisible?.image?.src, "bento.workVisible.image.src");
+  required(doc.bento?.aiInsight, "bento.aiInsight");
+  required(doc.bento?.stat, "bento.stat");
+  required(doc.faqTitle, "faqTitle");
+  required(doc.faq, "faq");
+  required(doc.closing, "closing");
+}
+
+export function assertPersonaShape(doc: PersonaPageContent): void {
+  required(doc.persona, "persona");
+  required(doc.seo, "seo");
+  required(doc.hero, "hero");
+  required(doc.heroExtra, "heroExtra");
+  required(doc.navBadge, "navBadge");
+  required(doc.pain, "pain");
+  required(doc.capabilities, "capabilities");
+  required(doc.screenshot, "screenshot");
+  required(doc.screenshot?.src, "screenshot.src");
+  required(doc.workflow, "workflow");
+  required(doc.steps, "steps");
+  required(doc.faq, "faq");
+  required(doc.closing, "closing");
+}
+
+export function assertSettingsShape(doc: SiteSettings): void {
+  required(doc.navLinks, "navLinks");
+  required(doc.solutions, "solutions");
+  required(doc.pricing, "pricing");
+  required(doc.pricing?.headline, "pricing.headline");
+  required(doc.pricing?.supporting, "pricing.supporting");
+  required(doc.pricing?.tiers, "pricing.tiers");
+  required(doc.footer, "footer");
+  required(doc.footer?.positioning, "footer.positioning");
+  required(doc.footer?.columns, "footer.columns");
+  required(doc.footer?.legalLinks, "footer.legalLinks");
+  required(doc.footer?.copyright, "footer.copyright");
+}
+
+export function assertLegalShape(doc: LegalPage): void {
+  required(doc.slug, "slug");
+  required(doc.title, "title");
+  required(doc.updated, "updated");
+  required(doc.sections, "sections");
+  required(doc.seo, "seo");
+}
+
 const CARD_PROJECTION = `{title, body, features}`;
 const STEP_PROJECTION = `{number, title, body}`;
 const FAQ_PROJECTION = `{question, answer}`;
@@ -142,6 +243,7 @@ export async function fetchHome(): Promise<HomeContent> {
       FETCH_OPTIONS,
     );
     if (!doc) throw new Error('"homePage" document not found in dataset');
+    assertHomeShape(doc);
     return doc;
   } catch (err) {
     warnFallback(err);
@@ -174,6 +276,7 @@ export async function fetchPersona(persona: Persona): Promise<PersonaPageContent
       FETCH_OPTIONS,
     );
     if (!doc) throw new Error(`"personaPage-${persona}" document not found in dataset`);
+    assertPersonaShape(doc);
     return doc;
   } catch (err) {
     warnFallback(err);
@@ -210,6 +313,7 @@ export async function fetchSettings(): Promise<SiteSettings> {
       FETCH_OPTIONS,
     );
     if (!doc) throw new Error('"siteSettings" document not found in dataset');
+    assertSettingsShape(doc);
     return doc;
   } catch (err) {
     warnFallback(err);
@@ -245,6 +349,7 @@ export async function fetchLegal(slug: string): Promise<LegalPage | null> {
       FETCH_OPTIONS,
     );
     if (!doc) throw new Error(`"legalPage-${slug}" document not found in dataset`);
+    assertLegalShape(doc);
     return doc;
   } catch (err) {
     warnFallback(err);
