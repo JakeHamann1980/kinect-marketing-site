@@ -23,7 +23,10 @@
 
 :root {
   --dark-bg: #05070C; --dark-canvas: #070B12; --dark-panel: #0B1017; --dropdown-bg: #0E141F;
-  --light-canvas: #F5F7FA; --surface: #FFFFFF; --border: #E4E9F0; --divider: #F0F3F7;
+  /* --light-canvas-2: deeper cool step of the light family (user-directed
+     2026-07-25) so adjacent light sections can read as distinct bands
+     (persona pricing vs FAQ). */
+  --light-canvas: #F5F7FA; --light-canvas-2: #EAEEF4; --surface: #FFFFFF; --border: #E4E9F0; --divider: #F0F3F7;
   --on-dark: #EEF2F8; --on-dark-2: #C7CEDA; --on-dark-3: #A2ABBC; --on-dark-4: #8B95A7; --on-dark-5: #5A6478;
   --ink: #0C1220; --ink-2: #3B4658; --ink-3: #5A6577; --muted: #96A0B2;
   --cyan: #35D6E8; --amber: #F0913A; --coral: #EC5242; --violet: #C7A0C0;
@@ -380,7 +383,8 @@
 @theme inline {
   --color-dark-bg: var(--dark-bg); --color-dark-canvas: var(--dark-canvas); --color-dark-panel: var(--dark-panel);
   --color-dropdown-bg: var(--dropdown-bg);
-  --color-light-canvas: var(--light-canvas); --color-surface: var(--surface); --color-border: var(--border);
+  --color-light-canvas: var(--light-canvas); --color-light-canvas-2: var(--light-canvas-2);
+  --color-surface: var(--surface); --color-border: var(--border);
   --color-divider: var(--divider);
   --color-on-dark: var(--on-dark); --color-on-dark-2: var(--on-dark-2); --color-on-dark-3: var(--on-dark-3);
   --color-on-dark-4: var(--on-dark-4); --color-on-dark-5: var(--on-dark-5);

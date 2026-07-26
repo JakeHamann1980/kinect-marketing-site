@@ -86,7 +86,10 @@ export default function PricingSection({
     // that renders Nav also mounts this section (home via page.tsx, all
     // three persona pages via PersonaPage.tsx), so a bare same-page hash
     // resolves correctly regardless of which page it's clicked from.
-    <section id="pricing" className={cn("kx-sec relative overflow-hidden", dark ? "kx-grid" : "bg-light-canvas")}>
+    // Light tone sits on --light-canvas-2, one deeper step than the FAQ's
+    // --light-canvas, so the two adjacent light sections on persona pages
+    // read as distinct bands (user-directed 2026-07-25).
+    <section id="pricing" className={cn("kx-sec relative overflow-hidden", dark ? "kx-grid" : "bg-light-canvas-2")}>
       {dark ? (
         <div
           aria-hidden="true"
