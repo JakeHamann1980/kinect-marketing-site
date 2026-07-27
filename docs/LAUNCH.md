@@ -18,10 +18,10 @@ npm run build:check && npm run test:e2e
 
 ## 2. Data & email
 
-- [ ] **[both]** Supabase: apply `supabase/migrations/0001_waitlist.sql` to the chosen project (RLS on, no public policies — writes go through the server action only).
+- [x] **[both]** Supabase: applied 2026-07-27 — by Jake's decision the waitlist lives in the KINECT **platform** production project (`vfsfqyeazsrziyklonch`), not a separate marketing project. `waitlist_signups` created per `supabase/migrations/0001_waitlist.sql` plus one platform-specific addition: that project revokes default privileges, so it needed an explicit `grant select, insert on public.waitlist_signups to service_role;`. RLS on, no public policies.
 - [ ] **[Jake]** Resend: verify `kinectnow.com` as sending domain (SPF + DKIM records); confirm `hello@kinectnow.com` works as from-address.
-- [ ] **[dev]** End-to-end waitlist test with real creds: submit → row appears in `waitlist_signups` with persona/UTM → confirmation email arrives → duplicate submit returns the "already on the list" state.
-- [ ] **[dev]** BLOCKING before Resend goes live: add per-IP rate limiting to the waitlist server action (`src/app/actions/waitlist.ts`). Today the only anti-abuse checks are a honeypot field and a client-controlled render-to-submit timing gate (`src/lib/waitlist-validation.ts`) -- both are trivially bypassed by anything that doesn't run the client JS, so nothing currently caps how many distinct-address emails one caller can trigger Resend to send. Wire this up (e.g. a Supabase-backed counter keyed by IP, or an edge-level rate limit) before `RESEND_API_KEY` is set in production.
+- [x] **[dev]** End-to-end waitlist test with real creds (2026-07-27): live-site submit → row in `waitlist_signups` with persona/source-path/UTM. Confirmation-email + duplicate-submit legs still pending Resend creds. NOTE: local e2e runs pin Supabase/Resend env to empty in `playwright.config.ts` so the test server can never write to the production table — done after one run did exactly that.
+- [x] **[dev]** Per-IP rate limiting (2026-07-27): `src/lib/rate-limit.ts` sliding window (8 per 10 min per IP, first `x-forwarded-for` hop) wired into the server action ahead of the DB/email path; over-limit gets the same fake-success as the honeypot. Known limit: in-memory means per-serverless-instance, so a *distributed* attacker isn't globally capped — if the waitlist ever draws real abuse, upgrade to a shared store (Upstash/Supabase counter) or Vercel WAF.
 
 ## 3. CMS (Tasks 17–18)
 

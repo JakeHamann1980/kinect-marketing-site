@@ -1,9 +1,28 @@
 "use server";
 
+import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { parseWaitlistInput } from "@/lib/waitlist-validation";
+import { createRateLimiter } from "@/lib/rate-limit";
 import { waitlistEmailCopy } from "@/content/waitlist-copy";
+
+/**
+ * Per-IP cap (docs/LAUNCH.md launch blocker, built 2026-07-27): 8 submissions
+ * per 10 minutes -- far above any legit visitor (a duplicate email never
+ * re-sends the confirmation, see the 23505 branch below, so abuse means many
+ * DIFFERENT emails from one place, exactly what this throttles). Module-level
+ * so the window survives across requests on a warm instance; per-instance
+ * scope is the documented tradeoff in rate-limit.ts.
+ */
+const allowSubmission = createRateLimiter({ windowMs: 10 * 60_000, max: 8 });
+
+async function clientIp(): Promise<string> {
+  const h = await headers();
+  // First hop of x-forwarded-for is the client as seen by Vercel's edge.
+  // Locally the header is absent; every dev request shares one bucket.
+  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+}
 
 /**
  * Task 16 (waitlist): the one server-side entry point for a waitlist
@@ -55,6 +74,15 @@ export async function submitWaitlist(formData: FormData): Promise<WaitlistResult
   }
 
   const { email, persona, sourcePath, utm } = parsed.data;
+
+  const ip = await clientIp();
+  if (!allowSubmission(ip)) {
+    // Same contract as the honeypot/too-fast branch above: log it, tell the
+    // caller "success". A burst past this cap is automation, and automation
+    // gets nothing it can learn from.
+    console.error(`[waitlist] rate limited submission from ${ip}`);
+    return { ok: true };
+  }
 
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
