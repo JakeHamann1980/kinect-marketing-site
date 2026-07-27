@@ -12,9 +12,9 @@ npm run build:check && npm run test:e2e
 
 ## 1. Infrastructure
 
-- [ ] **[Jake]** Vercel project created; domains attached: `kinectnow.com`, `agency.`, `coach.`, `consultant.kinectnow.com` (plus `www.kinectnow.com` pointed at the same project; the proxy 308s it to apex).
-- [ ] **[both]** Env vars set in Vercel (see `.env.example`): `NEXT_PUBLIC_POSTHOG_KEY`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, `NEXT_PUBLIC_SANITY_PROJECT_ID=gxxphuan`, `NEXT_PUBLIC_SANITY_DATASET=production`, `SANITY_REVALIDATE_SECRET` (Task 17-18; no read token needed -- the dataset is public, see `.env.example`'s own comment).
-- [ ] **[Jake]** DNS: apex + www + three persona subdomains → Vercel.
+- [x] **[Jake]** Vercel project created; domains attached: `kinectnow.com`, `agency.`, `coach.`, `consultant.kinectnow.com` (plus `www.kinectnow.com` pointed at the same project; the proxy 308s it to apex).
+- [ ] **[both]** Env vars set in Vercel (see `.env.example`): `NEXT_PUBLIC_POSTHOG_KEY` and `RESEND_API_KEY` still pending; set 2026-07-27: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; set earlier: `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, `NEXT_PUBLIC_SANITY_PROJECT_ID=gxxphuan`, `NEXT_PUBLIC_SANITY_DATASET=production`, `SANITY_REVALIDATE_SECRET` (no read token needed -- the dataset is public, see `.env.example`'s own comment).
+- [x] **[Jake]** DNS: apex + www + three persona subdomains → Vercel. Verified live 2026-07-27: all five hosts serve the right pages, www 308s to apex, cross-persona and apex-persona-root paths 308 to canonical subdomains, robots/sitemap are host-correct, and the nav logo on a persona subdomain crosses to `https://kinectnow.com/`. The Sanity revalidation webhook still POSTs to `https://kinect-marketing-site.vercel.app/api/revalidate` -- deliberately left alone: that alias is permanent, it is the same deployment, and `revalidateTag` clears the cache for every attached domain, so nothing is gained by re-creating the hook against the apex URL.
 
 ## 2. Data & email
 
