@@ -199,3 +199,36 @@ test.describe("Nav: legal page forceSolid", () => {
     await expect(page.locator("#kx-nav")).toHaveClass(/kx-stuck/);
   });
 });
+
+test.describe("Nav: logo home link", () => {
+  // User-reported 2026-07-27: on a persona page the logo went nowhere. On a
+  // persona subdomain no relative path can reach home (src/proxy.ts rewrites
+  // "/" back to the persona page), so Lockup resolves its href host-aware on
+  // the client via homeHrefForHost -- these are the two host shapes it must
+  // serve. Real-browser tests because the href is set after hydration.
+  test("on an apex persona path, the logo returns to the home page", async ({
+    page,
+  }) => {
+    await page.goto("/agency");
+    await page.getByRole("link", { name: "KINECT" }).first().click();
+    await expect(page).toHaveURL("http://localhost:3200/");
+    await expect(
+      page.getByRole("heading", { level: 1 }),
+    ).toContainText("status meeting");
+  });
+
+  test("on a persona subdomain, the logo crosses to the apex origin's home page", async ({
+    page,
+  }) => {
+    await page.goto("http://coach.localhost:3200/");
+    const logo = page.getByRole("link", { name: "KINECT" }).first();
+    // Hydration must have upgraded the href from "/" to the apex origin
+    // before the click means anything -- assert it, don't race it.
+    await expect(logo).toHaveAttribute("href", "http://localhost:3200/");
+    await logo.click();
+    await expect(page).toHaveURL("http://localhost:3200/");
+    await expect(
+      page.getByRole("heading", { level: 1 }),
+    ).toContainText("status meeting");
+  });
+});

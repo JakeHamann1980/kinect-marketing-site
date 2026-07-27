@@ -61,3 +61,24 @@ export function personaFromHost(host: string): Persona | null {
 export function personaHref(persona: Persona): string {
   return `/${persona}`;
 }
+
+/**
+ * Destination for the nav/footer logo ("return home"). The relative-path
+ * convention documented on `personaHref` above covers persona pages but NOT
+ * the home page: on a persona subdomain there is no relative path that
+ * reaches home, because src/proxy.ts rewrites "/" back to that persona's own
+ * page (user-reported 2026-07-27: logo click on a persona page went nowhere).
+ * So home is the one link that must be host-aware: on a persona subdomain it
+ * targets the apex origin (strip the persona label, keep the port -- so
+ * `coach.localhost:3000` dev hosts go to `http://localhost:3000/`), and on
+ * every other host the plain relative "/" already serves home. Callers pass
+ * `window.location.host`/`.protocol`, so this runs client-side only (the
+ * static HTML is shared by both host shapes and can't bake in either URL).
+ */
+export function homeHrefForHost(host: string, protocol: string): string {
+  const persona = personaFromHost(host);
+  if (persona && host.startsWith(`${persona}.`)) {
+    return `${protocol}//${host.slice(persona.length + 1)}/`;
+  }
+  return "/";
+}

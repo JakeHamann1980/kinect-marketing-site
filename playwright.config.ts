@@ -37,5 +37,16 @@ export default defineConfig({
     url: "http://localhost:3200",
     reuseExistingServer: false,
     timeout: 180_000,
+    // A local e2e run must never write to the real waitlist DB or send real
+    // email (2026-07-27: a run with a populated .env.local inserted the
+    // waitlist spec's jake@example.com into the production table). Empty
+    // strings count as "defined" to @next/env, so .env.local can't backfill
+    // them, and src/app/actions/waitlist.ts treats "" as unset -- restoring
+    // the deterministic no-creds "warming up" path the waitlist spec asserts.
+    env: {
+      SUPABASE_URL: "",
+      SUPABASE_SERVICE_ROLE_KEY: "",
+      RESEND_API_KEY: "",
+    },
   },
 });
