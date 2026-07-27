@@ -31,9 +31,11 @@ export const home: HomeContent = {
 
   personaCards: [
     {
+      // user-directed 2026-07-26: "Agencies & Studios" umbrella; photographers
+      // named explicitly so they see themselves in the lane picker.
       persona: "agency",
-      title: "Agencies",
-      body: "Portal, analytics, and AI insight for full-service shops juggling a dozen clients.",
+      title: "Agencies & Studios",
+      body: "Portal, analytics, and AI insight for agencies, studios and photographers.",
       features: [
         "Native GA + Google Ads dashboards",
         "Project templates per service line",

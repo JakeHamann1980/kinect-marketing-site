@@ -3,9 +3,11 @@ import type { PersonaPageContent } from "./types";
 export const agency: PersonaPageContent = {
   persona: "agency",
   seo: {
-    title: "Client Portal Software for Marketing & Creative Agencies | KINECT",
+    // user-directed 2026-07-26: title/description carry the Agencies &
+    // Studios umbrella and name photographers for the widened audience.
+    title: "Client Portal for Creative Agencies & Studios | KINECT",
     description:
-      "A client portal your clients actually open, with campaign analytics and AI insight built in. Flat pricing from $149 a month, no per-seat fees.",
+      "A client portal your clients actually open, with analytics and AI built in, for agencies, studios and photographers. Flat pricing from $149, no per-seat fees.",
   },
 
   hero: {
@@ -17,9 +19,12 @@ export const agency: PersonaPageContent = {
     secondaryCta: "Watch the 2-min tour",
   },
   heroExtra: {
-    eyebrow: "For full-service agencies",
+    // user-directed 2026-07-26: umbrella widened to studios and photographers.
+    eyebrow: "For agencies, studios & photographers",
     proofPoints: ["Native GA + Google Ads", "No per-seat pricing"],
   },
+  // Badge stays short: it is wayfinding next to the logo (the eyebrow and
+  // lane cards carry the "Agencies & Studios" umbrella positioning).
   navBadge: "for Agencies",
 
   pain: {

@@ -36,8 +36,10 @@ export const settings: SiteSettings = {
 
   solutions: [
     {
+      // user-directed 2026-07-26: agency lane renamed to the "Agencies &
+      // Studios" umbrella (photographers and creative studios bucket here).
       persona: "agency",
-      name: "Agencies",
+      name: "Agencies & Studios",
       description: "Client portal, campaign analytics and AI reporting.",
     },
     {
