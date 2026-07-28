@@ -56,7 +56,11 @@ export const settings: SiteSettings = {
 
   pricing: {
     headline: "Priced like a tool, not a tax",
-    supporting: 'Flat monthly. No per-seat, no per-feature, no "contact sales."',
+    // user-directed 2026-07-27: "no per-feature" dropped -- tiers do gate
+    // features (AI insights at Growth, white-label/SSO at Scale), so the
+    // claim was attackable. "No per-client" replaces it: the actual pricing
+    // principle Jake + Will decided (flat rate, never per-seat/per-client).
+    supporting: 'Flat monthly. No per-seat, no per-client, no "contact sales."',
     tiers: [
       {
         name: "Starter",
