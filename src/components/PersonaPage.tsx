@@ -347,6 +347,7 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
         headline={settings.pricing.headline}
         supporting={settings.pricing.supporting}
         tiers={settings.pricing.tiers}
+        compareHref="/pricing"
       />
 
       {/* 8 - FAQ (light). Same Faq accordion as home; see this file's own

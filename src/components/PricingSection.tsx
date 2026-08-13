@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { type ButtonVariant } from "@/components/Button";
 import WaitlistCta from "@/components/WaitlistCta";
 import SectionHead from "@/components/SectionHead";
@@ -8,6 +9,15 @@ interface PricingSectionProps {
   headline: string;
   supporting: string;
   tiers: Tier[];
+  /**
+   * user-directed 2026-08-03: when set, a centered text link under the tier
+   * grid routes to the dedicated /pricing page (full comparison matrix +
+   * pricing FAQ). Home and the persona pages pass "/pricing"; the /pricing
+   * page itself omits it (linking to yourself is noise). A relative path is
+   * correct on every hostname: the proxy serves /pricing in place on
+   * persona hosts, same as /legal/*.
+   */
+  compareHref?: string;
   /**
    * user-directed 2026-07-25: home and the persona subdomain pages want
    * different pricing tones. Home restores the prototype's dark treatment
@@ -77,6 +87,7 @@ export default function PricingSection({
   supporting,
   tiers,
   tone = "light",
+  compareHref,
 }: PricingSectionProps) {
   const dark = tone === "dark";
 
@@ -206,6 +217,20 @@ export default function PricingSection({
             );
           })}
         </div>
+
+        {compareHref ? (
+          <div className="mt-9 text-center">
+            <Link
+              href={compareHref}
+              className={cn(
+                "text-[16px] font-semibold underline-offset-4 hover:underline",
+                dark ? "text-cyan" : "text-accent-light",
+              )}
+            >
+              {"See everything in every plan →"}
+            </Link>
+          </div>
+        ) : null}
       </div>
     </section>
   );

@@ -132,6 +132,39 @@ export interface HomeContent {
   closing: Omit<PersonaPageContent["closing"], "secondaryCta">;
 }
 
+/**
+ * The dedicated /pricing page (user-directed 2026-08-03, modeled on the
+ * structure of momentifyapp.com/pricing adapted to KINECT's flat-tier
+ * reality): a light prose-style page that reuses the shared
+ * `SiteSettings.pricing` tier table for its cards and adds the sections the
+ * on-page teaser sections don't carry -- a feature comparison matrix,
+ * pricing-specific FAQs, the reporting-time stat, and a closing CTA.
+ *
+ * `comparison.rows[].values` are display strings aligned by index to
+ * `SiteSettings.pricing.tiers` order (Starter, Growth, Scale). Two sentinel
+ * values get glyph treatment in ComparisonTable.tsx instead of rendering as
+ * text: "yes" (accent check) and "no" (muted dash). Anything else renders
+ * verbatim ("Up to 5", "Unlimited", ...).
+ */
+export interface PricingPageContent {
+  seo: Seo;
+  hero: { eyebrow: string; title: string; intro: string };
+  /** Short trust chips under the tier cards ("Cancel anytime" etc.). */
+  trustLine: string[];
+  comparison: {
+    title: string;
+    intro: string;
+    groups: {
+      heading: string;
+      rows: { label: string; values: [string, string, string] }[];
+    }[];
+  };
+  faqTitle: string;
+  faq: Faq[];
+  stat: { title: string; value: string; caption: string };
+  closing: { headline: string; subhead: string; cta: string };
+}
+
 export interface SiteSettings {
   navLinks: { label: string; href: string }[];
   solutions: { persona: Persona; name: string; description: string }[];

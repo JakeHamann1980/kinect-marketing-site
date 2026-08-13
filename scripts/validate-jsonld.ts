@@ -109,6 +109,7 @@ const TARGETS: PageTarget[] = [
   { label: "coach (coach.kinectnow.com/)", host: "coach.kinectnow.com", path: "/", expectFaq: true },
   { label: "consultant (consultant.kinectnow.com/)", host: "consultant.kinectnow.com", path: "/", expectFaq: true },
   { label: "legal (kinectnow.com/legal/privacy)", host: "kinectnow.com", path: "/legal/privacy", expectFaq: false },
+  { label: "pricing (kinectnow.com/pricing)", host: "kinectnow.com", path: "/pricing", expectFaq: true },
 ];
 
 /** Fetches a path from the local server with a spoofed Host header, so one

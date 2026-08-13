@@ -42,6 +42,7 @@ import { privacy } from "../src/content/legal/privacy";
 import { terms } from "../src/content/legal/terms";
 import { security } from "../src/content/legal/security";
 import { cookies } from "../src/content/legal/cookies";
+import { pricingPage } from "../src/content/pricing-page";
 import type { Card, PersonaPageContent } from "../src/content/types";
 import type { LegalPage } from "../src/content/legal/types";
 
@@ -200,6 +201,30 @@ const settingsDoc = {
   },
 };
 
+
+const pricingPageDoc = {
+  _id: "pricingPage",
+  _type: "pricingPage",
+  hero: pricingPage.hero,
+  trustLine: pricingPage.trustLine,
+  comparison: {
+    title: pricingPage.comparison.title,
+    intro: pricingPage.comparison.intro,
+    groups: arr(
+      "comparisonGroup",
+      pricingPage.comparison.groups.map((group) => ({
+        heading: group.heading,
+        rows: arr("comparisonRow", group.rows),
+      })),
+    ),
+  },
+  faqTitle: pricingPage.faqTitle,
+  faq: arr("faq", pricingPage.faq),
+  stat: pricingPage.stat,
+  closing: pricingPage.closing,
+  seo: pricingPage.seo,
+};
+
 function legalDoc(id: string, content: LegalPage) {
   return {
     _id: id,
@@ -222,6 +247,7 @@ async function run() {
   const documents = [
     homeDoc,
     settingsDoc,
+    pricingPageDoc,
     personaDoc("personaPage-agency", agency, analyticsFullId),
     personaDoc("personaPage-coach", coach, coachCheckinId),
     personaDoc("personaPage-consultant", consultant, consultantHqId),

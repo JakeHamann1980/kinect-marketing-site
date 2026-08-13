@@ -335,6 +335,7 @@ export default async function Home() {
         supporting={settings.pricing.supporting}
         tiers={settings.pricing.tiers}
         tone="dark"
+        compareHref="/pricing"
       />
 
       {/* 8 - FAQ (light). */}

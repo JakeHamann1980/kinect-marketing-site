@@ -13,6 +13,7 @@ import homePage from "./documents/homePage";
 import personaPage from "./documents/personaPage";
 import siteSettings from "./documents/siteSettings";
 import legalPage from "./documents/legalPage";
+import pricingPage from "./documents/pricingPage";
 
 /**
  * Task 17 (Sanity Schemas + Studio). Shared object types (faq, card, step,
@@ -32,4 +33,5 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   personaPage,
   siteSettings,
   legalPage,
+  pricingPage,
 ];

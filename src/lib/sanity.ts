@@ -9,7 +9,13 @@ import { privacy } from "@/content/legal/privacy";
 import { terms } from "@/content/legal/terms";
 import { security } from "@/content/legal/security";
 import { cookies } from "@/content/legal/cookies";
-import type { HomeContent, PersonaPageContent, SiteSettings } from "@/content/types";
+import { pricingPage } from "@/content/pricing-page";
+import type {
+  HomeContent,
+  PersonaPageContent,
+  PricingPageContent,
+  SiteSettings,
+} from "@/content/types";
 import type { LegalPage } from "@/content/legal/types";
 import type { Persona } from "@/lib/personas";
 
@@ -161,6 +167,19 @@ export function assertSettingsShape(doc: SiteSettings): void {
   required(doc.footer?.columns, "footer.columns");
   required(doc.footer?.legalLinks, "footer.legalLinks");
   required(doc.footer?.copyright, "footer.copyright");
+}
+
+export function assertPricingPageShape(doc: PricingPageContent): void {
+  required(doc.seo, "seo");
+  required(doc.hero, "hero");
+  required(doc.hero?.title, "hero.title");
+  required(doc.trustLine, "trustLine");
+  required(doc.comparison, "comparison");
+  required(doc.comparison?.groups, "comparison.groups");
+  required(doc.faqTitle, "faqTitle");
+  required(doc.faq, "faq");
+  required(doc.stat, "stat");
+  required(doc.closing, "closing");
 }
 
 export function assertLegalShape(doc: LegalPage): void {
@@ -318,6 +337,38 @@ export async function fetchSettings(): Promise<SiteSettings> {
   } catch (err) {
     warnFallback(err);
     return settings;
+  }
+}
+
+/** Reshapes the `pricingPage` document back into `PricingPageContent`. */
+const PRICING_PAGE_PROJECTION = `{
+  seo, hero, trustLine,
+  comparison{
+    title, intro,
+    "groups": groups[]{heading, "rows": rows[]{label, values}}
+  },
+  faqTitle,
+  "faq": faq[]${FAQ_PROJECTION},
+  stat, closing
+}`;
+
+export async function fetchPricingPage(): Promise<PricingPageContent> {
+  if (!client) {
+    warnFallback("no Sanity client configured (missing NEXT_PUBLIC_SANITY_PROJECT_ID/_DATASET)");
+    return pricingPage;
+  }
+  try {
+    const doc = await client.fetch<PricingPageContent | null>(
+      `*[_id == "pricingPage"][0]${PRICING_PAGE_PROJECTION}`,
+      {},
+      FETCH_OPTIONS,
+    );
+    if (!doc) throw new Error('"pricingPage" document not found in dataset');
+    assertPricingPageShape(doc);
+    return doc;
+  } catch (err) {
+    warnFallback(err);
+    return pricingPage;
   }
 }
 

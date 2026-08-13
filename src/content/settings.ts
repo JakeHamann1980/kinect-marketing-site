@@ -21,16 +21,15 @@ export const settings: SiteSettings = {
   navLinks: [
     // Fix (final review, I1): "Product" and "Docs" have no real destination
     // page anywhere in this app yet, so they stay "#" (see docs/LAUNCH.md's
-    // recounted "#" link inventory). "Pricing" now points at the in-page
-    // `#pricing` anchor -- every page that renders this nav (home and all
-    // three persona pages) also mounts PricingSection, which carries
-    // `id="pricing"` (see PricingSection.tsx), so a bare same-page hash
-    // works correctly from anywhere: no `/#pricing`-style absolute path is
-    // needed (that would incorrectly force a persona-page visitor back to
-    // the home page's pricing section instead of scrolling to their own
-    // page's).
+    // recounted "#" link inventory). user-directed 2026-08-03: "Pricing"
+    // now routes to the dedicated /pricing page (tier cards + full
+    // comparison matrix + pricing FAQ) instead of the in-page `#pricing`
+    // anchor; the on-page pricing sections remain as teasers with their own
+    // "See everything in every plan" link to the same page. A relative
+    // path serves correctly on every hostname (the proxy passes /pricing
+    // through in place, same as /legal/*).
     { label: "Product", href: "#" },
-    { label: "Pricing", href: "#pricing" },
+    { label: "Pricing", href: "/pricing" },
     { label: "Docs", href: "#" },
   ],
 
@@ -99,12 +98,13 @@ export const settings: SiteSettings = {
         links: [
           // Fix (final review, I1): these three route to the matching
           // persona's own page (dedupe'd `personaHref`-equivalent relative
-          // paths -- see src/lib/personas.ts); "Compare plans" has no
-          // dedicated destination anywhere in the app, so it stays "#".
+          // paths -- see src/lib/personas.ts). user-directed 2026-08-03:
+          // "Compare plans" now has a real destination, the dedicated
+          // /pricing page's comparison matrix.
           { label: "For agencies", href: "/agency" },
           { label: "For coaches", href: "/coach" },
           { label: "For consultants", href: "/consultant" },
-          { label: "Compare plans", href: "#" },
+          { label: "Compare plans", href: "/pricing" },
         ],
       },
       {

@@ -4,11 +4,13 @@ import {
   assertPersonaShape,
   assertSettingsShape,
   assertLegalShape,
+  assertPricingPageShape,
 } from "./sanity";
 import { home } from "@/content/home";
 import { agency } from "@/content/agency";
 import { settings } from "@/content/settings";
 import { privacy } from "@/content/legal/privacy";
+import { pricingPage } from "@/content/pricing-page";
 
 /**
  * Release-review fix (2026-07-26): a Sanity document whose `screenshot`
@@ -113,5 +115,25 @@ describe("assertLegalShape", () => {
     // @ts-expect-error -- see above.
     doc.sections = null;
     expect(() => assertLegalShape(doc)).toThrow(/"sections"/);
+  });
+});
+
+describe("assertPricingPageShape", () => {
+  it("accepts real pricing page content unchanged", () => {
+    expect(() => assertPricingPageShape(pricingPage)).not.toThrow();
+  });
+
+  it("rejects null comparison groups (ComparisonTable maps groups directly)", () => {
+    const doc = structuredClone(pricingPage);
+    // @ts-expect-error -- see above.
+    doc.comparison.groups = null;
+    expect(() => assertPricingPageShape(doc)).toThrow(/comparison\.groups/);
+  });
+
+  it("rejects a null faq array (the Faq accordion maps items directly)", () => {
+    const doc = structuredClone(pricingPage);
+    // @ts-expect-error -- see above.
+    doc.faq = null;
+    expect(() => assertPricingPageShape(doc)).toThrow(/"faq"/);
   });
 });

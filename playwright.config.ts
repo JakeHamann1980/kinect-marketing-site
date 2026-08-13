@@ -47,6 +47,16 @@ export default defineConfig({
       SUPABASE_URL: "",
       SUPABASE_SERVICE_ROLE_KEY: "",
       RESEND_API_KEY: "",
+      // Hermetic content too (2026-08-03): with Sanity env present, pages
+      // render whatever the production dataset currently holds, so any spec
+      // asserting copy/links added in the same commit fails until a reseed
+      // -- and reseeding before deploy would point live content at routes
+      // that don't exist yet. Blanking these forces every e2e render down
+      // the local-content fallback path (src/content/* is the source of
+      // truth the seed script pushes anyway), so e2e always tests the
+      // checked-out code, not the CMS's current state.
+      NEXT_PUBLIC_SANITY_PROJECT_ID: "",
+      NEXT_PUBLIC_SANITY_DATASET: "",
     },
   },
 });
