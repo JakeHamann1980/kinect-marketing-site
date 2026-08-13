@@ -35,10 +35,13 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   ).toBeVisible();
   await expect(page.getByText("Everything in Starter", { exact: true })).toBeVisible();
 
-  // Comparison matrix: group headings + a value cell.
-  await expect(page.getByRole("table")).toBeVisible();
-  await expect(page.getByText("Clients & Team")).toBeVisible();
-  await expect(page.getByRole("cell", { name: "Up to 5", exact: true })).toBeVisible();
+  // Comparison matrix: group headings + a value cell. Scoped to the table
+  // because the same data also renders as per-tier cards for phones
+  // (display:none at this viewport, but still matched by a bare getByText).
+  const matrix = page.getByRole("table");
+  await expect(matrix).toBeVisible();
+  await expect(matrix.getByText("Clients & Team")).toBeVisible();
+  await expect(matrix.getByRole("cell", { name: "Up to 5", exact: true })).toBeVisible();
 
   // Pricing FAQ present and interactive.
   const faqButton = page.getByRole("button", { name: "How is KINECT priced?" });
@@ -97,4 +100,27 @@ test("/pricing never scrolls the page sideways on a phone viewport", async ({
     return { scrollWidth: de.scrollWidth, clientWidth: de.clientWidth };
   });
   expect(overflows.scrollWidth).toBe(overflows.clientWidth);
+});
+
+test("the comparison matrix swaps to per-tier cards on a phone", async ({
+  page,
+}) => {
+  // user-directed 2026-08-03: a 4-column matrix does not survive a phone
+  // (labels wrapped to three lines and the tier headers scrolled away), so
+  // below kx-md the same data renders as one card per tier. Asserted in
+  // both directions so neither layout can silently go missing.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/pricing");
+  await expect(page.getByRole("table")).toBeHidden();
+
+  // Each tier gets its own card carrying every group heading once.
+  const scaleCard = page
+    .getByText("Scale", { exact: true })
+    .last()
+    .locator("xpath=ancestor::div[contains(@class,'rounded-[14px]')][1]");
+  await expect(scaleCard.getByText("Security & Support")).toBeVisible();
+  await expect(scaleCard.getByText("White-label")).toBeVisible();
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await expect(page.getByRole("table")).toBeVisible();
 });
