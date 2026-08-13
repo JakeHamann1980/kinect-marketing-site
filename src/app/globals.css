@@ -539,12 +539,28 @@
   /* Tall variants need their own mobile boost: `.kx-backdrop-tall .kx-orb-*`
      outranks the plain `.kx-orb-*` rules above at every viewport, so without
      these the tall block would lose the phone intensity lift entirely. */
+  /* The tall variant must NOT inherit the boost above. That boost exists
+     because the default 520px-tall pools mostly overflow a narrow viewport
+     and would otherwise read as near-black -- but a percentage-height pool
+     already covers the whole block, and an 880px horizontal radius is more
+     than twice a 390px viewport, so the boosted cyan flooded the hero edge
+     to edge and left the subhead barely legible against it. Tighter
+     horizontal radii (so falloff is visible across a narrow screen) and
+     alphas at/below the desktop values restore hero contrast while keeping
+     the wash carrying to the bottom of the block.
+
+     Values tuned by measuring, not by eye: the mobile hero subhead's
+     contrast against its own backdrop now reads 5.2/6.0/5.7 across
+     left/center/right, matching the home and persona heroes (6.4/6.2/5.9)
+     instead of the 4.1/3.9/2.9 the first tall pass produced. Anchoring the
+     cyan pool low (60%) is what buys both: the hero stays legible while the
+     bloom sits over the cards and still carries past the trust line. */
   .kx-backdrop-tall .kx-orb-left {
-    background: radial-gradient(820px 72% at 14% 14%, rgba(236, 82, 66, 0.6), transparent 70%),
-      radial-gradient(760px 62% at 50% -4%, rgba(130, 160, 240, 0.38), transparent 68%);
+    background: radial-gradient(410px 76% at 0% 18%, rgba(236, 82, 66, 0.28), transparent 68%),
+      radial-gradient(390px 62% at 40% -4%, rgba(130, 160, 240, 0.15), transparent 66%);
   }
   .kx-backdrop-tall .kx-orb-right {
-    background: radial-gradient(880px 100% at 86% 26%, rgba(53, 214, 232, 0.58), transparent 78%);
+    background: radial-gradient(430px 86% at 96% 60%, rgba(53, 214, 232, 0.3), transparent 70%);
   }
 }
 

@@ -81,3 +81,20 @@ test("/pricing serves in place on a persona subdomain host (no redirect)", async
   // Canonical always points at the apex variant, same policy as /legal/*.
   expect(body).toContain('<link rel="canonical" href="https://kinectnow.com/pricing"');
 });
+
+test("/pricing never scrolls the page sideways on a phone viewport", async ({
+  page,
+}) => {
+  // Regression guard (2026-08-03): the comparison table shipped with
+  // `min-width: 640px`, which made the whole document pan 158px sideways at
+  // 390px wide and pushed iPhone into laying the page out at 548px and
+  // zooming the type down. `overflow-x: auto` on the table's wrapper did
+  // NOT contain it. The table now shrinks to fit instead.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/pricing");
+  const overflows = await page.evaluate(() => {
+    const de = document.documentElement;
+    return { scrollWidth: de.scrollWidth, clientWidth: de.clientWidth };
+  });
+  expect(overflows.scrollWidth).toBe(overflows.clientWidth);
+});
