@@ -1,5 +1,6 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import HeroBackdrop from "@/components/HeroBackdrop";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import PricingSection from "@/components/PricingSection";
@@ -8,6 +9,7 @@ import WaitlistCta from "@/components/WaitlistCta";
 import JsonLd from "@/components/JsonLd";
 import { Faq } from "@/components/Faq";
 import { fetchPricingPage, fetchSettings } from "@/lib/sanity";
+import { renderWithGradient } from "@/lib/renderWithGradient";
 import { faqPageLd } from "@/lib/jsonld";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
 
@@ -16,21 +18,22 @@ import { pageMetadata, SITE_URL } from "@/lib/seo";
 export const revalidate = false;
 
 /**
- * Dedicated pricing page (user-directed 2026-08-03; structure modeled on
- * momentifyapp.com/pricing, adapted to KINECT's flat model -- see
- * src/content/pricing-page.ts's own header comment for what was deliberately
- * NOT carried over: billing toggle, contact-sales tier, trial CTAs).
+ * Dedicated pricing page (user-directed 2026-08-03; SECTION STRUCTURE
+ * modeled on momentifyapp.com/pricing -- see src/content/pricing-page.ts
+ * for what was deliberately not carried over -- but the VISUAL LANGUAGE is
+ * KINECT's own: Jake rejected the first light-throughout cut for reading
+ * like the Momentify reference instead of the brand. This revision wears
+ * the home page's rhythm: dark kx-grid hero with the gradient phrase, the
+ * dark tier-card treatment (tone="dark", cyan glow), dark stat and closing
+ * bands, with the comparison matrix and FAQ in light bands exactly the way
+ * home/persona pages alternate (the Faq accordion is light-section-only by
+ * design, see its own doc comment).
  *
- * Like the legal pages, this is a light prose-rhythm page (Nav forceSolid,
- * no dark hero) served in place on every hostname -- the proxy's matcher
- * passes non-persona single-segment paths through untouched, so
- * agency.kinectnow.com/pricing renders this same page. Canonical therefore
- * always points at the apex variant, mirroring /legal/[slug]'s reasoning.
- *
- * The tier cards come from the SAME shared `settings.pricing` object the
- * home and persona pricing sections render, so the two surfaces cannot
- * drift; this page adds what the teaser sections don't carry (comparison
- * matrix, pricing FAQ, stat, closing).
+ * Like the legal pages, this route is served in place on every hostname
+ * and canonicalizes to the apex. The tier cards come from the SAME shared
+ * `settings.pricing` object the home and persona pricing sections render,
+ * so the surfaces cannot drift; this page adds what the teasers don't
+ * carry (comparison matrix, pricing FAQ, stat, closing).
  */
 export async function generateMetadata() {
   const page = await fetchPricingPage();
@@ -41,38 +44,51 @@ export default async function PricingPage() {
   const [page, settings] = await Promise.all([fetchPricingPage(), fetchSettings()]);
 
   return (
-    <div className="bg-light-canvas">
-      <Nav forceSolid />
+    <div>
+      <Nav />
 
       <main id="main">
-        {/* Hero: light, centered, no backdrop -- the page thesis. */}
-        <section className="kx-sec pb-0">
-          <div className="mx-auto max-w-[720px] text-center">
-            <Eyebrow context="light">{page.hero.eyebrow}</Eyebrow>
-            <SectionHead context="light" as="h1" className="mt-3">
-              {page.hero.title}
-            </SectionHead>
-            <p className="mx-auto mt-4 max-w-[560px] text-[19px] leading-[1.55] text-ink-3 text-pretty">
+        {/* 1 - HERO (dark): the persona-hero treatment minus the badge and
+            CTA row -- the tier cards directly below carry the CTAs. */}
+        <section className="kx-grid kx-hero-sec relative overflow-hidden">
+          <HeroBackdrop />
+          <div className="relative z-10 mx-auto flex max-w-[1000px] flex-col items-center text-center">
+            {/* Accent-tinted hero eyebrow -- same inline-style approach as
+                PersonaPage's AccentEyebrow (Eyebrow's color comes from a
+                Tailwind utility a caller class can't reliably override). */}
+            <span
+              className="mb-4 block font-mono text-[11px] uppercase tracking-[.14em]"
+              style={{ color: "var(--accent)" }}
+            >
+              {page.hero.eyebrow}
+            </span>
+            <h1 className="kx-hero-head max-w-[920px] font-display text-on-dark">
+              {renderWithGradient(page.hero.title, page.hero.gradientPhrase)}
+            </h1>
+            <p className="kx-hero-sub mt-[26px] max-w-[620px] text-on-dark-4">
               {page.hero.intro}
             </p>
           </div>
         </section>
 
-        {/* The shared tier cards -- same settings.pricing object the home
-            and persona sections render, waitlist CTAs and all. */}
+        {/* 2 - TIER CARDS (dark, the home treatment: cyan-glow popular
+            card on the kx-grid canvas), same shared settings.pricing. */}
         <PricingSection
           headline={settings.pricing.headline}
           supporting={settings.pricing.supporting}
           tiers={settings.pricing.tiers}
+          tone="dark"
+          detailed
         />
 
-        {/* Trust chips, Momentify's "Cancel anytime / No setup fee" row. */}
-        <section className="bg-light-canvas-2 pb-[64px]">
+        {/* Trust chips on the dark canvas, Momentify's reassurance row in
+            KINECT's mono-eyebrow voice. */}
+        <section className="pb-[72px]">
           <ul className="mx-auto flex max-w-[900px] flex-wrap items-center justify-center gap-x-8 gap-y-2 px-6">
             {page.trustLine.map((chip) => (
               <li
                 key={chip}
-                className="font-mono text-[11px] uppercase tracking-[.14em] text-ink-3"
+                className="font-mono text-[11px] uppercase tracking-[.14em] text-on-dark-5"
               >
                 {chip}
               </li>
@@ -80,8 +96,9 @@ export default async function PricingPage() {
           </ul>
         </section>
 
-        {/* Feature comparison matrix. */}
-        <section className="kx-sec">
+        {/* 3 - COMPARISON MATRIX (light band, like the persona pages'
+            pricing/pain sections -- tables read best on the light canvas). */}
+        <section className="kx-sec bg-light-canvas">
           <div className="mx-auto max-w-[1000px]">
             <div className="text-center">
               <SectionHead context="light">{page.comparison.title}</SectionHead>
@@ -98,21 +115,30 @@ export default async function PricingPage() {
           </div>
         </section>
 
-        {/* Value stat band, the KINECT stand-in for Momentify's ROI section. */}
-        <section className="bg-light-canvas-2">
-          <div className="mx-auto max-w-[720px] px-6 py-[72px] text-center">
-            <Eyebrow context="light">{page.stat.title}</Eyebrow>
-            <div className="mt-4 font-display text-[56px] font-bold leading-none text-ink">
+        {/* 4 - VALUE STAT (dark kx-grid band with the cyan wash). */}
+        <section className="kx-grid relative overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(780px 520px at 50% 100%, rgba(53,214,232,.18), transparent 64%)",
+            }}
+          />
+          <div className="relative mx-auto max-w-[720px] px-6 py-[84px] text-center">
+            <Eyebrow>{page.stat.title}</Eyebrow>
+            <div className="mt-4 font-display text-[64px] font-bold leading-none text-on-dark">
               {page.stat.value}
             </div>
-            <p className="mx-auto mt-4 max-w-[480px] text-[17px] leading-[1.6] text-ink-3 text-pretty">
+            <p className="mx-auto mt-4 max-w-[480px] text-[17px] leading-[1.6] text-on-dark-4 text-pretty">
               {page.stat.caption}
             </p>
           </div>
         </section>
 
-        {/* Pricing FAQ + its FAQPage structured data. */}
-        <section className="kx-sec">
+        {/* 5 - PRICING FAQ (light band; the Faq accordion is
+            light-section-only by design) + its FAQPage structured data. */}
+        <section className="kx-sec bg-light-canvas">
           <JsonLd data={faqPageLd(page.faq)} />
           <div className="mx-auto max-w-[760px]">
             <div className="text-center">
@@ -124,19 +150,24 @@ export default async function PricingPage() {
           </div>
         </section>
 
-        {/* Closing CTA, light treatment. */}
-        <section className="bg-light-canvas-2">
-          <div className="mx-auto max-w-[720px] px-6 py-[84px] text-center">
-            <SectionHead context="light">{page.closing.headline}</SectionHead>
-            <p className="mx-auto mt-4 max-w-[520px] text-[19px] leading-[1.55] text-ink-3 text-pretty">
+        {/* 6 - CLOSING (dark, the home/persona closing treatment: kx-grid,
+            HeroBackdrop, gradient headline). */}
+        <section className="kx-grid relative overflow-hidden">
+          <HeroBackdrop />
+          <div className="relative z-10 mx-auto flex max-w-[820px] flex-col items-center px-6 py-[110px] text-center">
+            <h2 className="kx-section-head font-display text-on-dark">
+              {renderWithGradient(page.closing.headline, page.closing.gradientPhrase)}
+            </h2>
+            <p className="mt-4 max-w-[520px] text-[19px] leading-[1.55] text-on-dark-4 text-pretty">
               {page.closing.subhead}
             </p>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8">
               <WaitlistCta
-                variant="accent"
+                variant="primary"
+                size="lg"
                 trackLocation="pricing-page-closing"
               >
-                {page.closing.cta}
+                {page.closing.cta} <span aria-hidden="true">{"→"}</span>
               </WaitlistCta>
             </div>
           </div>

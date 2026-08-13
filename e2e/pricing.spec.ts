@@ -28,6 +28,13 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
     await expect(page.getByText(price).first()).toBeVisible();
   }
 
+  // Detailed card rendering (taglines + fuller feature lists) is exclusive
+  // to this page -- the home/persona teasers keep the compact lists.
+  await expect(
+    page.getByText("For growing rosters that want the AI doing the explaining."),
+  ).toBeVisible();
+  await expect(page.getByText("Everything in Starter", { exact: true })).toBeVisible();
+
   // Comparison matrix: group headings + a value cell.
   await expect(page.getByRole("table")).toBeVisible();
   await expect(page.getByText("Clients & Team")).toBeVisible();
@@ -68,7 +75,9 @@ test("/pricing serves in place on a persona subdomain host (no redirect)", async
   });
   expect(res.status()).toBe(200);
   const body = await res.text();
-  expect(body).toContain("The price is the price.");
+  // The hero headline is split across gradient spans in raw HTML, so this
+  // asserts the (unsplit) comparison title instead.
+  expect(body).toContain("Everything In Every Plan");
   // Canonical always points at the apex variant, same policy as /legal/*.
   expect(body).toContain('<link rel="canonical" href="https://kinectnow.com/pricing"');
 });

@@ -60,24 +60,52 @@ export const settings: SiteSettings = {
     // claim was attackable. "No per-client" replaces it: the actual pricing
     // principle Jake + Will decided (flat rate, never per-seat/per-client).
     supporting: 'Flat monthly. No per-seat, no per-client, no "contact sales."',
+    // `tagline`/`detail` (user-directed 2026-08-03): the /pricing page's
+    // detailed card rendering -- see the Tier type's own doc comment. The
+    // compact `features` lists above them are unchanged handoff copy and
+    // still what the home/persona teaser sections render. Detail lines are
+    // drawn strictly from claims already shipped elsewhere on the site.
     tiers: [
       {
         name: "Starter",
         price: 149,
+        tagline: "For solo operators putting their first clients behind one login.",
         features: ["Up to 5 clients", "analytics", "anomaly alerts"],
+        detail: [
+          "Up to 5 clients",
+          "Branded client portal",
+          "Task boards, files, approvals and invoices",
+          "Live performance analytics",
+          "Anomaly alerts",
+          "Templates for your services or programs",
+        ],
         cta: "Choose Starter",
       },
       {
         name: "Growth",
         price: 399,
         popular: true,
+        tagline: "For growing rosters that want the AI doing the explaining.",
         features: ["Unlimited clients", "AI insights", "integrations"],
+        detail: [
+          "Everything in Starter",
+          "Unlimited clients",
+          "AI insights and drafted client updates",
+          "Integrations",
+        ],
         cta: "Start free",
       },
       {
         name: "Scale",
         price: 799,
+        tagline: "For studios and firms that need the portal to look and act like theirs.",
         features: ["White-label", "priority support", "SSO"],
+        detail: [
+          "Everything in Growth",
+          "White-label",
+          "SSO",
+          "Priority support",
+        ],
         cta: "Choose Scale",
       },
     ],

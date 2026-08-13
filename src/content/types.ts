@@ -20,6 +20,17 @@ export interface Tier {
   popular?: boolean;
   features: string[];
   cta: string;
+  /**
+   * user-directed 2026-08-03 (/pricing page): richer card content rendered
+   * only where PricingSection gets `detailed` (the dedicated pricing page).
+   * The home/persona teaser sections keep the compact 3-line `features`
+   * list from the design handoff. `tagline` is the who-is-this-for line
+   * under the tier name; `detail` is the fuller feature list ("Everything
+   * in Starter" convention). Both optional so the compact surfaces and any
+   * older Sanity document remain valid.
+   */
+  tagline?: string;
+  detail?: string[];
 }
 export interface Seo {
   title: string;
@@ -148,7 +159,10 @@ export interface HomeContent {
  */
 export interface PricingPageContent {
   seo: Seo;
-  hero: { eyebrow: string; title: string; intro: string };
+  /** Dark KINECT hero (user-directed 2026-08-03 rework: the first cut
+   * shipped light like the Momentify reference and Jake rejected it --
+   * this page wears the brand's dark canvas, gradient phrase and all). */
+  hero: { eyebrow: string; title: string; gradientPhrase: string; intro: string };
   /** Short trust chips under the tier cards ("Cancel anytime" etc.). */
   trustLine: string[];
   comparison: {
@@ -162,7 +176,7 @@ export interface PricingPageContent {
   faqTitle: string;
   faq: Faq[];
   stat: { title: string; value: string; caption: string };
-  closing: { headline: string; subhead: string; cta: string };
+  closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 
 export interface SiteSettings {

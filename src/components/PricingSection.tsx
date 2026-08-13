@@ -19,6 +19,12 @@ interface PricingSectionProps {
    */
   compareHref?: string;
   /**
+   * user-directed 2026-08-03: the /pricing page renders richer cards
+   * (tier tagline + the fuller `detail` feature list); the home/persona
+   * teaser sections stay on the compact handoff `features` list.
+   */
+  detailed?: boolean;
+  /**
    * user-directed 2026-07-25: home and the persona subdomain pages want
    * different pricing tones. Home restores the prototype's dark treatment
    * (Jake: pillars -> pricing -> FAQ was three light sections in a row and
@@ -88,6 +94,7 @@ export default function PricingSection({
   tiers,
   tone = "light",
   compareHref,
+  detailed = false,
 }: PricingSectionProps) {
   const dark = tone === "dark";
 
@@ -163,6 +170,11 @@ export default function PricingSection({
                 <div className={cn("font-display text-[21px] font-bold text-balance", headingClass)}>
                   {tier.name}
                 </div>
+                {detailed && tier.tagline ? (
+                  <p className={cn("mt-1 text-[14px] leading-[1.5] text-pretty", moClass)}>
+                    {tier.tagline}
+                  </p>
+                ) : null}
                 <div className={cn("mt-2 mb-1 font-display text-[42px] font-bold", headingClass)}>
                   {"$" + tier.price}
                   <span className={cn("text-[16px] font-medium", moClass)}>/mo</span>
@@ -173,7 +185,7 @@ export default function PricingSection({
                     bodyClass,
                   )}
                 >
-                  {tier.features.map((feature) => (
+                  {(detailed ? (tier.detail ?? tier.features) : tier.features).map((feature) => (
                     <li key={feature}>{feature}</li>
                   ))}
                 </ul>

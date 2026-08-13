@@ -173,6 +173,10 @@ export function assertPricingPageShape(doc: PricingPageContent): void {
   required(doc.seo, "seo");
   required(doc.hero, "hero");
   required(doc.hero?.title, "hero.title");
+  // Both gradient phrases are load-bearing (renderWithGradient consumes
+  // them), so a pre-rework Sanity doc that lacks them must fall back to
+  // local content rather than reach the renderer.
+  required(doc.hero?.gradientPhrase, "hero.gradientPhrase");
   required(doc.trustLine, "trustLine");
   required(doc.comparison, "comparison");
   required(doc.comparison?.groups, "comparison.groups");
@@ -180,6 +184,7 @@ export function assertPricingPageShape(doc: PricingPageContent): void {
   required(doc.faq, "faq");
   required(doc.stat, "stat");
   required(doc.closing, "closing");
+  required(doc.closing?.gradientPhrase, "closing.gradientPhrase");
 }
 
 export function assertLegalShape(doc: LegalPage): void {
@@ -309,7 +314,7 @@ const SETTINGS_PROJECTION = `{
   "solutions": solutions[]{persona, name, description},
   pricing{
     headline, supporting,
-    "tiers": tiers[]{name, price, popular, features, cta},
+    "tiers": tiers[]{name, price, popular, features, tagline, detail, cta},
     note
   },
   footer{

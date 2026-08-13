@@ -27,6 +27,12 @@ export default defineType({
       fields: [
         defineField({ name: "eyebrow", type: "string", validation: (r) => r.required() }),
         defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+        defineField({
+          name: "gradientPhrase",
+          description: "Exact trailing substring of the title rendered in the brand gradient.",
+          type: "string",
+          validation: (r) => r.required(),
+        }),
         defineField({ name: "intro", type: "text", rows: 3, validation: (r) => r.required() }),
       ],
       validation: (r) => r.required(),
@@ -112,6 +118,12 @@ export default defineType({
       type: "object",
       fields: [
         defineField({ name: "headline", type: "string", validation: (r) => r.required() }),
+        defineField({
+          name: "gradientPhrase",
+          description: "Exact trailing substring of the headline rendered in the brand gradient.",
+          type: "string",
+          validation: (r) => r.required(),
+        }),
         defineField({ name: "subhead", type: "text", rows: 2, validation: (r) => r.required() }),
         defineField({ name: "cta", type: "string", validation: (r) => r.required() }),
       ],

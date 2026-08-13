@@ -26,6 +26,7 @@ export const pricingPage: PricingPageContent = {
   hero: {
     eyebrow: "Pricing",
     title: "The price is the price.",
+    gradientPhrase: "is the price.",
     intro:
       'Flat monthly plans with no per-seat charges, no per-client charges, and no "contact sales" wall. Pick a tier, invite your clients, and the bill stays put.',
   },
@@ -122,6 +123,7 @@ export const pricingPage: PricingPageContent = {
 
   closing: {
     headline: "Start with your first client, free.",
+    gradientPhrase: "free.",
     subhead: "No card, no demo call, no onboarding fee. The flat price starts when you bring the roster.",
     cta: "Join the waitlist",
   },
