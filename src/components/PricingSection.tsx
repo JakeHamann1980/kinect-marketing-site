@@ -25,6 +25,15 @@ interface PricingSectionProps {
    */
   detailed?: boolean;
   /**
+   * user-directed 2026-08-03: when this section is nested inside an
+   * ancestor that already paints the dark canvas and its orb wash (the
+   * /pricing page runs hero + cards + trust chips as one block so the orbs
+   * carry all the way down), the section must not paint its own -- both
+   * `.kx-grid`'s opaque `background-color` and the local cyan radial would
+   * cover the shared backdrop. Dark tone only; ignored when light.
+   */
+  inheritsBackdrop?: boolean;
+  /**
    * user-directed 2026-07-25: home and the persona subdomain pages want
    * different pricing tones. Home restores the prototype's dark treatment
    * (Jake: pillars -> pricing -> FAQ was three light sections in a row and
@@ -95,6 +104,7 @@ export default function PricingSection({
   tone = "light",
   compareHref,
   detailed = false,
+  inheritsBackdrop = false,
 }: PricingSectionProps) {
   const dark = tone === "dark";
 
@@ -107,8 +117,14 @@ export default function PricingSection({
     // Light tone sits on --light-canvas-2, one deeper step than the FAQ's
     // --light-canvas, so the two adjacent light sections on persona pages
     // read as distinct bands (user-directed 2026-07-25).
-    <section id="pricing" className={cn("kx-sec relative overflow-hidden", dark ? "kx-grid" : "bg-light-canvas-2")}>
-      {dark ? (
+    <section
+      id="pricing"
+      className={cn(
+        "kx-sec relative overflow-hidden",
+        dark ? (inheritsBackdrop ? null : "kx-grid") : "bg-light-canvas-2",
+      )}
+    >
+      {dark && !inheritsBackdrop ? (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"

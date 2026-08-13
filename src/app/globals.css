@@ -497,6 +497,33 @@
   animation-duration: 23s;
   animation-delay: -11s;
 }
+/* user-directed 2026-08-03: `<HeroBackdrop tall />` (the /pricing page's
+   single dark block -- hero + tier cards + trust chips on one canvas).
+   The default orbs above use FIXED 520px vertical radii anchored near the
+   top, which is right for a hero-height section but leaves the lower two
+   thirds of a tall block flat black. These variants keep the same hues and
+   horizontal anchors and swap the vertical radius for a percentage one, so
+   the pool scales with whatever height the block ends up at instead of
+   needing a hardcoded number per breakpoint. The cyan (blue) pool is the
+   one asked to reach the bottom: anchored at 30% with a 78% radius, it
+   stays lit through the trust line; the warm left pool grows more modestly
+   so the top-left/bottom-right diagonal the hero establishes survives. */
+.kx-backdrop-tall .kx-orb-left {
+  background: radial-gradient(820px 72% at 14% 14%, rgba(236, 82, 66, 0.42), transparent 70%),
+    radial-gradient(760px 62% at 50% -4%, rgba(130, 160, 240, 0.26), transparent 68%);
+}
+/* Reach matters more than radius here: a radial's color is gone at its
+   `transparent` STOP, not at its radius, so the first attempt (78%/66%)
+   still died ~120px above the block's bottom edge and left the trust line
+   on flat canvas. Anchoring higher (26%) with a full-height radius and a
+   78% stop puts the fade-out just past the block bottom, so the wash is
+   still faintly lit behind the trust line and gets cut by the section
+   boundary rather than petering out inside it. Verified by sampling
+   rendered pixels down the right edge, not by eye. */
+.kx-backdrop-tall .kx-orb-right {
+  background: radial-gradient(880px 100% at 86% 26%, rgba(53, 214, 232, 0.4), transparent 78%);
+}
+
 /* user-directed 2026-07-25: on small screens the orbs' fixed-size gradient
    pools mostly overflow the narrow viewport and the hero read as near-black.
    Boost the color intensity below 860px so the warm/cyan wash stays visibly
@@ -508,6 +535,16 @@
   }
   .kx-orb-right {
     background: radial-gradient(820px 520px at 86% 16%, rgba(53, 214, 232, 0.58), transparent 64%);
+  }
+  /* Tall variants need their own mobile boost: `.kx-backdrop-tall .kx-orb-*`
+     outranks the plain `.kx-orb-*` rules above at every viewport, so without
+     these the tall block would lose the phone intensity lift entirely. */
+  .kx-backdrop-tall .kx-orb-left {
+    background: radial-gradient(820px 72% at 14% 14%, rgba(236, 82, 66, 0.6), transparent 70%),
+      radial-gradient(760px 62% at 50% -4%, rgba(130, 160, 240, 0.38), transparent 68%);
+  }
+  .kx-backdrop-tall .kx-orb-right {
+    background: radial-gradient(880px 100% at 86% 26%, rgba(53, 214, 232, 0.58), transparent 78%);
   }
 }
 

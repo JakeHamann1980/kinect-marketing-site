@@ -27,12 +27,31 @@
  * `prefers-reduced-motion: reduce` via the `.kx-orb`/`.kx-trace` rules in
  * globals.css.
  */
-export default function HeroBackdrop() {
+interface HeroBackdropProps {
+  /**
+   * user-directed 2026-08-03 (/pricing): stretches the orb pools so they
+   * span a block much taller than a hero -- there, hero + tier cards +
+   * trust chips share ONE dark canvas and the wash has to carry from the
+   * headline down to the trust line instead of ending a few hundred px in.
+   * Adds `.kx-backdrop-tall`, whose orb rules swap the fixed-px vertical
+   * radii for percentage ones so the pools scale with the container at
+   * every breakpoint (see globals.css).
+   */
+  tall?: boolean;
+}
+
+export default function HeroBackdrop({ tall = false }: HeroBackdropProps) {
   return (
     // z-0 creates a self-contained stacking context so the orbs' z-index:-1
     // can never paint behind/among unrelated siblings once real hero layers
     // (nav z-40, screenshot glow, badges) mount around this in Task 12.
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <div
+      aria-hidden="true"
+      className={
+        "pointer-events-none absolute inset-0 z-0 overflow-hidden" +
+        (tall ? " kx-backdrop-tall" : "")
+      }
+    >
       <div className="kx-orb kx-orb-left" />
       <div className="kx-orb kx-orb-right" />
 

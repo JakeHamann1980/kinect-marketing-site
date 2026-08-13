@@ -48,52 +48,66 @@ export default async function PricingPage() {
       <Nav />
 
       <main id="main">
-        {/* 1 - HERO (dark): the persona-hero treatment minus the badge and
-            CTA row -- the tier cards directly below carry the CTAs. */}
-        <section className="kx-grid kx-hero-sec relative overflow-hidden">
-          <HeroBackdrop />
-          <div className="relative z-10 mx-auto flex max-w-[1000px] flex-col items-center text-center">
-            {/* Accent-tinted hero eyebrow -- same inline-style approach as
-                PersonaPage's AccentEyebrow (Eyebrow's color comes from a
-                Tailwind utility a caller class can't reliably override). */}
-            <span
-              className="mb-4 block font-mono text-[11px] uppercase tracking-[.14em]"
-              style={{ color: "var(--accent)" }}
-            >
-              {page.hero.eyebrow}
-            </span>
-            <h1 className="kx-hero-head max-w-[920px] font-display text-on-dark">
-              {renderWithGradient(page.hero.title, page.hero.gradientPhrase)}
-            </h1>
-            <p className="kx-hero-sub mt-[26px] max-w-[620px] text-on-dark-4">
-              {page.hero.intro}
-            </p>
-          </div>
-        </section>
+        {/* 1 - THE DARK BLOCK: hero, tier cards and trust chips share ONE
+            kx-grid canvas and ONE HeroBackdrop (user-directed 2026-08-03),
+            so the blue orb wash carries from the headline all the way down
+            to the trust line instead of ending at the hero's own bottom
+            edge and leaving the cards on flat black. `tall` stretches the
+            orb pools to this block's height (see HeroBackdrop/globals.css);
+            PricingSection takes `inheritsBackdrop` so it stops painting its
+            own opaque canvas over that shared wash. The trust chips keep
+            their existing position at the very bottom of the block. */}
+        <section className="kx-grid relative overflow-hidden">
+          <HeroBackdrop tall />
 
-        {/* 2 - TIER CARDS (dark, the home treatment: cyan-glow popular
-            card on the kx-grid canvas), same shared settings.pricing. */}
-        <PricingSection
-          headline={settings.pricing.headline}
-          supporting={settings.pricing.supporting}
-          tiers={settings.pricing.tiers}
-          tone="dark"
-          detailed
-        />
-
-        {/* Trust chips on the dark canvas, Momentify's reassurance row in
-            KINECT's mono-eyebrow voice. */}
-        <section className="pb-[72px]">
-          <ul className="mx-auto flex max-w-[900px] flex-wrap items-center justify-center gap-x-8 gap-y-2 px-6">
-            {page.trustLine.map((chip) => (
-              <li
-                key={chip}
-                className="font-mono text-[11px] uppercase tracking-[.14em] text-on-dark-5"
+          <div className="kx-hero-sec relative z-10">
+            <div className="mx-auto flex max-w-[1000px] flex-col items-center text-center">
+              {/* Accent-tinted hero eyebrow -- same inline-style approach as
+                  PersonaPage's AccentEyebrow (Eyebrow's color comes from a
+                  Tailwind utility a caller class can't reliably override). */}
+              <span
+                className="mb-4 block font-mono text-[11px] uppercase tracking-[.14em]"
+                style={{ color: "var(--accent)" }}
               >
-                {chip}
-              </li>
-            ))}
-          </ul>
+                {page.hero.eyebrow}
+              </span>
+              <h1 className="kx-hero-head max-w-[920px] font-display text-on-dark">
+                {renderWithGradient(page.hero.title, page.hero.gradientPhrase)}
+              </h1>
+              <p className="kx-hero-sub mt-[26px] max-w-[620px] text-on-dark-4">
+                {page.hero.intro}
+              </p>
+            </div>
+          </div>
+
+          {/* Tier cards: the home page's dark treatment (cyan-glow popular
+              card), rendered detailed here, from the same shared
+              settings.pricing object every other surface uses. */}
+          <div className="relative z-10">
+            <PricingSection
+              headline={settings.pricing.headline}
+              supporting={settings.pricing.supporting}
+              tiers={settings.pricing.tiers}
+              tone="dark"
+              detailed
+              inheritsBackdrop
+            />
+          </div>
+
+          {/* Trust chips, Momentify's reassurance row in KINECT's
+              mono-eyebrow voice. */}
+          <div className="relative z-10 pb-[72px]">
+            <ul className="mx-auto flex max-w-[900px] flex-wrap items-center justify-center gap-x-8 gap-y-2 px-6">
+              {page.trustLine.map((chip) => (
+                <li
+                  key={chip}
+                  className="font-mono text-[11px] uppercase tracking-[.14em] text-on-dark-5"
+                >
+                  {chip}
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         {/* 3 - COMPARISON MATRIX (light band, like the persona pages'
