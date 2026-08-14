@@ -11,13 +11,23 @@ import { test, expect } from "@playwright/test";
  * tests in src/lib/draft-pages.test.ts and exercised by hand on localhost.
  */
 
-test("the Docs nav item is absent from every nav surface", async ({ page }) => {
+test("draft nav items are absent, and no shipped nav link points at '#'", async ({
+  page,
+}) => {
   await page.goto("/");
   const nav = page.getByRole("navigation");
   await expect(nav.getByRole("link", { name: "Docs" })).toHaveCount(0);
-  // The links that DO ship are untouched.
+  // "Product" joined the gate on the second pass (user-directed
+  // 2026-08-03): it was still shipping as a dead "#" link on live.
+  await expect(nav.getByRole("link", { name: "Product" })).toHaveCount(0);
+
+  // What survives must be a real destination. This is the assertion that
+  // would have caught Product on its own: no placeholder hrefs in the nav.
+  const hrefs = await nav.getByRole("link").evaluateAll((links) =>
+    links.map((l) => l.getAttribute("href")),
+  );
+  expect(hrefs).not.toContain("#");
   await expect(nav.getByRole("link", { name: "Pricing" })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Product" })).toBeVisible();
 });
 
 test("the footer drops the Platform column and its Docs link", async ({ page }) => {

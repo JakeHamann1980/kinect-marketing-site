@@ -33,9 +33,13 @@ export const settings: SiteSettings = {
     // NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1 (see src/lib/draft-pages.ts). Its
     // purpose is still an open question -- there is no shipped product to
     // document while the site is a pre-launch waitlist.
-    // "Product" still has no destination and stays "#"; it is the natural
-    // owner of /platform if that page is ever approved to ship.
-    { label: "Product", href: "#" },
+    // "Product" gets the same treatment (user-directed 2026-08-03, second
+    // pass): it was still shipping as a dead "#" on live. Its real
+    // destination is the /platform overview, so it now points there and
+    // carries the same `draft` gate -- hidden on live until /platform is
+    // approved, live-and-clickable locally. That leaves the production nav
+    // with only destinations that actually exist: Solutions and Pricing.
+    { label: "Product", href: "/platform", draft: true },
     { label: "Pricing", href: "/pricing" },
     { label: "Docs", href: "/docs", draft: true },
   ],
