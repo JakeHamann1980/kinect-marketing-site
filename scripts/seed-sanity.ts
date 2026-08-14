@@ -191,8 +191,14 @@ const settingsDoc = {
     positioning: settings.footer.positioning,
     columns: arr(
       "footerColumn",
+      // Spread the column so fields added to the type later (e.g. `draft`,
+      // 2026-08-03) reach Sanity automatically. Listing fields explicitly
+      // silently dropped `draft` on the first pass, which left the hidden
+      // "Platform" column still rendering on the live site -- the footer
+      // reads from Sanity, so a field the seed omits simply does not exist
+      // there. Only `links` needs overriding, to stamp array _key/_type.
       settings.footer.columns.map((column) => ({
-        heading: column.heading,
+        ...column,
         links: arr("footerLink", column.links),
       })),
     ),
