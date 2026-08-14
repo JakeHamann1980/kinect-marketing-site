@@ -20,6 +20,13 @@ export default defineType({
           fields: [
             defineField({ name: "label", type: "string", validation: (r) => r.required() }),
             defineField({ name: "href", type: "string", validation: (r) => r.required() }),
+            defineField({
+              name: "draft",
+              type: "boolean",
+              initialValue: false,
+              description:
+                "Hide from the LIVE site. Visible only with NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1 (local). Use for destinations that are built but not approved to ship.",
+            }),
           ],
         },
       ],
@@ -95,6 +102,12 @@ export default defineType({
               fields: [
                 defineField({ name: "heading", type: "string", validation: (r) => r.required() }),
                 defineField({
+                  name: "draft",
+                  type: "boolean",
+                  initialValue: false,
+                  description: "Hide this whole column from the LIVE site (local-only until approved).",
+                }),
+                defineField({
                   name: "links",
                   type: "array",
                   of: [
@@ -104,6 +117,12 @@ export default defineType({
                       fields: [
                         defineField({ name: "label", type: "string", validation: (r) => r.required() }),
                         defineField({ name: "href", type: "string", validation: (r) => r.required() }),
+                        defineField({
+                          name: "draft",
+                          type: "boolean",
+                          initialValue: false,
+                          description: "Hide this link from the LIVE site (local-only until approved).",
+                        }),
                       ],
                     },
                   ],

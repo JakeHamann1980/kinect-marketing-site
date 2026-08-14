@@ -57,6 +57,11 @@ export default defineConfig({
       // checked-out code, not the CMS's current state.
       NEXT_PUBLIC_SANITY_PROJECT_ID: "",
       NEXT_PUBLIC_SANITY_DATASET: "",
+      // Drafts OFF so e2e matches PRODUCTION, not a dev machine: the
+      // suite's job here is proving /docs and /platform stay 404 and
+      // their links stay hidden. `.env.local` sets this to "1" for
+      // local dev, and next build would otherwise pick that up.
+      NEXT_PUBLIC_ENABLE_DRAFT_PAGES: "",
     },
   },
 });

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Lockup from "@/components/Lockup";
 import { CookiePreferencesButton } from "@/components/ConsentBanner";
 import { fetchSettings } from "@/lib/sanity";
+import { visibleFooterColumns } from "@/lib/draft-pages";
 
 /**
  * Social icon glyphs recovered verbatim from `design-reference/KINECT
@@ -90,7 +91,11 @@ function SocialIcon({ label, path }: { label: string; path: React.ReactNode }) {
  */
 export default async function Footer() {
   const settings = await fetchSettings();
-  const { positioning, columns, legalLinks, copyright } = settings.footer;
+  const { positioning, legalLinks, copyright } = settings.footer;
+  // Draft columns/links (today: the whole "Platform" column and the
+  // Resources "Docs" entry) are hidden on the live site -- see
+  // src/lib/draft-pages.ts.
+  const columns = visibleFooterColumns(settings.footer.columns);
 
   return (
     // Background `#0B0F17` recovered verbatim from the prototype (~line

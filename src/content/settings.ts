@@ -28,9 +28,16 @@ export const settings: SiteSettings = {
     // "See everything in every plan" link to the same page. A relative
     // path serves correctly on every hostname (the proxy passes /pricing
     // through in place, same as /legal/*).
+    // user-directed 2026-08-03: "Docs" is built out at /docs but marked
+    // `draft`, so it is hidden on the live site and visible only with
+    // NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1 (see src/lib/draft-pages.ts). Its
+    // purpose is still an open question -- there is no shipped product to
+    // document while the site is a pre-launch waitlist.
+    // "Product" still has no destination and stays "#"; it is the natural
+    // owner of /platform if that page is ever approved to ship.
     { label: "Product", href: "#" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Docs", href: "#" },
+    { label: "Docs", href: "/docs", draft: true },
   ],
 
   solutions: [
@@ -136,19 +143,26 @@ export const settings: SiteSettings = {
         ],
       },
       {
+        // user-directed 2026-08-03: the whole Platform column is hidden on
+        // the live site (every link was a dead "#") and now points at the
+        // built-out /platform overview's section anchors, visible only with
+        // drafts enabled. See src/lib/draft-pages.ts.
         heading: "Platform",
+        draft: true,
         links: [
-          { label: "Client portal", href: "#" },
-          { label: "Analytics", href: "#" },
-          { label: "AI insights", href: "#" },
-          { label: "Proposals & billing", href: "#" },
-          { label: "Integrations", href: "#" },
+          { label: "Client portal", href: "/platform#client-portal" },
+          { label: "Analytics", href: "/platform#analytics" },
+          { label: "AI insights", href: "/platform#ai-insights" },
+          { label: "Proposals & billing", href: "/platform#proposals-billing" },
+          { label: "Integrations", href: "/platform#integrations" },
         ],
       },
       {
         heading: "Resources",
         links: [
-          { label: "Docs", href: "#" },
+          // Same draft gate as the nav's Docs item: hidden on live, points
+          // at the built-out /docs index locally.
+          { label: "Docs", href: "/docs", draft: true },
           { label: "Onboarding guide", href: "#" },
           { label: "Templates", href: "#" },
           { label: "Changelog", href: "#" },

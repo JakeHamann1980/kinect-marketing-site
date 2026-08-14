@@ -6,6 +6,7 @@ import Lockup from "@/components/Lockup";
 import WaitlistCta from "@/components/WaitlistCta";
 import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
+import { visibleNavLinks } from "@/lib/draft-pages";
 import { home } from "@/content/home";
 import { PERSONAS, personaHref, type Persona } from "@/lib/personas";
 import { track } from "@/lib/analytics";
@@ -32,6 +33,14 @@ function PersonaDot({
     />
   );
 }
+
+/**
+ * user-directed 2026-08-03: draft destinations (today: "Docs") are hidden
+ * on the live site and appear only with NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1.
+ * Computed once at module scope -- the flag is inlined at build time, so
+ * this never changes between renders.
+ */
+const NAV_LINKS = visibleNavLinks(settings.navLinks);
 
 interface NavProps {
   /**
@@ -228,7 +237,7 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               )}
             </div>
 
-            {settings.navLinks.map((link) => (
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
@@ -281,7 +290,7 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               </Link>
             ))}
 
-            {settings.navLinks.map((link) => (
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}

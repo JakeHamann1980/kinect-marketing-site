@@ -180,7 +180,12 @@ export interface PricingPageContent {
 }
 
 export interface SiteSettings {
-  navLinks: { label: string; href: string }[];
+  /**
+   * `draft` (user-directed 2026-08-03) hides an entry from the live site
+   * while keeping it navigable locally -- see src/lib/draft-pages.ts. Used
+   * for destinations that are built but not yet approved to ship.
+   */
+  navLinks: { label: string; href: string; draft?: boolean }[];
   solutions: { persona: Persona; name: string; description: string }[];
   /**
    * `note` is the home pricing section's trailing line ("Every plan
@@ -195,7 +200,12 @@ export interface SiteSettings {
   pricing: { headline: string; supporting: string; tiers: Tier[]; note?: string };
   footer: {
     positioning: string;
-    columns: { heading: string; links: { label: string; href: string }[] }[];
+    columns: {
+      heading: string;
+      /** Hides the whole column on the live site (see navLinks' note). */
+      draft?: boolean;
+      links: { label: string; href: string; draft?: boolean }[];
+    }[];
     legalLinks: { label: string; href: string }[];
     copyright: string;
   };

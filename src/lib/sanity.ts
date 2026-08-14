@@ -310,7 +310,7 @@ export async function fetchPersona(persona: Persona): Promise<PersonaPageContent
 
 /** Reshapes the `siteSettings` document back into `SiteSettings`. */
 const SETTINGS_PROJECTION = `{
-  "navLinks": navLinks[]{label, href},
+  "navLinks": navLinks[]{label, href, draft},
   "solutions": solutions[]{persona, name, description},
   pricing{
     headline, supporting,
@@ -319,7 +319,7 @@ const SETTINGS_PROJECTION = `{
   },
   footer{
     positioning,
-    "columns": columns[]{heading, "links": links[]{label, href}},
+    "columns": columns[]{heading, draft, "links": links[]{label, href, draft}},
     "legalLinks": legalLinks[]{label, href},
     copyright
   }
