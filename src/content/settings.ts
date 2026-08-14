@@ -167,9 +167,13 @@ export const settings: SiteSettings = {
           // Same draft gate as the nav's Docs item: hidden on live, points
           // at the built-out /docs index locally.
           { label: "Docs", href: "/docs", draft: true },
-          { label: "Onboarding guide", href: "#" },
-          { label: "Templates", href: "#" },
-          { label: "Changelog", href: "#" },
+          // No near-term destination (user-directed 2026-08-03): all three
+          // are post-launch content. With Docs also gated this column has
+          // nothing left, so visibleFooterColumns drops the whole heading
+          // rather than render it over empty space.
+          { label: "Onboarding guide", href: "#", draft: true },
+          { label: "Templates", href: "#", draft: true },
+          { label: "Changelog", href: "#", draft: true },
         ],
       },
       {
@@ -179,10 +183,15 @@ export const settings: SiteSettings = {
           // /legal/security page (same destination as the "Security" entry
           // in legalLinks below). About/Contact/Status have no dedicated
           // pages, so they stay "#".
-          { label: "About", href: "#" },
+          // About needs a page; Status needs uptime infrastructure that
+          // does not exist pre-launch. Both gated. "Contact" is the
+          // exception -- hello@kinectnow.com is already the contact address
+          // on every legal page, so it gets a real destination rather than
+          // being hidden.
+          { label: "About", href: "#", draft: true },
           { label: "Security", href: "/legal/security" },
-          { label: "Contact", href: "#" },
-          { label: "Status", href: "#" },
+          { label: "Contact", href: "mailto:hello@kinectnow.com" },
+          { label: "Status", href: "#", draft: true },
         ],
       },
     ],
@@ -196,9 +205,12 @@ export const settings: SiteSettings = {
       { label: "Terms & Conditions", href: "/legal/terms" },
       { label: "Security", href: "/legal/security" },
       { label: "Cookie Policy", href: "/legal/cookies" },
-      // TODO(Task 14 backlog): DPA and Accessibility pages don't have a route yet.
-      { label: "DPA", href: "#" },
-      { label: "Accessibility", href: "#" },
+      // TODO(Task 14 backlog): DPA and Accessibility pages don't have a
+      // route yet -- DPA needs counsel, Accessibility needs an audit. Gated
+      // (user-directed 2026-08-03) so the live legal row carries only real
+      // documents.
+      { label: "DPA", href: "#", draft: true },
+      { label: "Accessibility", href: "#", draft: true },
     ],
     copyright: "© 2026 KINECT · kinectnow.com",
   },

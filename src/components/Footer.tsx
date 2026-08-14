@@ -2,7 +2,7 @@ import Link from "next/link";
 import Lockup from "@/components/Lockup";
 import { CookiePreferencesButton } from "@/components/ConsentBanner";
 import { fetchSettings } from "@/lib/sanity";
-import { visibleFooterColumns } from "@/lib/draft-pages";
+import { visibleFooterColumns, visibleLinks } from "@/lib/draft-pages";
 
 /**
  * Social icon glyphs recovered verbatim from `design-reference/KINECT
@@ -12,21 +12,35 @@ import { visibleFooterColumns } from "@/lib/draft-pages";
  * currently point to "#" -- the design reference calls these "currently
  * placeholders; wire to real profiles" (README "Footer" section).
  */
-const SOCIAL_ICONS: { label: string; path: React.ReactNode }[] = [
+/**
+ * user-directed 2026-08-03: no social profile URLs exist yet (the JSON-LD
+ * `sameAs` carries only the persona subdomains, not real accounts), so all
+ * four are `draft` and hidden on the live site -- four icons that go
+ * nowhere are worse than no icons. When the handles land, set `href` and
+ * drop `draft`; the SAME urls should also be added to `organizationLd`'s
+ * `sameAs`, which is what ties the brand together for AI answer engines.
+ */
+const SOCIAL_ICONS: { label: string; href: string; draft?: boolean; path: React.ReactNode }[] = [
   {
     label: "X",
+    href: "#",
+    draft: true,
     path: (
       <path d="M18.9 3H21l-6.5 7.4L21.8 21h-6.3l-4.4-6-5 6H3.9l6.9-8L2.6 3h6.4l4.1 5.6zm-1.1 16h1.2L7.3 4.2H6z" />
     ),
   },
   {
     label: "LinkedIn",
+    href: "#",
+    draft: true,
     path: (
       <path d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9h4v12H3zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.3c0-1.27-.02-2.9-1.77-2.9-1.77 0-2.04 1.38-2.04 2.8V21h-4z" />
     ),
   },
   {
     label: "Instagram",
+    href: "#",
+    draft: true,
     path: (
       <>
         <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -37,17 +51,19 @@ const SOCIAL_ICONS: { label: string; path: React.ReactNode }[] = [
   },
   {
     label: "YouTube",
+    href: "#",
+    draft: true,
     path: (
       <path d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16.9 4.1 12 4.1 12 4.1h0s-4.9 0-6.7.2c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2.2 8.8 2.2 10.5v1.6c0 1.6.2 3.3.2 3.3s.2 1.4.8 2c.8.8 1.8.8 2.2.9 1.8.2 6.6.2 6.6.2s4.9 0 6.7-.2c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.6.2-3.3v-1.6c0-1.7-.2-3.3-.2-3.3zM9.9 14.4V8.7l6.1 2.9z" />
     ),
   },
 ];
 
-function SocialIcon({ label, path }: { label: string; path: React.ReactNode }) {
+function SocialIcon({ label, href, path }: { label: string; href: string; path: React.ReactNode }) {
   const isStrokeIcon = label === "Instagram";
   return (
     <a
-      href="#"
+      href={href}
       aria-label={label}
       className="flex h-[34px] w-[34px] flex-none items-center justify-center rounded-[9px] border border-[rgba(255,255,255,.12)] text-on-dark-4"
     >
@@ -91,7 +107,8 @@ function SocialIcon({ label, path }: { label: string; path: React.ReactNode }) {
  */
 export default async function Footer() {
   const settings = await fetchSettings();
-  const { positioning, legalLinks, copyright } = settings.footer;
+  const { positioning, copyright } = settings.footer;
+  const legalLinks = visibleLinks(settings.footer.legalLinks);
   // Draft columns/links (today: the whole "Platform" column and the
   // Resources "Docs" entry) are hidden on the live site -- see
   // src/lib/draft-pages.ts.
@@ -117,8 +134,8 @@ export default async function Footer() {
               {positioning}
             </p>
             <div className="flex gap-[10px]">
-              {SOCIAL_ICONS.map((icon) => (
-                <SocialIcon key={icon.label} label={icon.label} path={icon.path} />
+              {visibleLinks(SOCIAL_ICONS).map((icon) => (
+                <SocialIcon key={icon.label} label={icon.label} href={icon.href} path={icon.path} />
               ))}
             </div>
           </div>

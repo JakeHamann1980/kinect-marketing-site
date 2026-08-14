@@ -30,15 +30,45 @@ test("draft nav items are absent, and no shipped nav link points at '#'", async 
   await expect(nav.getByRole("link", { name: "Pricing" })).toBeVisible();
 });
 
-test("the footer drops the Platform column and its Docs link", async ({ page }) => {
+test("the footer ships no dead links", async ({ page }) => {
   await page.goto("/");
   const footer = page.getByRole("contentinfo");
+
+  // Gated: the Platform column, the all-draft Resources column (dropping
+  // the column, not leaving a bare heading), the profile-less social icons,
+  // and the legal entries with no document behind them.
   await expect(footer.getByText("Platform", { exact: true })).toHaveCount(0);
-  await expect(footer.getByRole("link", { name: "Client portal" })).toHaveCount(0);
-  await expect(footer.getByRole("link", { name: "Docs" })).toHaveCount(0);
-  // Sibling columns still render.
-  await expect(footer.getByText("Resources", { exact: true })).toBeVisible();
-  await expect(footer.getByRole("link", { name: "Onboarding guide" })).toBeVisible();
+  await expect(footer.getByText("Resources", { exact: true })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "Onboarding guide" })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "About" })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "Status" })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "DPA" })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "Accessibility" })).toHaveCount(0);
+  await expect(footer.getByRole("link", { name: "LinkedIn" })).toHaveCount(0);
+
+  // Kept, because each has a real destination.
+  await expect(footer.getByText("Solutions", { exact: true })).toBeVisible();
+  await expect(footer.getByRole("link", { name: "For agencies" })).toBeVisible();
+  await expect(footer.getByRole("link", { name: "Security" }).first()).toBeVisible();
+  // "Contact" was fixed rather than hidden: hello@kinectnow.com is already
+  // the contact address on every legal page.
+  await expect(footer.getByRole("link", { name: "Contact" })).toHaveAttribute(
+    "href",
+    "mailto:hello@kinectnow.com",
+  );
+});
+
+test("no link anywhere on the live home page points at '#'", async ({ page }) => {
+  // The rule, rather than a list of known offenders -- this is what would
+  // have caught "Product" and the footer placeholders without anyone
+  // spotting them by eye.
+  await page.goto("/");
+  const dead = await page.evaluate(() =>
+    [...document.querySelectorAll("a[href='#']")].map(
+      (a) => a.textContent?.trim() || a.getAttribute("aria-label") || "(unlabelled)",
+    ),
+  );
+  expect(dead, `dead '#' links still shipping: ${dead.join(", ")}`).toEqual([]);
 });
 
 test("/docs and /platform 404 rather than sitting there unlinked", async ({

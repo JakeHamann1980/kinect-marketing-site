@@ -6,7 +6,7 @@ import Lockup from "@/components/Lockup";
 import WaitlistCta from "@/components/WaitlistCta";
 import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
-import { visibleNavLinks } from "@/lib/draft-pages";
+import { visibleLinks } from "@/lib/draft-pages";
 import { home } from "@/content/home";
 import { PERSONAS, personaHref, type Persona } from "@/lib/personas";
 import { track } from "@/lib/analytics";
@@ -40,7 +40,7 @@ function PersonaDot({
  * Computed once at module scope -- the flag is inlined at build time, so
  * this never changes between renders.
  */
-const NAV_LINKS = visibleNavLinks(settings.navLinks);
+const NAV_LINKS = visibleLinks(settings.navLinks);
 
 interface NavProps {
   /**

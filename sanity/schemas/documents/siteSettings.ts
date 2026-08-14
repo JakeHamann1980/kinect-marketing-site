@@ -143,6 +143,12 @@ export default defineType({
               fields: [
                 defineField({ name: "label", type: "string", validation: (r) => r.required() }),
                 defineField({ name: "href", type: "string", validation: (r) => r.required() }),
+                defineField({
+                  name: "draft",
+                  type: "boolean",
+                  initialValue: false,
+                  description: "Hide this link from the LIVE site (local-only until it has a real destination).",
+                }),
               ],
             },
           ],

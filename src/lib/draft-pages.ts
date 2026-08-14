@@ -25,8 +25,12 @@ interface MaybeDraft {
   draft?: boolean;
 }
 
-/** Nav links, minus anything marked `draft` unless drafts are enabled. */
-export function visibleNavLinks<T extends MaybeDraft>(
+/**
+ * Any flat list of links, minus anything marked `draft` unless drafts are
+ * enabled. Used for the nav, the footer's legal row, and the social icons --
+ * the rule is identical for all three, so they share one implementation.
+ */
+export function visibleLinks<T extends MaybeDraft>(
   links: T[],
   enabled: boolean = DRAFT_PAGES_ENABLED,
 ): T[] {
@@ -37,7 +41,11 @@ export function visibleNavLinks<T extends MaybeDraft>(
  * Footer columns, minus draft columns AND draft links inside surviving
  * columns (a shipping column can still list a draft destination -- e.g.
  * "Docs" under Resources -- and that link must disappear with the rest).
- * Returns new objects rather than mutating the fetched settings.
+ *
+ * A column left with NO links is dropped entirely: once every Resources
+ * entry was gated, keeping the column would have rendered a bare
+ * "Resources" heading over empty space. Returns new objects rather than
+ * mutating the fetched settings.
  */
 export function visibleFooterColumns<
   L extends MaybeDraft,
@@ -46,5 +54,6 @@ export function visibleFooterColumns<
   if (enabled) return columns;
   return columns
     .filter((column) => !column.draft)
-    .map((column) => ({ ...column, links: column.links.filter((l) => !l.draft) }));
+    .map((column) => ({ ...column, links: column.links.filter((l) => !l.draft) }))
+    .filter((column) => column.links.length > 0);
 }

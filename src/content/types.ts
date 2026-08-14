@@ -206,7 +206,7 @@ export interface SiteSettings {
       draft?: boolean;
       links: { label: string; href: string; draft?: boolean }[];
     }[];
-    legalLinks: { label: string; href: string }[];
+    legalLinks: { label: string; href: string; draft?: boolean }[];
     copyright: string;
   };
 }

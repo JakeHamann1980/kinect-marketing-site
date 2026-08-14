@@ -320,7 +320,7 @@ const SETTINGS_PROJECTION = `{
   footer{
     positioning,
     "columns": columns[]{heading, draft, "links": links[]{label, href, draft}},
-    "legalLinks": legalLinks[]{label, href},
+    "legalLinks": legalLinks[]{label, href, draft},
     copyright
   }
 }`;

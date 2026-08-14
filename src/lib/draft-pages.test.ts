@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { visibleNavLinks, visibleFooterColumns } from "./draft-pages";
+import { visibleLinks, visibleFooterColumns } from "./draft-pages";
 
 /**
  * user-directed 2026-08-03: "Docs" (nav) and "Platform" (footer column) are
@@ -44,16 +44,16 @@ const COLUMNS: TestColumn[] = [
   },
 ];
 
-describe("visibleNavLinks", () => {
+describe("visibleLinks", () => {
   it("drops draft links when drafts are disabled (the live site)", () => {
-    expect(visibleNavLinks(NAV, false).map((l) => l.label)).toEqual([
+    expect(visibleLinks(NAV, false).map((l) => l.label)).toEqual([
       "Product",
       "Pricing",
     ]);
   });
 
   it("keeps draft links when drafts are enabled (local testing)", () => {
-    expect(visibleNavLinks(NAV, true).map((l) => l.label)).toEqual([
+    expect(visibleLinks(NAV, true).map((l) => l.label)).toEqual([
       "Product",
       "Pricing",
       "Docs",
@@ -62,7 +62,7 @@ describe("visibleNavLinks", () => {
 
   it("leaves a list with no draft entries untouched", () => {
     const plain: TestLink[] = [{ label: "Pricing", href: "/pricing" }];
-    expect(visibleNavLinks(plain, false)).toEqual(plain);
+    expect(visibleLinks(plain, false)).toEqual(plain);
   });
 });
 
@@ -85,6 +85,24 @@ describe("visibleFooterColumns", () => {
     const cols = visibleFooterColumns(COLUMNS, true);
     expect(cols.map((c) => c.heading)).toEqual(["Solutions", "Platform", "Company"]);
     expect(cols.find((c) => c.heading === "Company")?.links).toHaveLength(2);
+  });
+
+  it("drops a column whose links are ALL draft (no bare heading)", () => {
+    const cols: TestColumn[] = [
+      { heading: "Solutions", links: [{ label: "For agencies", href: "/agency" }] },
+      {
+        heading: "Resources",
+        links: [
+          { label: "Docs", href: "/docs", draft: true },
+          { label: "Changelog", href: "#", draft: true },
+        ],
+      },
+    ];
+    expect(visibleFooterColumns(cols, false).map((c) => c.heading)).toEqual([
+      "Solutions",
+    ]);
+    // ...but it is still there when drafts are on.
+    expect(visibleFooterColumns(cols, true)).toHaveLength(2);
   });
 
   it("does not mutate the input", () => {
