@@ -9,7 +9,7 @@ import {
 import { settings } from "@/content/settings";
 import { SITE_URL } from "@/lib/seo";
 import { PERSONA_IDS } from "@/lib/personas";
-import { LIVE_SOCIAL_URLS } from "@/lib/social";
+import { LIVE_SOCIAL_URLS, SOCIAL_PROFILES } from "@/lib/social";
 
 /**
  * Task 20 (JSON-LD Structured Data). Pure-function builders live in
@@ -48,13 +48,16 @@ describe("organizationLd", () => {
     expect(org.sameAs).toHaveLength(PERSONA_IDS.length + LIVE_SOCIAL_URLS.length);
   });
 
-  it("sameAs carries the confirmed social profiles, and never an unclaimed one", () => {
+  it("sameAs carries confirmed profiles and never a draft one", () => {
     const org = organizationLd();
     for (const url of LIVE_SOCIAL_URLS) expect(org.sameAs).toContain(url);
-    // @kinectnow does not exist on X (verified 2026-08-03: profile 404s), so
-    // it is marked draft and must stay out of the entity graph -- a sameAs
-    // pointing at a 404 undermines the disambiguation it exists to provide.
-    expect(org.sameAs.some((u: string) => u.includes("x.com"))).toBe(false);
+    // The rule, not a hardcoded platform: a sameAs pointing at a profile
+    // that does not exist yet undermines the entity disambiguation it is
+    // there to provide. (X was the draft when this was written and is now
+    // confirmed; Instagram is the current one.)
+    for (const profile of SOCIAL_PROFILES.filter((p) => p.draft)) {
+      expect(org.sameAs).not.toContain(profile.href);
+    }
   });
 });
 

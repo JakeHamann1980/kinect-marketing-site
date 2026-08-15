@@ -25,16 +25,23 @@ export interface SocialProfile {
   draft?: boolean;
 }
 
-// ALL four are draft pending Jake's confirmation with Will (2026-08-03):
-// the handles were given verbally and only two could be verified from here,
-// so nothing ships until the set is confirmed. The wiring below is complete
-// -- removing `draft` from an entry puts it in the footer AND in sameAs at
-// the same time, with no other change.
+// Verified 2026-08-03 unless noted:
+//  - X         -> "Kinect (@KinectNow) / X". NOTE the capitalisation: the
+//    lowercase /kinectnow path 404s, so the cased URL is the real one.
+//  - LinkedIn  -> "KINECT | LinkedIn"
+//  - YouTube   -> "KinectNow - YouTube"
+//  - Facebook  -> supplied by Jake; Meta returns 400 to datacenter IPs on
+//    both /profile.php?id= and /<id> forms, so it could not be verified
+//    from here. Shipped on his word. Worth claiming a vanity URL later --
+//    a numeric profile.php link is unlovely next to the others.
+//  - Instagram -> still pending a handle, so it stays draft and stays out
+//    of sameAs until it exists.
 export const SOCIAL_PROFILES: SocialProfile[] = [
-  { label: "X", href: "https://x.com/kinectnow", draft: true },
-  { label: "LinkedIn", href: "https://www.linkedin.com/company/kinectnow", draft: true },
+  { label: "X", href: "https://x.com/KinectNow" },
+  { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61593554393471" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/kinectnow" },
   { label: "Instagram", href: "https://www.instagram.com/kinectnow", draft: true },
-  { label: "YouTube", href: "https://www.youtube.com/@kinectnow", draft: true },
+  { label: "YouTube", href: "https://www.youtube.com/@kinectnow" },
 ];
 
 /**
