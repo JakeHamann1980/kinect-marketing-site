@@ -18,6 +18,10 @@ import { waitlistEmailHtml } from "@/lib/waitlist-email";
  */
 const allowSubmission = createRateLimiter({ windowMs: 10 * 60_000, max: 8 });
 
+/** Where new-signup alerts go. A real Workspace mailbox, not a send-only
+ * address -- see docs/LAUNCH.md's mail DNS audit. */
+const SIGNUP_NOTIFICATION_TO = "hello@kinectnow.com";
+
 async function clientIp(): Promise<string> {
   const h = await headers();
   // First hop of x-forwarded-for is the client as seen by Vercel's edge.
@@ -137,6 +141,38 @@ export async function submitWaitlist(formData: FormData): Promise<WaitlistResult
       // The signup already succeeded above -- a broken email provider
       // should never take that success away from the user.
       console.error("[waitlist] Resend confirmation email threw:", err);
+    }
+    // Internal alert so a signup is not something you only discover by
+    // querying the table (user-directed 2026-08-03: Jake expected one and
+    // there was no such feature -- four real signups had landed silently).
+    // Sent from notifications@ rather than hello@ so the message is not
+    // From and To the same mailbox, with Reply-To set to the signer so a
+    // reply goes straight to them. Its own try/catch: an internal alert
+    // failing must never affect the visitor, who has already been stored
+    // and confirmed by this point.
+    try {
+      const resend = new Resend(RESEND_API_KEY);
+      const utmSummary =
+        utm && Object.keys(utm).length > 0 ? JSON.stringify(utm) : "none";
+      const { error: notifyError } = await resend.emails.send({
+        from: "KINECT Waitlist <notifications@kinectnow.com>",
+        to: SIGNUP_NOTIFICATION_TO,
+        replyTo: email,
+        subject: `New waitlist signup: ${email}`,
+        text: [
+          `Email:    ${email}`,
+          `Lane:     ${persona ?? "unknown"}`,
+          `Page:     ${sourcePath ?? "unknown"}`,
+          `Campaign: ${utmSummary}`,
+          "",
+          "Reply to this email to reach them directly.",
+        ].join("\n"),
+      });
+      if (notifyError) {
+        console.error("[waitlist] signup notification failed:", notifyError);
+      }
+    } catch (err) {
+      console.error("[waitlist] signup notification threw:", err);
     }
   } else {
     console.error("[waitlist] RESEND_API_KEY not set -- signup stored, confirmation email skipped");
