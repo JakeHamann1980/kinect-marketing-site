@@ -9,6 +9,7 @@ import {
 import { settings } from "@/content/settings";
 import { SITE_URL } from "@/lib/seo";
 import { PERSONA_IDS } from "@/lib/personas";
+import { LIVE_SOCIAL_URLS } from "@/lib/social";
 
 /**
  * Task 20 (JSON-LD Structured Data). Pure-function builders live in
@@ -44,7 +45,16 @@ describe("organizationLd", () => {
     for (const persona of PERSONA_IDS) {
       expect(org.sameAs).toContain(`https://${persona}.kinectnow.com/`);
     }
-    expect(org.sameAs).toHaveLength(PERSONA_IDS.length);
+    expect(org.sameAs).toHaveLength(PERSONA_IDS.length + LIVE_SOCIAL_URLS.length);
+  });
+
+  it("sameAs carries the confirmed social profiles, and never an unclaimed one", () => {
+    const org = organizationLd();
+    for (const url of LIVE_SOCIAL_URLS) expect(org.sameAs).toContain(url);
+    // @kinectnow does not exist on X (verified 2026-08-03: profile 404s), so
+    // it is marked draft and must stay out of the entity graph -- a sameAs
+    // pointing at a 404 undermines the disambiguation it exists to provide.
+    expect(org.sameAs.some((u: string) => u.includes("x.com"))).toBe(false);
   });
 });
 

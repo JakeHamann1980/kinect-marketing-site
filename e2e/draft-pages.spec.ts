@@ -44,7 +44,8 @@ test("the footer ships no dead links", async ({ page }) => {
   await expect(footer.getByRole("link", { name: "Status" })).toHaveCount(0);
   await expect(footer.getByRole("link", { name: "DPA" })).toHaveCount(0);
   await expect(footer.getByRole("link", { name: "Accessibility" })).toHaveCount(0);
-  await expect(footer.getByRole("link", { name: "LinkedIn" })).toHaveCount(0);
+  // X is gated because @kinectnow 404s there (verified 2026-08-03).
+  await expect(footer.getByRole("link", { name: "X", exact: true })).toHaveCount(0);
 
   // Kept, because each has a real destination.
   await expect(footer.getByText("Solutions", { exact: true })).toBeVisible();
@@ -56,6 +57,11 @@ test("the footer ships no dead links", async ({ page }) => {
     "href",
     "mailto:hello@kinectnow.com",
   );
+  // No social profile ships yet -- handles are pending confirmation with
+  // Will, so the whole row stays gated (src/lib/social.ts).
+  for (const name of ["LinkedIn", "YouTube", "Instagram"]) {
+    await expect(footer.getByRole("link", { name })).toHaveCount(0);
+  }
 });
 
 test("no link anywhere on the live home page points at '#'", async ({ page }) => {

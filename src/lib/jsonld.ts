@@ -1,6 +1,7 @@
 import type { Faq, Tier } from "@/content/types";
 import { PERSONA_IDS } from "@/lib/personas";
 import { SITE_URL, personaUrl } from "@/lib/seo";
+import { LIVE_SOCIAL_URLS } from "@/lib/social";
 
 /**
  * Task 20 (JSON-LD Structured Data). Spec §8a/§8b: entity disambiguation is
@@ -55,7 +56,14 @@ export function organizationLd() {
     // https://kinectnow.com/icon.svg resolves for real; this is no longer
     // a placeholder path.
     logo: `${SITE_URL}/icon.svg`,
-    sameAs: PERSONA_IDS.map((persona) => `${personaUrl(persona)}/`),
+    // The persona subdomains tie the four hostnames to one entity; the
+    // social profiles tie the off-site presence to it too, which is the
+    // half that actually moves AI-citation probability (see
+    // src/lib/social.ts). Only CONFIRMED profiles are listed.
+    sameAs: [
+      ...PERSONA_IDS.map((persona) => `${personaUrl(persona)}/`),
+      ...LIVE_SOCIAL_URLS,
+    ],
   };
 }
 
