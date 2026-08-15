@@ -6,6 +6,7 @@ import { Resend } from "resend";
 import { parseWaitlistInput } from "@/lib/waitlist-validation";
 import { createRateLimiter } from "@/lib/rate-limit";
 import { waitlistEmailCopy } from "@/content/waitlist-copy";
+import { waitlistEmailHtml } from "@/lib/waitlist-email";
 
 /**
  * Per-IP cap (docs/LAUNCH.md launch blocker, built 2026-07-27): 8 submissions
@@ -123,6 +124,10 @@ export async function submitWaitlist(formData: FormData): Promise<WaitlistResult
         from: "KINECT <hello@kinectnow.com>",
         to: email,
         subject: waitlistEmailCopy.subject,
+        // Both formats, always: `html` is the branded card (see
+        // src/lib/waitlist-email.ts), `text` is the fallback for clients
+        // that refuse HTML and for screen readers.
+        html: waitlistEmailHtml(),
         text: waitlistEmailCopy.body,
       });
       if (sendError) {

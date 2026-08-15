@@ -34,15 +34,35 @@ export const waitlistDialogCopy = {
   errorInvalidEmail: "Enter a valid email address and try again.",
 };
 
+/**
+ * Broken into named parts (2026-08-03) so the plain-text body and the
+ * branded HTML version (src/lib/waitlist-email.ts) are built from ONE set
+ * of strings. The first confirmation ever sent went out as bare plain text
+ * and read nothing like the platform's emails; splitting the copy is what
+ * lets the HTML use each line in its own element without the two formats
+ * drifting apart. Keeping the words here also keeps them under
+ * content.test.ts's voice rules (no em dashes, no exclamation points).
+ */
+const emailLines = {
+  heading: "You are on the list.",
+  intro:
+    "You are on the KINECT waitlist. When your invite is ready, we will email this address with next steps.",
+  cta: "See what you are getting",
+  reply: "Questions? Just reply to this email.",
+  signoff: "The KINECT team",
+};
+
 export const waitlistEmailCopy = {
   subject: "You are on the KINECT list",
+  ...emailLines,
+  ctaHref: "https://kinectnow.com/",
   body: [
     "Hi,",
     "",
-    "You are on the KINECT waitlist. When your invite is ready, we will email this address with next steps.",
+    emailLines.intro,
     "",
-    "Questions? Just reply to this email.",
+    emailLines.reply,
     "",
-    "The KINECT team",
+    emailLines.signoff,
   ].join("\n"),
 };
