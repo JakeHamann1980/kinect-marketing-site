@@ -20,9 +20,9 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   // Tier cards come from the same shared settings.pricing table the home
   // section renders -- all three names and prices present.
   for (const [name, price] of [
-    ["Starter", "$149"],
-    ["Growth", "$399"],
-    ["Scale", "$799"],
+    ["Kinect", "$149"],
+    ["Kinect Plus", "$399"],
+    ["Kinect Pro", "$799"],
   ]) {
     await expect(page.getByText(name).first()).toBeVisible();
     await expect(page.getByText(price).first()).toBeVisible();
@@ -33,7 +33,7 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   await expect(
     page.getByText("For growing rosters that want the AI doing the explaining."),
   ).toBeVisible();
-  await expect(page.getByText("Everything in Starter", { exact: true })).toBeVisible();
+  await expect(page.getByText("Everything in Kinect", { exact: true })).toBeVisible();
 
   // Comparison matrix: group headings + a value cell. Scoped to the table
   // because the same data also renders as per-tier cards for phones

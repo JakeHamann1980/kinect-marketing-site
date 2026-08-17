@@ -219,7 +219,7 @@ export default function PricingSection({
                       Task 16 follow-up (controller-approved, superseding
                       this task's original "only the tier literally labeled
                       'Start free' opens the dialog" scoping): ALL THREE
-                      tiers now open the waitlist dialog, Starter/Scale
+                      tiers now open the waitlist dialog, Kinect/Kinect Pro
                       included, regardless of label. There is no signup
                       flow to route any of them to (design-reference/
                       README.md's own open question #4: "'Start free'

@@ -152,7 +152,7 @@ export interface HomeContent {
  * pricing-specific FAQs, the reporting-time stat, and a closing CTA.
  *
  * `comparison.rows[].values` are display strings aligned by index to
- * `SiteSettings.pricing.tiers` order (Starter, Growth, Scale). Two sentinel
+ * `SiteSettings.pricing.tiers` order (Kinect, Kinect Plus, Kinect Pro). Two sentinel
  * values get glyph treatment in ComparisonTable.tsx instead of rendering as
  * text: "yes" (accent check) and "no" (muted dash). Anything else renders
  * verbatim ("Up to 5", "Unlimited", ...).

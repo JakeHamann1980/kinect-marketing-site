@@ -43,6 +43,6 @@ describe("copy constraints", () => {
   it("pricing tiers are 149/399/799 with Growth popular", () => {
     const tiers = settings.pricing.tiers;
     expect(tiers.map((t) => t.price)).toEqual([149, 399, 799]);
-    expect(tiers.find((t) => t.popular)?.name).toBe("Growth");
+    expect(tiers.find((t) => t.popular)?.name).toBe("Kinect Plus");
   });
 });
