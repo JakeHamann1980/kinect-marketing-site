@@ -67,66 +67,109 @@ export const settings: SiteSettings = {
   pricing: {
     headline: "Priced like a tool, not a tax",
     // user-directed 2026-07-27: "no per-feature" dropped -- tiers do gate
-    // features (AI insights at Growth, white-label/SSO at Scale), so the
-    // claim was attackable. "No per-client" replaces it: the actual pricing
-    // principle Jake + Will decided (flat rate, never per-seat/per-client).
+    // features (AI and client ad accounts at Plus, branding/SSO at Pro), so
+    // the claim was attackable. "No per-client" replaces it: the actual
+    // pricing principle Jake + Will decided (flat rate, never
+    // per-seat/per-client).
+    //
+    // As of the pricing review, "no per-client" is now literal on every tier:
+    // client_limit is unlimited across the board, so nobody is ever charged
+    // for growing. The ladder is carried by connected data sources, storage
+    // and capability instead. Do not reintroduce a client cap without
+    // rewriting this line first.
     supporting: 'Flat monthly. No per-seat, no per-client, no "contact sales."',
     // `tagline`/`detail` (user-directed 2026-08-03): the /pricing page's
     // detailed card rendering -- see the Tier type's own doc comment. The
     // compact `features` lists above them are unchanged handoff copy and
     // still what the home/persona teaser sections render. Detail lines are
     // drawn strictly from claims already shipped elsewhere on the site.
+    // Tier names (pricing review): Starter/Growth/Scale became
+    // Kinect/Kinect Plus/Kinect Pro. A fourth tier, Kinect Infinity, is
+    // planned around the Growth Engine and is deliberately absent here until
+    // it is scoped and priced.
+    //
+    // These are DISPLAY names only. The database keys stay `starter`,
+    // `growth` and `scale` (platform: public.plans.key), because those are
+    // written into Stripe checkout metadata and read back by the webhook to
+    // attribute every renewal and cancellation. Display copy is free to
+    // change; the keys are not.
+    //
+    // ---------------------------------------------------------------------
+    // CLAIMS REMOVED, AND WHY. Do not restore any of these without checking
+    // that the feature exists first. Each was live on this page with no
+    // implementation anywhere in the platform:
+    //
+    //   "Anomaly alerts"  (was Starter)  no detection, thresholds or alerting
+    //   "Up to 5 clients" (was Starter)  every tier is unlimited now
+    //   "Integrations"    (was Growth)   too vague to be checkable; replaced
+    //                                    with the ad platforms that are real
+    // ---------------------------------------------------------------------
     tiers: [
       {
-        name: "Starter",
+        name: "Kinect",
         price: 149,
-        tagline: "For solo operators putting their first clients behind one login.",
-        features: ["Up to 5 clients", "analytics", "anomaly alerts"],
+        tagline: "For operators putting their clients behind one login.",
+        features: ["Unlimited clients", "client portal", "invoicing"],
         detail: [
-          "Up to 5 clients",
+          "Unlimited clients on every plan",
           "Branded client portal",
-          "Task boards, files, approvals and invoices",
-          "Live performance analytics",
-          "Anomaly alerts",
+          "Task boards, files and approvals",
+          "Invoices, rate cards and proposals",
           "Templates for your services or programs",
         ],
-        cta: "Choose Starter",
+        cta: "Choose Kinect",
       },
       {
-        name: "Growth",
+        name: "Kinect Plus",
         price: 399,
         popular: true,
-        tagline: "For growing rosters that want the AI doing the explaining.",
-        features: ["Unlimited clients", "AI insights", "integrations"],
+        tagline: "For rosters that need the numbers, and the story behind them.",
+        features: ["Client ad accounts", "profitability", "AI insights"],
         detail: [
-          "Everything in Starter",
-          "Unlimited clients",
+          "Everything in Kinect",
+          "Client ad accounts across Google, Meta and LinkedIn",
+          "Client-facing dashboards, with per-client visibility controls",
+          "Profitability and utilization per client",
           "AI insights and drafted client updates",
-          "Integrations",
+          "Exports and scheduled reports",
         ],
         cta: "Start free",
       },
       {
-        name: "Scale",
+        name: "Kinect Pro",
         price: 799,
-        tagline: "For studios and firms that need the portal to look and act like theirs.",
-        features: ["White-label", "priority support", "SSO"],
+        tagline: "For firms that need the portal to carry their own name.",
+        // NOT SHIPPED. Every line below marked (*) describes a feature with
+        // no implementation in the platform today: there is no branding,
+        // theming or custom-domain code, and authentication is email and
+        // password only (the Google OAuth in the codebase belongs to the
+        // Calendar and Ads integrations, not to sign-in).
+        //
+        // They are written here so the tier reads as intended, and because
+        // nobody can be charged yet. THIS TIER MUST NOT GO LIVE ALONGSIDE A
+        // WORKING STRIPE PRICE until at least the branding lines are real.
+        // Charging for SSO against this copy stops being an overstatement and
+        // becomes something a customer paid for and did not receive.
+        features: ["Your own domain", "SSO", "priority support"],
         detail: [
-          "Everything in Growth",
-          "White-label",
-          "SSO",
+          "Everything in Kinect Plus",
+          "Your own domain and branding (*)",
+          "SSO and enforced two-factor (*)",
+          "Multiple workspaces under one bill (*)",
           "Priority support",
         ],
-        cta: "Choose Scale",
+        cta: "Choose Kinect Pro",
       },
     ],
-    // Transcribed verbatim from the home pricing section's trailing note
-    // (line 351). This sentence presumes per-lane pricing variation ("varies
-    // slightly by lane"), which conflicts with the single canonical shared
-    // tier table above (see the pricing note at the top of this file).
-    // Whether/how this renders is pending a product decision; flagged here,
-    // not yet wired into any component.
-    note: "Every plan includes the portal, analytics and AI insights. Pricing varies slightly by lane.",
+    // Rewritten in the pricing review. The transcribed original read "Every
+    // plan includes the portal, analytics and AI insights. Pricing varies
+    // slightly by lane." Both halves were wrong: AI is a Plus feature, not an
+    // every-plan one, and the per-lane variation it presumed conflicts with
+    // the single shared tier table above (see this file's opening note).
+    //
+    // What replaced it is the thing that IS true on every plan and is the
+    // strongest line on the page. Still not wired into any component.
+    note: "Every plan includes the portal and unlimited clients. You are never charged for growing.",
   },
 
   footer: {
