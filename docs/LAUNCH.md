@@ -1,5 +1,17 @@
 # KINECT Marketing Site — Launch Checklist
 
+> **Audited 2026-08-17.** Every item below was re-checked against production,
+> DNS, the Sanity API and the repo rather than trusted as written. Items found
+> already done are now marked and carry the evidence that settled them; items
+> still open carry what was observed, so the next reader starts from facts
+> rather than from a box.
+>
+> Two lessons worth keeping. A checkbox is a claim with no expiry date: the
+> revalidation webhook sat unchecked long after it was live and was used to
+> misdiagnose an unrelated stale page. And check your checkout before you call
+> a doc stale -- the rate-limiting item read as out of date only because it was
+> being read five commits behind `main`.
+
 Every item lists an owner: **[Jake]** founder-only (accounts, money, legal), **[dev]** doable in a build session, **[both]** needs credentials then wiring.
 
 ## 0. Verification gate (run before every deploy)
@@ -13,13 +25,13 @@ npm run build:check && npm run test:e2e
 ## 1. Infrastructure
 
 - [x] **[Jake]** Vercel project created; domains attached: `kinectnow.com`, `agency.`, `coach.`, `consultant.kinectnow.com` (plus `www.kinectnow.com` pointed at the same project; the proxy 308s it to apex).
-- [ ] **[both]** Env vars set in Vercel (see `.env.example`): `NEXT_PUBLIC_POSTHOG_KEY` and `RESEND_API_KEY` still pending; set 2026-07-27: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; set earlier: `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, `NEXT_PUBLIC_SANITY_PROJECT_ID=gxxphuan`, `NEXT_PUBLIC_SANITY_DATASET=production`, `SANITY_REVALIDATE_SECRET` (no read token needed -- the dataset is public, see `.env.example`'s own comment).
+- [ ] **[both]** Env vars set in Vercel (see `.env.example`). `SANITY_REVALIDATE_SECRET` is confirmed set (an unsigned POST to `/api/revalidate` returns 401, not 500). The Sanity project/dataset vars are confirmed set (live pages render CMS content). `NEXT_PUBLIC_POSTHOG_KEY` is confirmed NOT set (no `posthog` reference in production HTML). `RESEND_API_KEY` unverified from outside, though the sending domain itself is verified -- see §2. Original: `NEXT_PUBLIC_POSTHOG_KEY` and `RESEND_API_KEY` still pending; set 2026-07-27: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`; set earlier: `NEXT_PUBLIC_SITE_URL=https://kinectnow.com`, `NEXT_PUBLIC_SANITY_PROJECT_ID=gxxphuan`, `NEXT_PUBLIC_SANITY_DATASET=production`, `SANITY_REVALIDATE_SECRET` (no read token needed -- the dataset is public, see `.env.example`'s own comment).
 - [x] **[Jake]** DNS: apex + www + three persona subdomains → Vercel. Verified live 2026-07-27: all five hosts serve the right pages, www 308s to apex, cross-persona and apex-persona-root paths 308 to canonical subdomains, robots/sitemap are host-correct, and the nav logo on a persona subdomain crosses to `https://kinectnow.com/`. The Sanity revalidation webhook still POSTs to `https://kinect-marketing-site.vercel.app/api/revalidate` -- deliberately left alone: that alias is permanent, it is the same deployment, and `revalidateTag` clears the cache for every attached domain, so nothing is gained by re-creating the hook against the apex URL.
 
 ## 2. Data & email
 
 - [x] **[both]** Supabase: applied 2026-07-27 — by Jake's decision the waitlist lives in the KINECT **platform** production project (`vfsfqyeazsrziyklonch`), not a separate marketing project. `waitlist_signups` created per `supabase/migrations/0001_waitlist.sql` plus one platform-specific addition: that project revokes default privileges, so it needed an explicit `grant select, insert on public.waitlist_signups to service_role;`. RLS on, no public policies.
-- [ ] **[Jake]** Resend: verify `kinectnow.com` as sending domain (SPF + DKIM records); confirm `hello@kinectnow.com` works as from-address. **DNS audit 2026-08-03 — mostly done already:**
+- [x] **[Jake]** Resend: `kinectnow.com` is verified. Confirmed from DNS 2026-08-17: `resend._domainkey.kinectnow.com` carries the DKIM key and `send.kinectnow.com` carries Resend's SES-backed SPF plus the `feedback-smtp.us-east-1.amazonses.com` MX. It is a SEPARATE Resend account from the AUTIX one (which holds only `autix.co`), which is the separation `kinect-growth-engine/docs/DEPLOY.md` argues for. `mail.kinectnow.com`, the marketing-send subdomain that doc also calls for, does NOT exist yet. **DNS audit 2026-08-03 — mostly done already:**
   - Receiving is fully configured: `MX 1 smtp.google.com` (Google Workspace), `v=spf1 include:_spf.google.com ~all`, a `google._domainkey` DKIM record, and `_dmarc` at `p=none` with `rua=mailto:hello@kinectnow.com`. The domain can receive mail; whether the `hello@` **alias** exists is the only open part (port 25 is blocked from the dev sandbox, so it cannot be probed here — send a mail to it, or check Workspace Admin → Users/Aliases).
   - Resend sending records are ALREADY published on the domain: `resend._domainkey` DKIM, plus `send.kinectnow.com` carrying `v=spf1 include:amazonses.com ~all` and `MX 10 feedback-smtp.us-east-1.amazonses.com`. That is the standard verified-domain setup, so this item is likely complete.
   - ⚠️ Caveat: the Resend account reachable from this dev session contains only `autix.co`, so `kinectnow.com` lives in a **different Resend account** and its verification status could not be read directly. Confirm in that account, and take `RESEND_API_KEY` from it (not from AUTIX). Same class of trap as the Supabase MCP pointing at AUTIX.
@@ -43,14 +55,14 @@ npm run build:check && npm run test:e2e
 ## 4. Analytics
 
 - [ ] **[Jake]** PostHog: create a dedicated "KINECT marketing" project (separate from the app's); provide the project API key.
-- [ ] **[dev]** With the real key: verify consent-gated init, events flowing, reverse proxy working in production (no ad-blocker losses on `/ph/*`).
+- [ ] **[dev]** Still open, and verifiable from outside: the live homepage HTML contains no `posthog` or `/ph/static` reference at all, so nothing is initialising. With the real key: verify consent-gated init, events flowing, reverse proxy working in production (no ad-blocker losses on `/ph/*`).
 - [ ] **[dev]** Build the spec §6 funnels in PostHog: core (pageview → cta_clicked → waitlist_submitted by persona/UTM source), lane-routing (home → persona_card/solutions → persona pageview → signup); launch dashboard (signups by persona, conversion by page, top UTM sources, FAQ engagement).
 - [x] **[dev]** Vercel Analytics (cookieless) wired in code: `@vercel/analytics` is installed and `<Analytics />` mounts in the `(site)` layout next to `PostHogProvider` (unconditional, no consent gate needed -- see `src/content/legal/cookies.ts`'s "Cookieless performance analytics" disclosure).
 - [ ] **[Jake]** Remaining: enable Analytics for this project in the Vercel dashboard (Project → Analytics → Enable) so the already-mounted `<Analytics />` component actually has somewhere to report to.
 
 ## 5. Search & AI discoverability
 
-- [ ] **[Jake]** Search Console: verify all four hostname properties; submit each host's own `/sitemap.xml` (robots.txt on each host already advertises its own sitemap).
+- [ ] **[Jake]** Search Console: **partially done** -- a `google-site-verification` TXT record is live on `kinectnow.com` (verified 2026-08-17), and a DNS-verified *Domain* property covers every subdomain at once, which is stronger than four separate URL-prefix properties. Confirm which property type was actually created before doing this four times. Per-host sitemaps are confirmed serving (apex 6 URLs, `agency.` 1). Original: verify all four hostname properties; submit each host's own `/sitemap.xml` (robots.txt on each host already advertises its own sitemap).
 - [ ] **[dev]** Google Rich Results Test on `/`, all three persona pages, one legal page — expect Organization, SoftwareApplication with AggregateOffer ($149–$799, 3 offers), FAQPage where applicable. (Automated JSON-LD validation already runs in `build:check`; this is the Google-side confirmation.)
 - [ ] **[Jake]** Off-site action list from the spec (§8a-iii), in priority order: G2 + Capterra profiles with early reviews; entity cleanup ("KINECT client portal" naming everywhere, Wikidata attempt); listicle outreach (FuseBase/Taskip/Softr/Agiled roundups, Zapier/ClickUp blogs); disclosed Reddit participation; Product Hunt + YouTube walkthrough. See the GTM strategy doc for cadence.
 
@@ -66,8 +78,8 @@ npm run build:check && npm run test:e2e
 
 ## 7b. Content destinations (user-flagged 2026-07-25)
 
-- [ ] **[Jake/dev]** Nav **Product** link goes nowhere. Either a product/features page gets designed and built, or drop the link from the nav until one exists. Currently "#" (`src/content/settings.ts` navLinks).
-- [ ] **[Jake/dev]** Nav **Docs** link goes nowhere. A docs site does not exist yet (likely ships with the app, not this site). Point at the real docs URL when it exists, or drop from the nav for launch. Currently "#".
+- [x] **[Jake/dev]** ~~Nav **Product** link goes nowhere.~~ Resolved differently than this item assumed: `/platform` and `/docs` were both built and are `draft`-gated (`src/lib/draft-pages.ts`), so they are hidden on live and visible only with `NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1`. The live nav now renders only `Pricing` and `Solutions` -- verified against production HTML. Original note: Either a product/features page gets designed and built, or drop the link from the nav until one exists. Currently "#" (`src/content/settings.ts` navLinks).
+- [x] **[Jake/dev]** ~~Nav **Docs** link goes nowhere.~~ Same resolution as Product above: `/docs` is built and `draft`-gated, so it does not render on live. Verified against production HTML 2026-08-17. Original note: A docs site does not exist yet (likely ships with the app, not this site). Point at the real docs URL when it exists, or drop from the nav for launch. Currently "#".
 
 ## 8. Performance & devices
 
@@ -84,5 +96,5 @@ npm run build:check && npm run test:e2e
 - Recounted "#" (no real destination) links remaining after the final review round's dead-link fixes (I1/I6 fixed the footer Solutions column, Company "Security", and all four legal links; the ones below are unaddressed, no destination page exists for any of them yet):
   - Nav: "Product", "Docs" (`src/content/settings.ts` `navLinks`).
   - Footer legal: "DPA", "Accessibility" (`src/content/settings.ts` `footer.legalLinks`).
-  - Footer social icons: X, LinkedIn, Instagram, YouTube (`SOCIAL_ICONS` in `src/components/Footer.tsx`) -- 4 links, no real profiles exist yet (see §5's off-site action list).
+  - ~~Footer social icons~~ **DONE.** Four real profiles render on the live footer as of 2026-08-17: X (`x.com/KinectNow`), LinkedIn (`linkedin.com/company/kinectnow`), YouTube (`@kinectnow`) and Facebook. Instagram was dropped rather than shipped empty.
   - Also still "#", out of this round's scope: footer "Compare plans" (Solutions column), the entire Platform column (5 links), the entire Resources column (4 links), and Company "About"/"Contact"/"Status" -- none of these have a built destination page.
