@@ -40,7 +40,7 @@ test("all three pricing tier CTAs open the waitlist dialog", async ({ page }) =>
   const pricing = page.locator("section").filter({ hasText: "Priced like a tool, not a tax" });
 
   for (const label of ["Choose Kinect", "Start free", "Choose Kinect Pro"]) {
-    await pricing.getByRole("button", { name: label }).click();
+    await pricing.getByRole("button", { name: label, exact: true }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
     await page.keyboard.press("Escape");

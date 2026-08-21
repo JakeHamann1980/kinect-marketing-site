@@ -67,6 +67,29 @@ export const pricingPage: PricingPageContent = {
         ],
       },
       {
+        // Storage (user-directed 2026-08-03, numbers confirmed by Jake).
+        // NOT YET ENFORCED: the platform has no storage quota column and no
+        // metering, and Stripe has no add-on product -- `plans` carries only
+        // key/name/stripe_price_id/client_limit/sort, and every
+        // stripe_price_id is still null. These rows describe the intended
+        // model so the page can be honest about it; the platform spec is in
+        // docs/STORAGE-PRICING.md. Do not tighten this into a hard cap
+        // without changing the "keep working" wording below, which is the
+        // promise a soft cap makes.
+        heading: "Files & Storage",
+        rows: [
+          { label: "Included storage", values: ["100 GB", "500 GB", "2 TB"] },
+          {
+            label: "Additional storage, per month",
+            values: ["$10 / 100 GB", "$10 / 100 GB", "$10 / 100 GB"],
+          },
+          {
+            label: "Uploads keep working past the limit",
+            values: ["yes", "yes", "yes"],
+          },
+        ],
+      },
+      {
         heading: "Analytics & AI",
         rows: [
           // "Anomaly alerts" was a row here, marked yes on all three tiers.
@@ -114,6 +137,11 @@ export const pricingPage: PricingPageContent = {
       question: "What happens when I add more clients?",
       answer:
         "Nothing. Every plan has unlimited clients, so your roster never touches your bill. You move up when you want your clients' ad accounts, their profitability, and the AI that explains both, not because you signed someone new.",
+    },
+    {
+      question: "What happens if I run out of storage?",
+      answer:
+        "Nothing stops working. Your clients keep uploading and we prompt you to add more space. Extra storage is $10 per 100 GB a month, and you only pay for the blocks you add. A portal that refuses a file in front of your client is not something we are willing to ship.",
     },
     {
       question: "Can I change plans later?",

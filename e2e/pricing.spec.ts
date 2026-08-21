@@ -31,7 +31,7 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   // Detailed card rendering (taglines + fuller feature lists) is exclusive
   // to this page -- the home/persona teasers keep the compact lists.
   await expect(
-    page.getByText("For growing rosters that want the AI doing the explaining."),
+    page.getByText("For rosters that need the numbers, and the story behind them."),
   ).toBeVisible();
   await expect(page.getByText("Everything in Kinect", { exact: true })).toBeVisible();
 
@@ -41,7 +41,9 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   const matrix = page.getByRole("table");
   await expect(matrix).toBeVisible();
   await expect(matrix.getByText("Clients & Team")).toBeVisible();
-  await expect(matrix.getByRole("cell", { name: "Up to 5", exact: true })).toBeVisible();
+  await expect(
+    matrix.getByRole("cell", { name: "Unlimited", exact: true }).first(),
+  ).toBeVisible();
 
   // Pricing FAQ present and interactive.
   const faqButton = page.getByRole("button", { name: "How is KINECT priced?" });
@@ -114,13 +116,43 @@ test("the comparison matrix swaps to per-tier cards on a phone", async ({
   await expect(page.getByRole("table")).toBeHidden();
 
   // Each tier gets its own card carrying every group heading once.
-  const scaleCard = page
-    .getByText("Scale", { exact: true })
+  const proCard = page
+    .getByText("Kinect Pro", { exact: true })
     .last()
     .locator("xpath=ancestor::div[contains(@class,'rounded-[14px]')][1]");
-  await expect(scaleCard.getByText("Security & Support")).toBeVisible();
-  await expect(scaleCard.getByText("White-label")).toBeVisible();
+  await expect(proCard.getByText("Security & Support")).toBeVisible();
+  await expect(proCard.getByText("Priority support")).toBeVisible();
+  // Storage renders in the stacked layout too, not just the table.
+  await expect(proCard.getByText("Files & Storage")).toBeVisible();
+  await expect(proCard.getByText("2 TB")).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.getByRole("table")).toBeVisible();
+});
+
+test("the comparison matrix publishes the storage tiers and add-on price", async ({
+  page,
+}) => {
+  // user-directed 2026-08-03. These numbers are published pricing, so they
+  // are asserted literally: a silent edit to any of them is a pricing change
+  // and should fail the build, not ship quietly.
+  await page.goto("/pricing");
+  const matrix = page.getByRole("table");
+  await expect(matrix.getByText("Files & Storage")).toBeVisible();
+
+  for (const value of ["100 GB", "500 GB", "2 TB"]) {
+    await expect(
+      matrix.getByRole("cell", { name: value, exact: true }),
+    ).toBeVisible();
+  }
+  // The add-on price appears once per tier column.
+  await expect(
+    matrix.getByRole("cell", { name: "$10 / 100 GB", exact: true }),
+  ).toHaveCount(3);
+
+  // The soft cap is a promise, not a detail: uploads must never be described
+  // as stopping. See docs/STORAGE-PRICING.md.
+  await expect(
+    matrix.getByText("Uploads keep working past the limit"),
+  ).toBeVisible();
 });
