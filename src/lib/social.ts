@@ -9,7 +9,6 @@
  *
  * Handles confirmed 2026-08-03 by fetching each profile:
  *  - LinkedIn  -> page title "KINECT | LinkedIn"        (exists)
- *  - YouTube   -> page title "KinectNow - YouTube"      (exists)
  *  - Instagram -> serves a generic bot shell, so it could not be verified
  *    independently; shipped on Jake's word that the handle is claimed.
  *  - X         -> "User Profile Not Found - X | 404 Error". The @kinectnow
@@ -37,11 +36,11 @@ export interface SocialProfile {
 //    serves a generic shell to bots, so like Facebook it could not be
 //    verified independently; shipped on Jake's word.
 //
-// YouTube was REMOVED from the footer at Jake's direction (2026-08-03),
-// replaced by Instagram. The channel does exist ("KinectNow - YouTube"), so
-// dropping it here also drops it from `sameAs` -- one fewer entity signal.
-// If it should stay in the structured data while staying out of the footer,
-// that needs a separate flag; this list drives both deliberately.
+// YouTube was REMOVED ENTIRELY (Jake, 2026-08-03) -- out of the footer and
+// out of `sameAs`. The channel does exist ("KinectNow - YouTube"), so this
+// gives up one entity signal; that was considered and accepted rather than
+// keeping a link to a channel that is not being used. If YouTube becomes
+// active, adding it back here restores both surfaces at once.
 export const SOCIAL_PROFILES: SocialProfile[] = [
   { label: "X", href: "https://x.com/KinectNow" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61593554393471" },

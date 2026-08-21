@@ -8,6 +8,7 @@ import { SOCIAL_PROFILES } from "@/lib/social";
 /**
  * Social icon glyphs recovered verbatim from `design-reference/KINECT
  * Marketing Site.dc.html` (~line 471): X, LinkedIn, Instagram, YouTube,
+ * of which YouTube was dropped entirely (Jake, 2026-08-03) and Facebook added,
  * each a 24x24-viewBox path rendered at 15x15 with `fill="currentColor"`
  * (Instagram is stroke-based, matching the source exactly). All four
  * currently point to "#" -- the design reference calls these "currently
@@ -41,12 +42,6 @@ const SOCIAL_ICONS: { label: string; path: React.ReactNode }[] = [
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" stroke="none" />
       </>
-    ),
-  },
-  {
-    label: "YouTube",
-    path: (
-      <path d="M21.6 7.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C16.9 4.1 12 4.1 12 4.1h0s-4.9 0-6.7.2c-.4 0-1.3.1-2.1.9-.6.6-.8 2-.8 2S2.2 8.8 2.2 10.5v1.6c0 1.6.2 3.3.2 3.3s.2 1.4.8 2c.8.8 1.8.8 2.2.9 1.8.2 6.6.2 6.6.2s4.9 0 6.7-.2c.4 0 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.6.2-3.3v-1.6c0-1.7-.2-3.3-.2-3.3zM9.9 14.4V8.7l6.1 2.9z" />
     ),
   },
 ];
