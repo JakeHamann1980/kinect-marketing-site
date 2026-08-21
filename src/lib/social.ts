@@ -29,19 +29,24 @@ export interface SocialProfile {
 //  - X         -> "Kinect (@KinectNow) / X". NOTE the capitalisation: the
 //    lowercase /kinectnow path 404s, so the cased URL is the real one.
 //  - LinkedIn  -> "KINECT | LinkedIn"
-//  - YouTube   -> "KinectNow - YouTube"
 //  - Facebook  -> supplied by Jake; Meta returns 400 to datacenter IPs on
 //    both /profile.php?id= and /<id> forms, so it could not be verified
 //    from here. Shipped on his word. Worth claiming a vanity URL later --
 //    a numeric profile.php link is unlovely next to the others.
-//  - Instagram -> still pending a handle, so it stays draft and stays out
-//    of sameAs until it exists.
+//  - Instagram -> handle is `kinect.now` (a dot, not `kinectnow`). Instagram
+//    serves a generic shell to bots, so like Facebook it could not be
+//    verified independently; shipped on Jake's word.
+//
+// YouTube was REMOVED from the footer at Jake's direction (2026-08-03),
+// replaced by Instagram. The channel does exist ("KinectNow - YouTube"), so
+// dropping it here also drops it from `sameAs` -- one fewer entity signal.
+// If it should stay in the structured data while staying out of the footer,
+// that needs a separate flag; this list drives both deliberately.
 export const SOCIAL_PROFILES: SocialProfile[] = [
   { label: "X", href: "https://x.com/KinectNow" },
   { label: "Facebook", href: "https://www.facebook.com/profile.php?id=61593554393471" },
   { label: "LinkedIn", href: "https://www.linkedin.com/company/kinectnow" },
-  { label: "Instagram", href: "https://www.instagram.com/kinectnow", draft: true },
-  { label: "YouTube", href: "https://www.youtube.com/@kinectnow" },
+  { label: "Instagram", href: "https://www.instagram.com/kinect.now" },
 ];
 
 /**

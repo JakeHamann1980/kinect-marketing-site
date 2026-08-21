@@ -44,8 +44,9 @@ test("the footer ships no dead links", async ({ page }) => {
   await expect(footer.getByRole("link", { name: "Status" })).toHaveCount(0);
   await expect(footer.getByRole("link", { name: "DPA" })).toHaveCount(0);
   await expect(footer.getByRole("link", { name: "Accessibility" })).toHaveCount(0);
-  // Instagram is the only social still gated -- no handle yet.
-  await expect(footer.getByRole("link", { name: "Instagram" })).toHaveCount(0);
+  // YouTube was swapped out for Instagram (user-directed 2026-08-03), so it
+  // must no longer render even though the channel exists.
+  await expect(footer.getByRole("link", { name: "YouTube" })).toHaveCount(0);
 
   // Kept, because each has a real destination.
   await expect(footer.getByText("Solutions", { exact: true })).toBeVisible();
@@ -62,7 +63,7 @@ test("the footer ships no dead links", async ({ page }) => {
     ["X", "https://x.com/KinectNow"],
     ["Facebook", "https://www.facebook.com/profile.php?id=61593554393471"],
     ["LinkedIn", "https://www.linkedin.com/company/kinectnow"],
-    ["YouTube", "https://www.youtube.com/@kinectnow"],
+    ["Instagram", "https://www.instagram.com/kinect.now"],
   ]) {
     const link = footer.getByRole("link", { name });
     await expect(link).toHaveAttribute("href", href);
