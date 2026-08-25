@@ -141,7 +141,7 @@ export const coach: PersonaPageContent = {
   closing: {
     headline: "Coach the work. Let KINECT prove it.",
     gradientPhrase: "Let KINECT prove it.",
-    subhead: "Free for your first three athletes. Keep the ones who stay.",
+    subhead: "Free for 14 days. Run a real check-in cycle before you decide.",
     secondaryCta: "Not you? Pick another lane",
   },
 };

@@ -39,7 +39,7 @@ export const pricingPage: PricingPageContent = {
 
   trustLine: [
     "Cancel anytime",
-    "Free for your first client",
+    "Free for 14 days",
     "No card, no demo call, no onboarding fee",
   ],
 
@@ -126,7 +126,7 @@ export const pricingPage: PricingPageContent = {
     {
       question: "How is KINECT priced?",
       answer:
-        "Flat monthly by plan. Kinect is $149, Kinect Plus is $399, Kinect Pro is $799, and none of them charge per seat or per client. Start free with your first client, athlete or engagement.",
+        "Flat monthly by plan. Kinect is $149, Kinect Plus is $399, Kinect Pro is $799, and none of them charge per seat or per client. Every workspace starts with 14 days free on Kinect Plus, no card required.",
     },
     {
       question: "Why doesn't KINECT charge per seat or per client?",
@@ -151,7 +151,7 @@ export const pricingPage: PricingPageContent = {
     {
       question: "Is there a free trial?",
       answer:
-        "Your first client is free, with no card, no demo call and no onboarding fee. Run a real project in KINECT and bring the second client when you are convinced.",
+        "Yes. Every workspace starts on Kinect Plus for 14 days, with no card, no demo call and no onboarding fee. Run a real client through it and decide on evidence.",
     },
     {
       question: "Do all plans include the portal?",
@@ -168,9 +168,9 @@ export const pricingPage: PricingPageContent = {
   },
 
   closing: {
-    headline: "Start with your first client, free.",
-    gradientPhrase: "free.",
-    subhead: "No card, no demo call, no onboarding fee. The flat price starts when you bring the roster.",
+    headline: "Start free for 14 days.",
+    gradientPhrase: "for 14 days.",
+    subhead: "No card, no demo call, no onboarding fee. You are on Kinect Plus the whole time.",
     cta: "Join the waitlist",
   },
 };
