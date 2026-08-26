@@ -20,9 +20,25 @@ const ICON_PATHS: Record<Persona, string[]> = {
   agency: ["M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"],
   coach: ["M6 8v8M18 8v8M4 10v4M20 10v4M6 12h12"],
   consultant: ["M3 21h18", "M5 21V7l7-4 7 4v14", "M9 21v-6h6v6"],
-  // Professional Services: a balance beam. Reads as scales at 24px without
-  // the pan detail, which turns to mud at that size.
-  services: ["M12 5v14M5 8h14M7 8l-2.5 5h5zM17 8l-2.5 5h5z"],
+  /**
+   * Professional Services: scales. Adapted from lucide's `scale` glyph, which
+   * is drawn for this exact grid (24x24, stroke-width 2, no fill) and so sits
+   * at the same optical weight as the three above.
+   *
+   * The first attempt was hand-drawn and wrong twice over: it lived between
+   * y=5 and y=13, leaving the bottom third of the box empty so it read small
+   * next to its neighbours, and its pans were 5-unit closed triangles that
+   * fill in to blobs once a 2px stroke is applied at 26px. These pans are
+   * open curves and the post runs the full height, matching consultant's
+   * y=3..21.
+   */
+  services: [
+    "M12 3v18",
+    "M7 21h10",
+    "M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2",
+    "m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z",
+    "m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z",
+  ],
 };
 
 function PersonaIcon({ persona }: { persona: Persona }) {
