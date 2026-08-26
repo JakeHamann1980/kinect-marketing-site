@@ -53,9 +53,12 @@ export const settings: SiteSettings = {
       description: "Client portal, campaign analytics and AI reporting.",
     },
     {
-      persona: "coach",
-      name: "Coaches & Trainers",
-      description: "Programs, check-ins and adherence for every athlete.",
+      // Coaches & Trainers was retired from the picker on 2026-08-31. The
+      // lane is still served at coach.kinectnow.com; it is simply no longer
+      // sold. See PROMOTED_PERSONA_IDS in src/lib/personas.ts.
+      persona: "services",
+      name: "Professional Services",
+      description: "Engagements, documents and time for law and advisory firms.",
     },
     {
       persona: "consultant",
@@ -104,6 +107,15 @@ export const settings: SiteSettings = {
     //   "Integrations"    (was Growth)   too vague to be checkable; replaced
     //                                    with the ad platforms that are real
     // ---------------------------------------------------------------------
+    // "more available" rather than an asterisk (user-directed 2026-08-31).
+    // The additional-storage price already appears twice further down
+    // /pricing -- the Files & Storage comparison row and the "What happens if
+    // I run out of storage?" FAQ -- so a footnote marker would only point at
+    // something the same page already answers. An asterisk on a pricing card
+    // is also the visual grammar of a catch, which works against this page's
+    // whole claim ("The price is the price", no per-seat, no per-client), and
+    // it would misdescribe the mechanic: the cap is SOFT, uploads keep working
+    // past it by design (see the platform's 20260829100000_storage_quota.sql).
     tiers: [
       {
         name: "Kinect",
@@ -116,7 +128,7 @@ export const settings: SiteSettings = {
           "Task boards, files and approvals",
           "Invoices, rate cards and proposals",
           "Templates for your services or programs",
-          "100 GB storage",
+          "100 GB storage, more available",
         ],
         cta: "Choose Kinect",
       },
@@ -133,7 +145,7 @@ export const settings: SiteSettings = {
           "Profitability and utilization per client",
           "AI insights and drafted client updates",
           "Exports and scheduled reports",
-          "500 GB storage",
+          "500 GB storage, more available",
         ],
         cta: "Start free",
       },
@@ -159,7 +171,7 @@ export const settings: SiteSettings = {
           "SSO and enforced two-factor (*)",
           "Multiple workspaces under one bill (*)",
           "Priority support",
-          "2 TB storage",
+          "2 TB storage, more available",
         ],
         cta: "Choose Kinect Pro",
       },
@@ -187,7 +199,7 @@ export const settings: SiteSettings = {
           // "Compare plans" now has a real destination, the dedicated
           // /pricing page's comparison matrix.
           { label: "For agencies", href: "/agency" },
-          { label: "For coaches", href: "/coach" },
+          { label: "For professional services", href: "/services" },
           { label: "For consultants", href: "/consultant" },
           { label: "Compare plans", href: "/pricing" },
         ],

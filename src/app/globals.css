@@ -95,6 +95,30 @@
 }
 
 /*
+ * `.kx-sec`'s 124px top is the rhythm BETWEEN bands: distinct sections, each
+ * on its own canvas. On /pricing the hero and the tier cards are not two
+ * bands. They sit inside one `<section>` sharing a single `HeroBackdrop tall`
+ * wash, which is why PricingSection is passed `inheritsBackdrop` there and
+ * stops painting its own canvas.
+ *
+ * Carrying the between-bands gap inside a single block left 186px between the
+ * hero subhead and the pricing headline (62px hero padding-bottom + 124px
+ * section padding-top), which read as a missing section rather than a join.
+ * This trims the section side only, so the hero keeps its own bottom padding
+ * and the two still breathe.
+ *
+ * Scoped to a wrapper class rather than editing `.kx-sec`: that class is on
+ * every home section and the persona pages, and this is a one-page join.
+ * Specificity is (0,2,0) against `.kx-sec`'s (0,1,0), so it wins without
+ * `!important` and without touching the responsive rules above, which keep
+ * applying to the horizontal padding.
+ */
+.kx-hero-join .kx-sec { padding-top: 24px; }
+@media (max-width: 860px) {
+  .kx-hero-join .kx-sec { padding-top: 16px; }
+}
+
+/*
  * Hero padding cascade (README "1. Hero" + "Responsive"). Deliberately has
  * no <=1024 tier: the prototype's own responsive CSS has no bucket matching
  * "152px 60px 62px" at max-width:1024px, jumping straight from the full
@@ -276,8 +300,10 @@
 }
 
 [data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
-[data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
+[data-persona="coach"]      { --accent: #6FA8D0; --accent-light: #1E5C8A; --accent-tint: rgba(30,92,138,.14); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
+/* coach stays: the lane is retired from marketing, still served at coach.kinectnow.com */
+[data-persona="services"]   { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 
 /*
  * Sticky nav (see src/components/Nav.tsx, src/hooks/useStuck.ts).

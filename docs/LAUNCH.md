@@ -52,6 +52,13 @@ npm run build:check && npm run test:e2e
 - [ ] **[Jake]** Studio access granted to the team (invite collaborators in the Sanity manage console).
 - **What Sanity edits do NOT reach** (read before assuming an editorial change will show up everywhere): OG images (`opengraph-image.tsx` per route -- static, code-driven, not a Sanity field); `public/llms.txt` (a static file, not generated from any fetched content); Nav chrome labels/links (`navLinks`, the Solutions dropdown rows) come from `settings` inside `src/components/Nav.tsx`, a Client Component that deliberately stays on the local content module rather than fetching Sanity client-side (see that file's own doc comment) -- editing Site Settings in the Studio changes the footer and pricing section but not the nav links or Solutions dropdown copy; and the copy-voice guardrails (`src/content/content.test.ts` -- no em dashes, no exclamation points, no emoji) only run against the local `src/content/*.ts` modules at test time, never against live Sanity content, so an editor publishing a change through the Studio gets no automated check that it still follows the voice guide -- that has to be enforced manually during editorial review.
 
+## 3b. Professional Services lane (added 2026-08-31)
+
+- [ ] **[dev]** BLOCKING before promoting the lane: replace the placeholder screenshot. `src/content/services.ts` and the home showcase both point at `/screenshots/portal-board.png`, the generic portal board, because no capture of the services persona exists. Every other lane ships its own. The `fulcrum-law` workspace in the platform's `scripts/seed-dev.mjs` is the natural source.
+- [x] **[Jake]** ~~Settle the services accent.~~ Resolved 2026-08-31 by swapping palettes with the coach lane: Professional Services now carries Ember Amber (`#F0913A` / `#C4501F`), a real designed brand colour, and the unreviewed placeholder navy (`#6FA8D0` / `#1E5C8A`) moved onto coach, which is retired from marketing. The navy still wants a design eye before coach is ever promoted again.
+- [ ] **[dev]** Reseed Sanity so `personaPage-services` exists. Until then the page renders from the local module with a console warning, which works but means Studio edits cannot reach it.
+- [x] **[dev]** `coach.kinectnow.com` still serves. The lane is retired from marketing only: `coach` stays in `PERSONA_IDS` (routing) and is absent from `PROMOTED_PERSONA_IDS` (selling). Removing it from the former would silently serve the HOME page at that host with a 200 rather than retiring it.
+
 ## 4. Analytics
 
 - [ ] **[Jake]** PostHog: create a dedicated "KINECT marketing" project (separate from the app's); provide the project API key.

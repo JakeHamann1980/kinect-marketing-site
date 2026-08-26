@@ -48,6 +48,7 @@ export default defineType({
                   { title: "Agency", value: "agency" },
                   { title: "Coach", value: "coach" },
                   { title: "Consultant", value: "consultant" },
+          { title: "Professional Services", value: "services" },
                 ],
               },
               validation: (r) => r.required(),

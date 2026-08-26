@@ -83,7 +83,7 @@ export default async function PricingPage() {
           {/* Tier cards: the home page's dark treatment (cyan-glow popular
               card), rendered detailed here, from the same shared
               settings.pricing object every other surface uses. */}
-          <div className="relative z-10">
+          <div className="kx-hero-join relative z-10">
             <PricingSection
               headline={settings.pricing.headline}
               supporting={settings.pricing.supporting}

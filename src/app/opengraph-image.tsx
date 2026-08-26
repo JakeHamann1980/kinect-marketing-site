@@ -14,7 +14,7 @@ import { OG_SIZE, ogFonts, ogTemplate, SITE_HOST } from "@/lib/og-template";
  */
 export const size = OG_SIZE;
 export const contentType = "image/png";
-export const alt = "KINECT -- a client portal for agencies, coaches and consultants.";
+export const alt = "KINECT -- a client portal for agencies, professional services firms and consultants.";
 
 export default async function Image() {
   const fonts = await ogFonts();

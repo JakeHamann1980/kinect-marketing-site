@@ -47,6 +47,45 @@ test("root path on a persona subdomain host rewrites internally to that persona'
   expect(body).toContain("athletes");
 });
 
+/**
+ * The retired lane must keep working. Coach is sold to nobody and served to
+ * the pilots who were sold it, so these two assertions are the contract:
+ * the host still rewrites to the coach page, and it does NOT quietly serve
+ * home. Dropping `coach` from PERSONA_IDS produces exactly that 200-with-the-
+ * wrong-body failure, which no status-code check would catch.
+ */
+test("a retired-but-served lane still renders its own page, not home", async ({ request }) => {
+  const res = await request.get("/", {
+    headers: { Host: `coach.localhost:3200` },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(200);
+  const body = await res.text();
+  expect(body).toContain("athletes");
+  // The tell for the silent-fallthrough bug: home's lane picker headline.
+  expect(body).not.toContain("One engine, three very different jobs");
+});
+
+test("the services lane serves on its own subdomain", async ({ request }) => {
+  const res = await request.get("/", {
+    headers: { Host: `services.localhost:3200` },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(200);
+  const body = await res.text();
+  expect(body).toContain("engagement");
+  expect(body).not.toContain("One engine, three very different jobs");
+});
+
+test("services root on the apex redirects (308) to its subdomain", async ({ request }) => {
+  const res = await request.get("/services", {
+    headers: { Host: PROD_ROOT },
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(308);
+  expect(res.headers()["location"]).toBe(`https://services.${PROD_ROOT}/`);
+});
+
 test("persona root on the production apex host redirects (308) to the persona subdomain", async ({
   request,
 }) => {

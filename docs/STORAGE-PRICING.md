@@ -1,8 +1,8 @@
 # Storage tiers and additional-storage pricing
 
-Decided by Jake 2026-08-03. The marketing site now publishes this model.
-**The platform does not implement any of it yet**, and this document is the
-spec for closing that gap.
+Decided by Jake 2026-08-03. The marketing site publishes this model, and as
+of 2026-08-31 the platform implements the quota half of it. What remains is
+billing: see "What exists today".
 
 ## The model
 
@@ -30,36 +30,55 @@ deliberately undecided, and it is explicitly **not** unlimited storage
 
 ## What exists today
 
-Nothing. Verified 2026-08-03 across the platform repo and its database:
+**Most of it.** Items 1 to 5 below shipped in
+`20260829100000_storage_quota.sql` (platform). Re-verified against the schema
+2026-08-31:
 
-- `public.plans` has exactly five columns: `key`, `name`, `stripe_price_id`,
-  `client_limit`, `sort`. There is no storage column.
-- No quota, metering or enforcement logic exists anywhere in the platform
-  source. `files.size_bytes` is recorded per file, but nothing aggregates or
-  caps it.
-- `stripe_price_id` is `null` for all three tiers. Per the plan action:
-  "The price id is null for every tier until a real Stripe account exists."
-- The 2026-08-13 pricing migration states that `client_limit` is "the ONLY
-  plan-differentiated predicate in the schema" and the three tiers are
-  "functionally identical".
+- `public.plans.storage_limit_bytes` exists and is seeded exactly to the
+  model: 100 GB, 500 GB, 2048 GB. The null-means-unlimited convention was
+  followed, with a `> 0` check constraint.
+- `public.subscriptions.storage_addon_blocks` counts purchased 100 GB blocks,
+  modelled on the subscription rather than as a second plan, as item 2 asked.
+- `public.workspace_storage` maintains a per-workspace `used_bytes` counter,
+  written by an `app.track_file_bytes()` trigger rather than summed per
+  request, with `app.recount_workspace_storage()` to rebuild it.
+- Threshold state is tracked at 0 / 80 / 100 and rises on crossing, dropping
+  back so a workspace that re-crosses is notified again.
+- The cap is still SOFT. The only constraint on `storage_limit_bytes` is that
+  it be positive; nothing reads it in an INSERT policy on `files` or
+  `storage.objects`, exactly as item 5 requires.
+- Billing surfaces usage and names purchased blocks
+  (`src/components/views/billing.tsx`).
+
+**What is still missing is the ability to buy a block.** There is no checkout
+action for an add-on anywhere in the platform: `storage_addon_blocks` can be
+read and displayed, but nothing a customer can click will increment it. Items
+6 and 7 are untouched, and Stripe is still not connected, so this is blocked
+behind the same thing everything else is.
+
+That gap is why /pricing says "more available" on the tier cards rather than
+marking them with a footnote: the additional-storage price is published in the
+comparison matrix and the FAQ as a commitment, and pointing harder at a
+capability with no purchase path would oversell it.
 
 ## Work required
 
-**Platform**
+**Platform** -- items 1 to 5 are DONE (20260829100000_storage_quota.sql).
+Kept as written because they record what was asked for and why.
 
-1. Add `storage_limit_bytes bigint` to `public.plans` (null = unlimited, the
+1. ~~Add~~ DONE. `storage_limit_bytes bigint` to `public.plans` (null = unlimited, the
    same convention `client_limit` already uses). Seed: 100 GB, 500 GB, 2 TB.
-2. Add per-workspace purchased add-on blocks, so the effective limit is
+2. ~~Add~~ DONE. Per-workspace purchased add-on blocks, so the effective limit is
    `plan allowance + purchased blocks`. A count of 100 GB blocks on the
    subscription is enough; do not model it as a second plan.
-3. Roll up usage from `files.size_bytes` per workspace. Prefer a maintained
+3. ~~Roll up~~ DONE. Usage rolled up from `files.size_bytes` per workspace. Prefer a maintained
    counter over a `sum()` on every request.
-4. Surface usage in the app and notify at 80% and 100%.
-5. Do **not** add an INSERT-blocking policy for storage. That would turn the
+4. ~~Surface~~ DONE. Usage is surfaced in Billing and notified at 80% and 100%.
+5. HOLDING. Do **not** add an INSERT-blocking policy for storage. That would turn the
    soft cap into a hard cap and contradict what the site now publishes.
    `app.can_add_client` remains the model for hard quotas; storage is not one.
 
-**Stripe**
+**Stripe** -- both still outstanding, and both blocked on Stripe existing.
 
 6. Stripe is not connected at all yet, so base-tier checkout does not work.
    That has to be resolved before any add-on can be billed.

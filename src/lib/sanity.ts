@@ -4,6 +4,7 @@ import { home } from "@/content/home";
 import { settings } from "@/content/settings";
 import { agency } from "@/content/agency";
 import { coach } from "@/content/coach";
+import { services } from "@/content/services";
 import { consultant } from "@/content/consultant";
 import { privacy } from "@/content/legal/privacy";
 import { terms } from "@/content/legal/terms";
@@ -69,7 +70,7 @@ const client: SanityClient | null =
  * granularity the site currently needs. */
 const FETCH_OPTIONS = { next: { tags: ["content"] } };
 
-const LOCAL_PERSONA: Record<Persona, PersonaPageContent> = { agency, coach, consultant };
+const LOCAL_PERSONA: Record<Persona, PersonaPageContent> = { agency, coach, consultant, services };
 const LOCAL_LEGAL: Record<string, LegalPage> = { privacy, terms, security, cookies };
 
 function warnFallback(reason: unknown) {
@@ -125,7 +126,7 @@ export function assertHomeShape(doc: HomeContent): void {
   required(doc.showcase?.workflow, "showcase.workflow");
   required(doc.showcase?.screenshots, "showcase.screenshots");
   required(doc.showcase?.screenshots?.agency?.src, "showcase.screenshots.agency.src");
-  required(doc.showcase?.screenshots?.coach?.src, "showcase.screenshots.coach.src");
+  required(doc.showcase?.screenshots?.services?.src, "showcase.screenshots.services.src");
   required(doc.showcase?.screenshots?.consultant?.src, "showcase.screenshots.consultant.src");
   required(doc.pillarsSection, "pillarsSection");
   required(doc.pillars, "pillars");
@@ -237,7 +238,7 @@ const HOME_PROJECTION = `{
     "workflow": workflow[]${CARD_PROJECTION},
     screenshots{
       "agency": agency${SCREENSHOT_PROJECTION},
-      "coach": coach${SCREENSHOT_PROJECTION},
+      "services": services${SCREENSHOT_PROJECTION},
       "consultant": consultant${SCREENSHOT_PROJECTION}
     }
   },

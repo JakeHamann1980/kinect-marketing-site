@@ -18,7 +18,7 @@ export const privacy: LegalPage = {
     {
       heading: "Introduction",
       paragraphs: [
-        "This policy explains how KINECT collects, uses and protects information when you visit kinectnow.com or one of its persona subdomains (agency.kinectnow.com, coach.kinectnow.com, consultant.kinectnow.com), and when you join our waitlist.",
+        "This policy explains how KINECT collects, uses and protects information when you visit kinectnow.com or one of its persona subdomains (agency.kinectnow.com, services.kinectnow.com, coach.kinectnow.com, consultant.kinectnow.com), and when you join our waitlist.",
         "KINECT is currently in a pre-launch, waitlist stage. The client-portal product described on this site is not yet available to the public. This policy covers the marketing site and waitlist only. When the product launches, we will publish a separate policy covering the application itself, and we will update this page to reflect that change.",
       ],
     },
@@ -83,7 +83,7 @@ export const privacy: LegalPage = {
     {
       heading: "Children",
       paragraphs: [
-        "This site and waitlist are directed at business professionals (agencies, coaches and consultants) and are not intended for children. We do not knowingly collect information from children.",
+        "This site and waitlist are directed at business professionals (agencies, professional services firms and consultants) and are not intended for children. We do not knowingly collect information from children.",
       ],
     },
     {
