@@ -95,6 +95,30 @@
 }
 
 /*
+ * `.kx-sec`'s 124px top is the rhythm BETWEEN bands: distinct sections, each
+ * on its own canvas. On /pricing the hero and the tier cards are not two
+ * bands. They sit inside one `<section>` sharing a single `HeroBackdrop tall`
+ * wash, which is why PricingSection is passed `inheritsBackdrop` there and
+ * stops painting its own canvas.
+ *
+ * Carrying the between-bands gap inside a single block left 186px between the
+ * hero subhead and the pricing headline (62px hero padding-bottom + 124px
+ * section padding-top), which read as a missing section rather than a join.
+ * This trims the section side only, so the hero keeps its own bottom padding
+ * and the two still breathe.
+ *
+ * Scoped to a wrapper class rather than editing `.kx-sec`: that class is on
+ * every home section and the persona pages, and this is a one-page join.
+ * Specificity is (0,2,0) against `.kx-sec`'s (0,1,0), so it wins without
+ * `!important` and without touching the responsive rules above, which keep
+ * applying to the horizontal padding.
+ */
+.kx-hero-join .kx-sec { padding-top: 24px; }
+@media (max-width: 860px) {
+  .kx-hero-join .kx-sec { padding-top: 16px; }
+}
+
+/*
  * Hero padding cascade (README "1. Hero" + "Responsive"). Deliberately has
  * no <=1024 tier: the prototype's own responsive CSS has no bucket matching
  * "152px 60px 62px" at max-width:1024px, jumping straight from the full
