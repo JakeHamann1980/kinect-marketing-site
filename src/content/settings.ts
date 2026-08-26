@@ -107,6 +107,15 @@ export const settings: SiteSettings = {
     //   "Integrations"    (was Growth)   too vague to be checkable; replaced
     //                                    with the ad platforms that are real
     // ---------------------------------------------------------------------
+    // "more available" rather than an asterisk (user-directed 2026-08-31).
+    // The additional-storage price already appears twice further down
+    // /pricing -- the Files & Storage comparison row and the "What happens if
+    // I run out of storage?" FAQ -- so a footnote marker would only point at
+    // something the same page already answers. An asterisk on a pricing card
+    // is also the visual grammar of a catch, which works against this page's
+    // whole claim ("The price is the price", no per-seat, no per-client), and
+    // it would misdescribe the mechanic: the cap is SOFT, uploads keep working
+    // past it by design (see the platform's 20260829100000_storage_quota.sql).
     tiers: [
       {
         name: "Kinect",
@@ -119,7 +128,7 @@ export const settings: SiteSettings = {
           "Task boards, files and approvals",
           "Invoices, rate cards and proposals",
           "Templates for your services or programs",
-          "100 GB storage",
+          "100 GB storage, more available",
         ],
         cta: "Choose Kinect",
       },
@@ -136,7 +145,7 @@ export const settings: SiteSettings = {
           "Profitability and utilization per client",
           "AI insights and drafted client updates",
           "Exports and scheduled reports",
-          "500 GB storage",
+          "500 GB storage, more available",
         ],
         cta: "Start free",
       },
@@ -162,7 +171,7 @@ export const settings: SiteSettings = {
           "SSO and enforced two-factor (*)",
           "Multiple workspaces under one bill (*)",
           "Priority support",
-          "2 TB storage",
+          "2 TB storage, more available",
         ],
         cta: "Choose Kinect Pro",
       },
