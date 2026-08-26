@@ -54,20 +54,23 @@ export const PERSONAS: Record<
   },
   coach: {
     name: "Coach",
-    accent: "#F0913A",
-    accentLight: "#C4501F",
-    tint: "rgba(240,145,58,.16)",
+    // Navy. Swapped with Professional Services on 2026-08-31: the promoted
+    // lane should carry the established brand amber, and the unreviewed
+    // placeholder navy belongs on the lane nobody is being sold.
+    accent: "#6FA8D0",
+    accentLight: "#1E5C8A",
+    tint: "rgba(30,92,138,.14)",
     hostname: "coach.kinectnow.com",
   },
   services: {
     name: "Professional Services",
-    // Taken from the platform's own services persona config so the two
-    // repos' accents cannot drift. PLACEHOLDER NAVY: the attorney draft spec
-    // that introduced it flags it as "needing a design eye", and it has now
-    // propagated to three repos. Settle it before it spreads further.
-    accent: "#6FA8D0",
-    accentLight: "#1E5C8A",
-    tint: "rgba(30,92,138,.14)",
+    // Ember Amber, inherited from the coach lane in the 2026-08-31 swap. A
+    // real, designed brand colour rather than the placeholder navy this lane
+    // launched with, which is now on coach. Kept in step with the platform's
+    // own services persona config so the two repos cannot drift.
+    accent: "#F0913A",
+    accentLight: "#C4501F",
+    tint: "rgba(240,145,58,.16)",
     hostname: "services.kinectnow.com",
   },
   consultant: {

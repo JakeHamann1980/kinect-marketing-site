@@ -276,10 +276,10 @@
 }
 
 [data-persona="agency"]     { --accent: #35D6E8; --accent-light: #0E93AC; --accent-tint: rgba(14,147,172,.12); }
-[data-persona="coach"]      { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
+[data-persona="coach"]      { --accent: #6FA8D0; --accent-light: #1E5C8A; --accent-tint: rgba(30,92,138,.14); }
 [data-persona="consultant"] { --accent: #C7A0C0; --accent-light: #6E5AA8; --accent-tint: rgba(139,120,192,.18); }
 /* coach stays: the lane is retired from marketing, still served at coach.kinectnow.com */
-[data-persona="services"]   { --accent: #6FA8D0; --accent-light: #1E5C8A; --accent-tint: rgba(30,92,138,.14); }
+[data-persona="services"]   { --accent: #F0913A; --accent-light: #C4501F; --accent-tint: rgba(240,145,58,.16); }
 
 /*
  * Sticky nav (see src/components/Nav.tsx, src/hooks/useStuck.ts).

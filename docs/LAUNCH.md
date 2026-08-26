@@ -55,7 +55,7 @@ npm run build:check && npm run test:e2e
 ## 3b. Professional Services lane (added 2026-08-31)
 
 - [ ] **[dev]** BLOCKING before promoting the lane: replace the placeholder screenshot. `src/content/services.ts` and the home showcase both point at `/screenshots/portal-board.png`, the generic portal board, because no capture of the services persona exists. Every other lane ships its own. The `fulcrum-law` workspace in the platform's `scripts/seed-dev.mjs` is the natural source.
-- [ ] **[Jake]** Settle the services accent. `#1E5C8A` / `#6FA8D0` came from the attorney draft spec, which calls it "a placeholder navy needing a design eye". It is now in three repos.
+- [x] **[Jake]** ~~Settle the services accent.~~ Resolved 2026-08-31 by swapping palettes with the coach lane: Professional Services now carries Ember Amber (`#F0913A` / `#C4501F`), a real designed brand colour, and the unreviewed placeholder navy (`#6FA8D0` / `#1E5C8A`) moved onto coach, which is retired from marketing. The navy still wants a design eye before coach is ever promoted again.
 - [ ] **[dev]** Reseed Sanity so `personaPage-services` exists. Until then the page renders from the local module with a console warning, which works but means Studio edits cannot reach it.
 - [x] **[dev]** `coach.kinectnow.com` still serves. The lane is retired from marketing only: `coach` stays in `PERSONA_IDS` (routing) and is absent from `PROMOTED_PERSONA_IDS` (selling). Removing it from the former would silently serve the HOME page at that host with a 200 rather than retiring it.
 
