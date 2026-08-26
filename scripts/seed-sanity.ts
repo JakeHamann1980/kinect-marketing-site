@@ -37,6 +37,7 @@ import { home } from "../src/content/home";
 import { settings } from "../src/content/settings";
 import { agency } from "../src/content/agency";
 import { coach } from "../src/content/coach";
+import { services } from "../src/content/services";
 import { consultant } from "../src/content/consultant";
 import { privacy } from "../src/content/legal/privacy";
 import { terms } from "../src/content/legal/terms";
@@ -125,7 +126,7 @@ async function buildHomeDoc() {
       workflow: arr<Card>("card", home.showcase.workflow),
       screenshots: {
         agency: screenshotField(analyticsFullId, home.showcase.screenshots.agency.alt),
-        coach: screenshotField(coachCheckinId, home.showcase.screenshots.coach.alt),
+        services: screenshotField(portalBoardId, home.showcase.screenshots.services.alt),
         consultant: screenshotField(consultantHqId, home.showcase.screenshots.consultant.alt),
       },
     },
@@ -146,7 +147,7 @@ async function buildHomeDoc() {
     closing: home.closing,
   };
 
-  return { homeDoc, analyticsFullId, coachCheckinId, consultantHqId };
+  return { homeDoc, analyticsFullId, coachCheckinId, consultantHqId, portalBoardId };
 }
 
 function personaDoc(
@@ -248,14 +249,21 @@ async function run() {
   // see uploadImageIdempotent's doc comment) and their ids reused across
   // whichever documents reference them, rather than re-uploaded per
   // document.
-  const { homeDoc, analyticsFullId, coachCheckinId, consultantHqId } = await buildHomeDoc();
+  const { homeDoc, analyticsFullId, coachCheckinId, consultantHqId, portalBoardId } =
+    await buildHomeDoc();
 
   const documents = [
     homeDoc,
     settingsDoc,
     pricingPageDoc,
     personaDoc("personaPage-agency", agency, analyticsFullId),
+    // personaPage-coach is still seeded. The lane is retired from marketing
+    // but coach.kinectnow.com still serves it, and `createOrReplace` never
+    // prunes, so dropping this line would leave a stale document rather than
+    // remove one -- and the page would fall back to the local module with a
+    // console warning. Keep seeding it until the host is genuinely retired.
     personaDoc("personaPage-coach", coach, coachCheckinId),
+    personaDoc("personaPage-services", services, portalBoardId),
     personaDoc("personaPage-consultant", consultant, consultantHqId),
     legalDoc("legalPage-privacy", privacy),
     legalDoc("legalPage-terms", terms),

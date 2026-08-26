@@ -106,6 +106,10 @@ interface PageTarget {
 const TARGETS: PageTarget[] = [
   { label: "home (kinectnow.com/)", host: "kinectnow.com", path: "/", expectFaq: true },
   { label: "agency (agency.kinectnow.com/)", host: "agency.kinectnow.com", path: "/", expectFaq: true },
+  // services and coach are BOTH asserted. coach is retired from marketing but
+  // still served, and a host that quietly stops emitting FAQPage is exactly
+  // the regression this validator exists to catch.
+  { label: "services (services.kinectnow.com/)", host: "services.kinectnow.com", path: "/", expectFaq: true },
   { label: "coach (coach.kinectnow.com/)", host: "coach.kinectnow.com", path: "/", expectFaq: true },
   { label: "consultant (consultant.kinectnow.com/)", host: "consultant.kinectnow.com", path: "/", expectFaq: true },
   { label: "legal (kinectnow.com/legal/privacy)", host: "kinectnow.com", path: "/legal/privacy", expectFaq: false },

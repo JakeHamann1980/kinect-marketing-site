@@ -4,7 +4,7 @@ export const home: HomeContent = {
   seo: {
     title: "KINECT | Client Portal Software Clients Actually Open",
     description:
-      "A branded client portal for agencies, coaches and consultants: task boards, analytics and AI that explains the work. Flat pricing from $149, no per-seat fees.",
+      "A branded client portal for agencies, professional services firms and consultants: task boards, analytics and AI that explains the work. Flat pricing from $149, no per-seat fees.",
   },
 
   hero: {
@@ -44,15 +44,19 @@ export const home: HomeContent = {
       cta: "Enter agency.kinectnow.com",
     },
     {
-      persona: "coach",
-      title: "Coaches & Trainers",
-      body: "Program delivery, check-ins, and progress proof for fitness pros with a full roster.",
+      // Replaced the Coaches & Trainers card (2026-08-31). The coach lane is
+      // retired from marketing but still SERVED at coach.kinectnow.com for
+      // pilot customers, so this is a promotion change, not a routing one.
+      // See PROMOTED_PERSONA_IDS in src/lib/personas.ts.
+      persona: "services",
+      title: "Professional Services",
+      body: "Engagements, documents, and billable hours for law, accounting and advisory firms.",
       features: [
-        "Training blocks + adherence tracking",
-        "Video form review with timestamps",
-        "Weekly check-ins and progress photos",
+        "Engagements with fee budgets",
+        "Documents your client can find",
+        "Time that reaches the invoice",
       ],
-      cta: "Enter coach.kinectnow.com",
+      cta: "Enter services.kinectnow.com",
     },
     {
       persona: "consultant",
@@ -102,7 +106,7 @@ export const home: HomeContent = {
       "Bring your data, your templates and your rates. Nothing to migrate, nothing to relearn.",
     labels: {
       agency: "agency",
-      coach: "coach",
+      services: "firm",
       consultant: "consultant",
     },
     // Fallback screenshot paths (see src/lib/sanity.ts's fetchHome fallback
@@ -110,7 +114,10 @@ export const home: HomeContent = {
     // directly before screenshots became Sanity image fields.
     screenshots: {
       agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
-      coach: { src: "/screenshots/coach-checkin.png", alt: "KINECT coach check-in dashboard" },
+      // PLACEHOLDER screenshot: the generic portal board, not a firm view.
+      // See src/content/services.ts for why, and docs/LAUNCH.md for the
+      // blocking item to replace it.
+      services: { src: "/screenshots/portal-board.png", alt: "KINECT engagement board" },
       consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
     },
     workflow: [

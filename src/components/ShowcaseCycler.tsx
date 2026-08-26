@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { PERSONA_IDS, type Persona } from "@/lib/personas";
+import { PROMOTED_PERSONA_IDS, type PromotedPersona } from "@/lib/personas";
 import { clickLabel, type CyclerState } from "@/lib/cycler";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
@@ -36,9 +36,9 @@ const LABEL_CLASS: readonly string[] = ["kx-lab", "kx-lab kx-lab-2", "kx-lab kx-
 
 interface ShowcaseCyclerProps {
   /** home.showcase.labels -- persona -> display label ("agency", "coach", "consultant"). */
-  labels: Record<Persona, string>;
+  labels: Record<PromotedPersona, string>;
   /** home.showcase.screenshots -- persona -> { src, alt } for the cycling screenshots. */
-  images: Record<Persona, { src: string; alt: string }>;
+  images: Record<PromotedPersona, { src: string; alt: string }>;
 }
 
 export default function ShowcaseCycler({ labels, images }: ShowcaseCyclerProps) {
@@ -53,7 +53,7 @@ export default function ShowcaseCycler({ labels, images }: ShowcaseCyclerProps) 
           className={cn("relative", pinClass)}
           style={{ aspectRatio: "2962 / 1996" }}
         >
-          {PERSONA_IDS.map((persona, i) => (
+          {PROMOTED_PERSONA_IDS.map((persona, i) => (
             <Image
               key={persona}
               src={images[persona].src}
@@ -67,7 +67,7 @@ export default function ShowcaseCycler({ labels, images }: ShowcaseCyclerProps) 
       </div>
 
       <div className={cn("mt-5 flex justify-center gap-[10px]", pinClass)}>
-        {PERSONA_IDS.map((persona, i) => (
+        {PROMOTED_PERSONA_IDS.map((persona, i) => (
           <button
             key={persona}
             type="button"

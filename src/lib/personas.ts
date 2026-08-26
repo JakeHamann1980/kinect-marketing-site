@@ -1,5 +1,39 @@
-export type Persona = "agency" | "coach" | "consultant";
-export const PERSONA_IDS = ["agency", "coach", "consultant"] as const;
+export type Persona = "agency" | "coach" | "consultant" | "services";
+
+/**
+ * Every persona this site can SERVE. Routing, canonicals, sitemaps, robots
+ * and the Organization `sameAs` cross-links all read this.
+ *
+ * `coach` is still here on purpose. The lane is retired from marketing, but
+ * coach.kinectnow.com keeps serving its page for the pilot customers who were
+ * sold from it and whose links are in the wild. Removing it from this list
+ * would NOT retire the host, it would break it silently: `personaFromHost`
+ * would return null, the proxy's persona branch would never fire, and
+ * coach.kinectnow.com would fall through to the final `NextResponse.next()`
+ * and answer 200 with the HOME page. That is the dual-serve failure this
+ * file's own I5 fix exists to prevent, and it looks like success from the
+ * outside.
+ */
+export const PERSONA_IDS = ["agency", "coach", "consultant", "services"] as const;
+
+/**
+ * Every persona this site PROMOTES: the home lane picker, the Solutions nav
+ * and footer, and the showcase cycler.
+ *
+ * The split between this and PERSONA_IDS is the whole mechanism of the
+ * Professional Services pivot. Serving and selling used to be one list; they
+ * are now two, so a lane can be quietly retired without breaking anyone
+ * already on it.
+ *
+ * Order is the render order, and `services` sits in the middle slot the coach
+ * lane used to occupy. Length is load-bearing in three places that are all
+ * hardcoded to three: the showcase cycler's LAYER_CLASS/LABEL_CLASS arrays,
+ * the nine `.kx-pin-N` rules and 15s keyframes in globals.css, and the
+ * `personaCards` `.length(3)` validation in the Sanity homePage schema. A
+ * fourth promoted lane means touching all three.
+ */
+export const PROMOTED_PERSONA_IDS = ["agency", "services", "consultant"] as const;
+export type PromotedPersona = (typeof PROMOTED_PERSONA_IDS)[number];
 
 export const PERSONAS: Record<
   Persona,
@@ -24,6 +58,17 @@ export const PERSONAS: Record<
     accentLight: "#C4501F",
     tint: "rgba(240,145,58,.16)",
     hostname: "coach.kinectnow.com",
+  },
+  services: {
+    name: "Professional Services",
+    // Taken from the platform's own services persona config so the two
+    // repos' accents cannot drift. PLACEHOLDER NAVY: the attorney draft spec
+    // that introduced it flags it as "needing a design eye", and it has now
+    // propagated to three repos. Settle it before it spreads further.
+    accent: "#6FA8D0",
+    accentLight: "#1E5C8A",
+    tint: "rgba(30,92,138,.14)",
+    hostname: "services.kinectnow.com",
   },
   consultant: {
     name: "Consultant",

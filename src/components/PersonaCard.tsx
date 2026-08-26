@@ -20,6 +20,9 @@ const ICON_PATHS: Record<Persona, string[]> = {
   agency: ["M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"],
   coach: ["M6 8v8M18 8v8M4 10v4M20 10v4M6 12h12"],
   consultant: ["M3 21h18", "M5 21V7l7-4 7 4v14", "M9 21v-6h6v6"],
+  // Professional Services: a balance beam. Reads as scales at 24px without
+  // the pan detail, which turns to mud at that size.
+  services: ["M12 5v14M5 8h14M7 8l-2.5 5h5zM17 8l-2.5 5h5z"],
 };
 
 function PersonaIcon({ persona }: { persona: Persona }) {

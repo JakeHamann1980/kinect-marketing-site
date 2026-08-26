@@ -65,7 +65,7 @@ export default defineType({
           description: "Screenshot cycler label text shown per persona.",
           fields: [
             defineField({ name: "agency", type: "string", validation: (r) => r.required() }),
-            defineField({ name: "coach", type: "string", validation: (r) => r.required() }),
+            defineField({ name: "services", type: "string", validation: (r) => r.required() }),
             defineField({ name: "consultant", type: "string", validation: (r) => r.required() }),
           ],
         }),
@@ -79,7 +79,7 @@ export default defineType({
             "`screenshot` object type) so editors can replace them without a deploy.",
           fields: [
             defineField({ name: "agency", type: "screenshot", validation: (r) => r.required() }),
-            defineField({ name: "coach", type: "screenshot", validation: (r) => r.required() }),
+            defineField({ name: "services", type: "screenshot", validation: (r) => r.required() }),
             defineField({ name: "consultant", type: "screenshot", validation: (r) => r.required() }),
           ],
         }),

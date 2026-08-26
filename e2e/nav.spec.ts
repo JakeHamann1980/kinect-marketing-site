@@ -184,8 +184,8 @@ test.describe("Nav: mobile sheet", () => {
     const sheet = page.locator("#kx-mobile-sheet");
     await expect(sheet).toBeVisible();
 
-    await sheet.getByRole("link", { name: /Coaches & Trainers/ }).click();
-    await expect(page).toHaveURL(/\/coach$/);
+    await sheet.getByRole("link", { name: /Professional Services/ }).click();
+    await expect(page).toHaveURL(/\/services$/);
 
     // A fresh Nav instance mounts for the new route with mobileOpen reset
     // to its default (false) -- the sheet must not still be open on arrival.

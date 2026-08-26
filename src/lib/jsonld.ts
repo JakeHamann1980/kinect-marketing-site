@@ -124,7 +124,7 @@ export function softwareApplicationLd(tiers: Tier[]) {
     // what/who/price in the first ~50 words, independent of the designed
     // page copy.
     description:
-      "KINECT is a client portal for agencies, coaches and consultants, combining task tracking, analytics and AI insights. Flat monthly pricing from " +
+      "KINECT is a client portal for agencies, professional services firms and consultants, combining task tracking, analytics and AI insights. Flat monthly pricing from " +
       `$${lowPrice} to $${highPrice}, no per-seat fees.`,
     publisher: { "@id": ORG_ID },
     offers: {

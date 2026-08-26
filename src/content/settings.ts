@@ -53,9 +53,12 @@ export const settings: SiteSettings = {
       description: "Client portal, campaign analytics and AI reporting.",
     },
     {
-      persona: "coach",
-      name: "Coaches & Trainers",
-      description: "Programs, check-ins and adherence for every athlete.",
+      // Coaches & Trainers was retired from the picker on 2026-08-31. The
+      // lane is still served at coach.kinectnow.com; it is simply no longer
+      // sold. See PROMOTED_PERSONA_IDS in src/lib/personas.ts.
+      persona: "services",
+      name: "Professional Services",
+      description: "Engagements, documents and time for law and advisory firms.",
     },
     {
       persona: "consultant",
@@ -187,7 +190,7 @@ export const settings: SiteSettings = {
           // "Compare plans" now has a real destination, the dedicated
           // /pricing page's comparison matrix.
           { label: "For agencies", href: "/agency" },
-          { label: "For coaches", href: "/coach" },
+          { label: "For professional services", href: "/services" },
           { label: "For consultants", href: "/consultant" },
           { label: "Compare plans", href: "/pricing" },
         ],

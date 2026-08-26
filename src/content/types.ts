@@ -1,4 +1,4 @@
-import type { Persona } from "@/lib/personas";
+import type { Persona, PromotedPersona } from "@/lib/personas";
 
 export interface Faq {
   question: string;
@@ -112,7 +112,13 @@ export interface HomeContent {
   showcase: {
     title: string;
     subhead: string;
-    labels: Record<Persona, string>;
+    /**
+     * Keyed to PROMOTED personas, not every persona. The showcase sells the
+     * lanes; it does not enumerate the ones we merely still serve. `coach` is
+     * absent here and present in PERSONA_IDS, which is the entire point of
+     * that split.
+     */
+    labels: Record<PromotedPersona, string>;
     /**
      * The three cross-fading screenshots ShowcaseCycler renders, one per
      * persona. `{ src, alt }` (no caption -- the cycler has no caption UI)
@@ -120,7 +126,7 @@ export interface HomeContent {
      * comes from a dereferenced Sanity image asset or a local /screenshots
      * fallback path.
      */
-    screenshots: Record<Persona, { src: string; alt: string }>;
+    screenshots: Record<PromotedPersona, { src: string; alt: string }>;
     workflow: Card[];
   };
   pillarsSection: { title: string; intro: string };

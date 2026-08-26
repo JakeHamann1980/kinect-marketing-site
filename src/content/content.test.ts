@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { home } from "./home";
 import { agency } from "./agency";
 import { coach } from "./coach";
+import { services } from "./services";
 import { consultant } from "./consultant";
 import { settings } from "./settings";
 import { privacy } from "./legal/privacy";
@@ -15,6 +16,7 @@ const allText = JSON.stringify([
   agency,
   coach,
   consultant,
+  services,
   settings,
   privacy,
   terms,

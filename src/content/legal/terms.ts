@@ -17,7 +17,7 @@ export const terms: LegalPage = {
     {
       heading: "Acceptance of these terms",
       paragraphs: [
-        "These terms govern your use of kinectnow.com and its persona subdomains (agency.kinectnow.com, coach.kinectnow.com, consultant.kinectnow.com), together, the site. By visiting the site or joining our waitlist, you agree to these terms. If you do not agree, please do not use the site.",
+        "These terms govern your use of kinectnow.com and its persona subdomains (agency.kinectnow.com, services.kinectnow.com, coach.kinectnow.com, consultant.kinectnow.com), together, the site. By visiting the site or joining our waitlist, you agree to these terms. If you do not agree, please do not use the site.",
         "KINECT is currently in a pre-launch, waitlist stage. These terms cover the marketing site and waitlist described here. When our client-portal product launches, it will be governed by its own terms of service, separate from this document.",
       ],
     },
