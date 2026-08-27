@@ -102,11 +102,13 @@ async function buildHomeDoc() {
   // SAME analytics-full.png (see ShowcaseCycler.tsx/agency.ts's own
   // "matches the home cycler" comments), so it is uploaded once here and
   // its id reused both places -- one asset, multiple document references.
-  const [analyticsFullId, coachCheckinId, consultantHqId, portalBoardId] = await Promise.all([
+  const [analyticsFullId, coachCheckinId, consultantHqId, portalBoardId, servicesHqId] =
+    await Promise.all([
     uploadImageIdempotent("/screenshots/analytics-full.png"),
     uploadImageIdempotent("/screenshots/coach-checkin.png"),
     uploadImageIdempotent("/screenshots/consultant-hq.png"),
     uploadImageIdempotent("/screenshots/portal-board.png"),
+    uploadImageIdempotent("/screenshots/services-firm-hq.png"),
   ]);
 
   const homeDoc = {
@@ -126,7 +128,7 @@ async function buildHomeDoc() {
       workflow: arr<Card>("card", home.showcase.workflow),
       screenshots: {
         agency: screenshotField(analyticsFullId, home.showcase.screenshots.agency.alt),
-        services: screenshotField(portalBoardId, home.showcase.screenshots.services.alt),
+        services: screenshotField(servicesHqId, home.showcase.screenshots.services.alt),
         consultant: screenshotField(consultantHqId, home.showcase.screenshots.consultant.alt),
       },
     },
@@ -147,7 +149,14 @@ async function buildHomeDoc() {
     closing: home.closing,
   };
 
-  return { homeDoc, analyticsFullId, coachCheckinId, consultantHqId, portalBoardId };
+  return {
+    homeDoc,
+    analyticsFullId,
+    coachCheckinId,
+    consultantHqId,
+    portalBoardId,
+    servicesHqId,
+  };
 }
 
 function personaDoc(
@@ -249,8 +258,14 @@ async function run() {
   // see uploadImageIdempotent's doc comment) and their ids reused across
   // whichever documents reference them, rather than re-uploaded per
   // document.
-  const { homeDoc, analyticsFullId, coachCheckinId, consultantHqId, portalBoardId } =
-    await buildHomeDoc();
+  const {
+    homeDoc,
+    analyticsFullId,
+    coachCheckinId,
+    consultantHqId,
+    portalBoardId,
+    servicesHqId,
+  } = await buildHomeDoc();
 
   const documents = [
     homeDoc,
@@ -263,7 +278,7 @@ async function run() {
     // remove one -- and the page would fall back to the local module with a
     // console warning. Keep seeding it until the host is genuinely retired.
     personaDoc("personaPage-coach", coach, coachCheckinId),
-    personaDoc("personaPage-services", services, portalBoardId),
+    personaDoc("personaPage-services", services, servicesHqId),
     personaDoc("personaPage-consultant", consultant, consultantHqId),
     legalDoc("legalPage-privacy", privacy),
     legalDoc("legalPage-terms", terms),

@@ -83,15 +83,19 @@ export const services: PersonaPageContent = {
   },
 
   screenshot: {
-    // PLACEHOLDER. This is the generic portal board, not a firm view. Every
-    // other lane ships a screenshot of its own persona and this one does not,
-    // because no capture of the services persona exists yet. The fulcrum-law
-    // workspace in the platform's seed-dev.mjs is the natural source. Tracked
-    // in docs/LAUNCH.md; replace before promoting this lane.
-    src: "/screenshots/portal-board.png",
-    alt: "KINECT engagement board",
+    // A real capture of this persona, from the seeded `fulcrum-law` workspace
+    // (platform: e2e/marketing-screenshots.spec.ts). Replaced the generic
+    // portal-board placeholder this lane launched with.
+    //
+    // The alt and caption describe THIS image and nothing more. The
+    // placeholder's caption promised "engagements tracked against hours, with
+    // the AI flagging the ones drifting past their fee" -- Firm HQ shows
+    // neither hours nor fee drift, so keeping that line would have been a
+    // claim the picture does not support.
+    src: "/screenshots/services-firm-hq.png",
+    alt: "KINECT firm HQ",
     caption:
-      "Engagements tracked against hours, with the AI flagging the ones drifting past their fee.",
+      "Every client in the firm on one screen, with what is open, what is overdue, and what is still in flight.",
   },
 
   workflow: {

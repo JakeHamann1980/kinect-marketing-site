@@ -114,10 +114,7 @@ export const home: HomeContent = {
     // directly before screenshots became Sanity image fields.
     screenshots: {
       agency: { src: "/screenshots/analytics-full.png", alt: "KINECT agency analytics dashboard" },
-      // PLACEHOLDER screenshot: the generic portal board, not a firm view.
-      // See src/content/services.ts for why, and docs/LAUNCH.md for the
-      // blocking item to replace it.
-      services: { src: "/screenshots/portal-board.png", alt: "KINECT engagement board" },
+      services: { src: "/screenshots/services-firm-hq.png", alt: "KINECT firm HQ" },
       consultant: { src: "/screenshots/consultant-hq.png", alt: "KINECT consultant engagement dashboard" },
     },
     workflow: [
