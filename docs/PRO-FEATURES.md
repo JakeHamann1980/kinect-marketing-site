@@ -60,3 +60,87 @@ to the client-facing surface first.
 Until (1) ships and the copy is rewritten, `scale` should not carry a live
 Stripe price — or the three rows come off the page. Pro is otherwise
 differentiated from Plus by storage alone.
+
+---
+
+# Build specs for the four "coming soon" items
+
+Added 2026-08-03 after the pricing page began labelling these `Soon`. Facts
+below were verified against the platform repo, not assumed.
+
+## 1. Workspace-wide two-factor requirement — SMALL, do this first
+
+Two-factor already works end to end: `supabase.auth.mfa` enrolment, a
+`/login/mfa` challenge screen, and the middleware calling
+`getAuthenticatorAssuranceLevel()` and redirecting an `aal1` session whose
+`nextLevel` is `aal2`. What is missing is only the ability for an ADMIN to
+require it.
+
+- `alter table public.workspaces add column mfa_required boolean not null
+  default false`, admin-only via the existing RLS arrangement.
+- Admin toggle in workspace settings. `workspace_members.role` already
+  distinguishes admins, and `requireAdmin()` already gates actions.
+- Middleware: today it only gates a session that has ALREADY enrolled
+  (`nextLevel === "aal2"`). Requirement means also catching a member with NO
+  factor in a requiring workspace and sending them to enrolment. That is a
+  second branch beside `mfaRedirect`, not a rewrite.
+- Do not lock out the admin who enables it: enrol the enabling admin first,
+  or the toggle strands the workspace.
+- The pricing page says this is Pro-only. Nothing in the schema gates
+  features by plan except `client_limit` and `storage_limit_bytes`, so
+  gating this needs a plan check where the toggle is read.
+
+## 2. Custom domain — LARGE, and the scope hinges on one question
+
+The middleware does **no host inspection at all** — a workspace is resolved
+purely from the `/[workspace]` path segment. So this is new capability, not a
+configuration change.
+
+**Ask first: does the OPERATOR sign in on the custom domain, or only the
+CLIENT?** The answer changes the size by an order of magnitude.
+
+- *Client-facing only* (recommended first cut): point the domain at the
+  public `/d/<token>` document surface, which is token-authenticated and
+  needs no session cookie. Host→workspace lookup, a `workspace_domains`
+  table, and Vercel domain provisioning via API. No auth work.
+- *Full operator login on the domain*: adds Supabase redirect-URL
+  allowlisting per tenant, cookie-domain handling, and email links that must
+  generate per-domain. This is where the weeks go.
+
+Either way: a `workspace_domains` table (workspace_id, hostname, verified_at),
+DNS verification, and automated TLS. Treat cert renewal as the operational
+risk, not the build.
+
+## 3. SSO — MEDIUM-LARGE, and likely the wrong bet for this ICP
+
+Supabase supports SAML, but it needs a paid plan tier, per-tenant IdP
+registration, and a domain→tenant mapping so a user typing their work email
+reaches the right IdP. Buyers who ask for SSO usually also expect SCIM
+provisioning, which is a separate build with its own lifecycle rules
+(deprovisioning especially).
+
+Agencies, studios and solo consultants rarely run an IdP. Recommend leaving
+this last, and only building it against a named customer who has asked.
+
+## 4. Multiple workspaces under one bill — LARGE, highest blast radius
+
+`subscriptions` is keyed one row per `workspace_id`, and `workspaces.plan`
+mirrors it. Every plan-derived limit reaches plan THROUGH the workspace —
+`client_limit`, and now `storage_limit_bytes` and the storage add-on blocks.
+
+Doing this properly means introducing a billing entity above workspace (an
+org or account), moving the subscription onto it, and rewriting: webhook
+attribution (`metadata.workspace_id` becomes an org id, and the existing
+comment about diffing the right row applies double), plan resolution, and
+every quota read. Storage makes this worse than it was a month ago, because
+a shared quota across N workspaces is a different product decision, not just
+a schema change: is 2 TB per workspace, or 2 TB pooled?
+
+Answer that product question before any schema work. Recommend deferring
+until there is a customer with more than one workspace who is asking to
+consolidate billing.
+
+## Suggested order
+
+1 → 2 (client-facing cut) → stop and reassess. 3 and 4 should wait for
+demand, and the page already says `Soon` rather than promising a date.
