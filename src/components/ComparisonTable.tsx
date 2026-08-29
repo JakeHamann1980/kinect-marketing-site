@@ -12,7 +12,8 @@ interface ComparisonTableProps {
  * Renders one matrix value. The content contract (src/content/types.ts,
  * `PricingPageContent`) reserves two sentinels for glyph treatment: "yes"
  * draws the accent check, "no" draws a muted dash, each paired with
- * screen-reader text since a glyph alone says nothing. Anything else
+ * screen-reader text since a glyph alone says nothing. "soon" renders the
+ * word itself, for a feature that is coming but not shipped. Anything else
  * ("Up to 5", "Unlimited", "None") renders verbatim. Shared by both the
  * desktop table and the mobile stacked cards so the sentinel handling can
  * never diverge between the two layouts.
@@ -39,6 +40,17 @@ function Value({ value }: { value: string }) {
         </svg>
         <span className="sr-only">Included</span>
       </>
+    );
+  }
+  if (value === "soon") {
+    // Built into the table rather than footnoted: the previous treatment was
+    // a bare "(*)" on the tier cards with no legend anywhere, which reads as
+    // "conditions apply" while stating no condition. A word in the cell
+    // cannot dangle.
+    return (
+      <span className="font-mono text-[11px] uppercase tracking-[.1em] text-accent-light">
+        Soon
+      </span>
     );
   }
   if (value === "no") {

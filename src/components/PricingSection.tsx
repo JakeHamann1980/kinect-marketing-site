@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { type ButtonVariant } from "@/components/Button";
-import WaitlistCta from "@/components/WaitlistCta";
+import TrackedLink from "@/components/TrackedLink";
+import { signupUrlForTier } from "@/lib/checkout";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
 import { cn } from "@/lib/cn";
@@ -231,7 +232,14 @@ export default function PricingSection({
                       launch conversion path today. Labels ("Choose
                       Starter" / "Start free" / "Choose Scale") are
                       unchanged -- only the destination moved. */}
-                  <WaitlistCta
+                  {/* user-directed 2026-08-03: tier CTAs now hand off to the
+                      app's signup carrying the plan, instead of opening the
+                      waitlist. Deliberately NOT a Stripe payment link -- see
+                      src/lib/checkout.ts for why one would orphan the
+                      payment. Analytics unchanged so the funnel stays
+                      comparable across the switch. */}
+                  <TrackedLink
+                    href={signupUrlForTier(tier.name)}
                     variant={ctaVariant}
                     className="w-full justify-center"
                     trackLocation="pricing"
@@ -239,7 +247,7 @@ export default function PricingSection({
                     eventProps={{ tier: tier.name }}
                   >
                     {tier.cta}
-                  </WaitlistCta>
+                  </TrackedLink>
                 </div>
               </div>
             );

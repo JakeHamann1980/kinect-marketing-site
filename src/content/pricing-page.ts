@@ -108,13 +108,23 @@ export const pricingPage: PricingPageContent = {
         heading: "Security & Support",
         rows: [
           { label: "Encryption in transit and at rest", values: ["yes", "yes", "yes"] },
-          // The three rows below are NOT BUILT. See the block comment on the
-          // Kinect Pro tier in settings.ts: no branding, theming or
-          // custom-domain code exists, and authentication is email and
-          // password only. They must not ship next to a live Stripe price.
-          { label: "Your own domain and branding", values: ["no", "no", "yes"] },
-          { label: "SSO and enforced two-factor", values: ["no", "no", "yes"] },
-          { label: "Multiple workspaces under one bill", values: ["no", "no", "yes"] },
+          // Rewritten 2026-08-03 (see docs/PRO-FEATURES.md). These rows
+          // previously asserted a flat "yes" for Pro on three features, two of
+          // which were only half built and one not at all. Each is now split
+          // into the part that SHIPS and the part that is coming, using the
+          // "soon" sentinel so the table says so in words instead of a
+          // checkmark. Nothing left the page.
+          //
+          // Two-factor is yes/yes/yes because it genuinely works on every
+          // plan -- it is not plan-gated in the platform, and marking it "no"
+          // for Kinect and Plus would claim a restriction that does not exist.
+          // Pro's differentiator is the workspace-wide REQUIREMENT below.
+          { label: "Two-factor authentication", values: ["yes", "yes", "yes"] },
+          { label: "Your own logo and color on client documents", values: ["no", "no", "yes"] },
+          { label: "Custom domain", values: ["no", "no", "soon"] },
+          { label: "Workspace-wide two-factor requirement", values: ["no", "no", "soon"] },
+          { label: "SSO", values: ["no", "no", "soon"] },
+          { label: "Multiple workspaces under one bill", values: ["no", "no", "soon"] },
           { label: "Priority support", values: ["no", "no", "yes"] },
         ],
       },

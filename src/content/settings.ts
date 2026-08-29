@@ -153,25 +153,37 @@ export const settings: SiteSettings = {
         name: "Kinect Pro",
         price: 799,
         tagline: "For firms that need the portal to carry their own name.",
-        // NOT SHIPPED. Every line below marked (*) describes a feature with
-        // no implementation in the platform today: there is no branding,
-        // theming or custom-domain code, and authentication is email and
-        // password only (the Google OAuth in the codebase belongs to the
-        // Calendar and Ads integrations, not to sign-in).
+        // Rewritten 2026-08-03 after scoping each claim against the platform
+        // (docs/PRO-FEATURES.md). The previous copy carried a bare "(*)" on
+        // three lines with NO footnote anywhere -- PricingSection renders no
+        // legend and `pricing.note` is deliberately unrendered -- so the live
+        // page showed an asterisk pointing at nothing. An asterisk on a
+        // pricing claim reads as "conditions apply"; with no stated condition
+        // it is weaker than either saying the thing plainly or omitting it.
+        // It also contradicted the storage line's own precedent ("more
+        // available" instead of an asterisk, user-directed 2026-08-31).
         //
-        // They are written here so the tier reads as intended, and because
-        // nobody can be charged yet. THIS TIER MUST NOT GO LIVE ALONGSIDE A
-        // WORKING STRIPE PRICE until at least the branding lines are real.
-        // Charging for SSO against this copy stops being an overstatement and
-        // becomes something a customer paid for and did not receive.
-        features: ["Your own domain", "SSO", "priority support"],
+        // Two of the three claims were half true, so nothing had to leave the
+        // page: workspace branding is REAL (logo_url + accent_color on client
+        // documents, the public /d page and emails, migration
+        // 20260828100000), and two-factor is REAL (/login/mfa, AAL enforced
+        // in middleware). What is missing is the custom DOMAIN, the
+        // workspace-wide 2FA REQUIREMENT, and SSO. Those now say "coming
+        // soon" in words rather than hiding behind a marker.
+        //
+        // `features` (the compact list on the home/persona teasers) sold "Your
+        // own domain" and "SSO" with no caveat at all, which was worse than
+        // the asterisks. It now lists only shipped capability.
+        features: ["Your own branding", "Two-factor auth", "priority support"],
         detail: [
           "Everything in Kinect Plus",
-          "Your own domain and branding (*)",
-          "SSO and enforced two-factor (*)",
-          "Multiple workspaces under one bill (*)",
+          "Your own logo and color on client documents",
+          "Two-factor authentication",
           "Priority support",
           "2 TB storage, more available",
+          "Custom domain, coming soon",
+          "Workspace-wide two-factor and SSO, coming soon",
+          "Multiple workspaces under one bill, coming soon",
         ],
         cta: "Choose Kinect Pro",
       },

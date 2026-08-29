@@ -35,16 +35,24 @@ test("nav Start free opens the dialog, focuses the email input, and Escape close
   await expect(opener).toBeFocused();
 });
 
-test("all three pricing tier CTAs open the waitlist dialog", async ({ page }) => {
+test("pricing tier CTAs hand off to app signup carrying the plan", async ({
+  page,
+}) => {
+  // user-directed 2026-08-03: these used to open the waitlist dialog. They
+  // now link to the app's signup with the plan preselected -- NOT to a Stripe
+  // payment link, which would arrive with no workspace_id for the webhook to
+  // attribute (see src/lib/checkout.ts).
   await page.goto("/");
   const pricing = page.locator("section").filter({ hasText: "Priced like a tool, not a tax" });
 
-  for (const label of ["Choose Kinect", "Start free", "Choose Kinect Pro"]) {
-    await pricing.getByRole("button", { name: label, exact: true }).click();
-    const dialog = page.getByRole("dialog");
-    await expect(dialog).toBeVisible();
-    await page.keyboard.press("Escape");
-    await expect(dialog).not.toBeVisible();
+  for (const [label, planKey] of [
+    ["Choose Kinect", "starter"],
+    ["Start free", "growth"],
+    ["Choose Kinect Pro", "scale"],
+  ]) {
+    await expect(
+      pricing.getByRole("link", { name: label, exact: true }),
+    ).toHaveAttribute("href", `https://app.kinectnow.com/signup?plan=${planKey}`);
   }
 });
 
