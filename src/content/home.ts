@@ -14,7 +14,7 @@ export const home: HomeContent = {
     subhead:
       'One place where the work, the numbers, and the "so what" finally live together.',
     primaryCta: "Start free",
-    secondaryCta: "View demo",
+    secondaryCta: "Schedule Demo",
   },
 
   logoStrip: {

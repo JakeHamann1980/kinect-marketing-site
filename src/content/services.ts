@@ -37,7 +37,7 @@ export const services: PersonaPageContent = {
     subhead:
       "Every engagement, document and hour in one place your client can open, so the status email stops being your job.",
     primaryCta: "Start free",
-    secondaryCta: "Watch the 2-min tour",
+    secondaryCta: "Schedule Demo",
   },
   heroExtra: {
     eyebrow: "For law, accounting & advisory firms",

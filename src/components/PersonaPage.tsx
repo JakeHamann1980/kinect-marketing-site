@@ -5,7 +5,6 @@ import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
 import TrackedLink from "@/components/TrackedLink";
 import { signupUrl } from "@/lib/checkout";
-import WaitlistCta from "@/components/WaitlistCta";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import StepCards from "@/components/StepCards";
@@ -195,9 +194,14 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
                 waitlist (no tour video exists yet), same as home's View
                 demo. The closing "Not you? Pick another lane" below stays
                 real navigation back to the persona picker. */}
-            <WaitlistCta variant="ghost" size="lg" trackLocation="hero">
+            <TrackedLink
+              href={settings.demoUrl ?? "/"}
+              variant="ghost"
+              size="lg"
+              trackLocation="hero"
+            >
               {content.hero.secondaryCta}
-            </WaitlistCta>
+            </TrackedLink>
           </div>
 
           <div className="mt-[30px] flex flex-wrap items-center justify-center gap-[26px] text-[15px] text-on-dark-4">

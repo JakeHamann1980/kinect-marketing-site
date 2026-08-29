@@ -14,7 +14,7 @@ export const coach: PersonaPageContent = {
     subhead:
       "Programs, check-ins, form reviews, and progress in one place, so your clients see momentum between sessions, not just during them.",
     primaryCta: "Start free",
-    secondaryCta: "Watch the 2-min tour",
+    secondaryCta: "Schedule Demo",
   },
   heroExtra: {
     eyebrow: "For coaches & personal trainers",

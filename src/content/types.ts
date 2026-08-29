@@ -192,6 +192,19 @@ export interface SiteSettings {
    * for destinations that are built but not yet approved to ship.
    */
   navLinks: { label: string; href: string; draft?: boolean }[];
+  /**
+   * Where the "Schedule Demo" secondary CTAs point (user-directed
+   * 2026-08-03). Editable in the Studio precisely because it is expected to
+   * change -- it points at the marketing home page today and becomes a real
+   * scheduling link (Calendly or similar) later, without a deploy.
+   *
+   * Contrast with the tier plan keys, which are deliberately NOT in Sanity:
+   * those are Stripe metadata and a typo breaks billing silently. Getting
+   * this one wrong sends someone to the wrong page, which is visible and
+   * harmless. Optional, with a "/" fallback in the component, so an unset or
+   * hollowed-out field cannot render a dead button.
+   */
+  demoUrl?: string;
   solutions: { persona: Persona; name: string; description: string }[];
   /**
    * `note` is the home pricing section's trailing line ("Every plan

@@ -16,7 +16,7 @@ export const agency: PersonaPageContent = {
     subhead:
       'KINECT puts the portal, the campaign numbers, and the AI read-out in one place, so "is it working?" answers itself before the client asks.',
     primaryCta: "Start free",
-    secondaryCta: "Watch the 2-min tour",
+    secondaryCta: "Schedule Demo",
   },
   heroExtra: {
     // user-directed 2026-07-26: umbrella widened to studios and photographers.

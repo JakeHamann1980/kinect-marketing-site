@@ -14,7 +14,7 @@ export const consultant: PersonaPageContent = {
     subhead:
       "Engagements, deliverables, billable hours, and client KPI movement in one place, so renewal conversations start with evidence instead of rapport.",
     primaryCta: "Start free",
-    secondaryCta: "Watch the 2-min tour",
+    secondaryCta: "Schedule Demo",
   },
   heroExtra: {
     eyebrow: "For consultants, advisors & mentors",

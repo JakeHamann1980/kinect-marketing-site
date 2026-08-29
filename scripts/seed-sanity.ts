@@ -190,6 +190,7 @@ const settingsDoc = {
   _id: "siteSettings",
   _type: "siteSettings",
   navLinks: arr("navLink", settings.navLinks),
+  demoUrl: settings.demoUrl,
   solutions: arr("solutionsEntry", settings.solutions),
   pricing: {
     headline: settings.pricing.headline,

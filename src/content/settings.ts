@@ -44,6 +44,10 @@ export const settings: SiteSettings = {
     { label: "Docs", href: "/docs", draft: true },
   ],
 
+  // Points at the marketing home page until a real scheduling link exists.
+  // Change it in the Studio (Site Settings -> Demo URL), not here.
+  demoUrl: "https://kinectnow.com/",
+
   solutions: [
     {
       // user-directed 2026-07-26: agency lane renamed to the "Agencies &

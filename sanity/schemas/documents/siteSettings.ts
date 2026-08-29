@@ -32,6 +32,13 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "demoUrl",
+      title: "Demo URL",
+      type: "url",
+      description:
+        'Where the "Schedule Demo" buttons point (hero and closing, every lane). Set this to a real scheduling link when one exists; it points at the marketing home page until then.',
+    }),
+    defineField({
       name: "solutions",
       title: "Solutions Dropdown",
       type: "array",
