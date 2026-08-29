@@ -108,6 +108,6 @@ export const platformPage: PlatformPageContent = {
     headline: "See it with your own client.",
     gradientPhrase: "your own client.",
     subhead: "Free for 14 days. No card, no demo call, no onboarding fee.",
-    cta: "Join the waitlist",
+    cta: "Start free",
   },
 };

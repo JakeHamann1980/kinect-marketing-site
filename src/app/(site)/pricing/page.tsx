@@ -5,7 +5,8 @@ import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
 import PricingSection from "@/components/PricingSection";
 import ComparisonTable from "@/components/ComparisonTable";
-import WaitlistCta from "@/components/WaitlistCta";
+import TrackedLink from "@/components/TrackedLink";
+import { signupUrl } from "@/lib/checkout";
 import JsonLd from "@/components/JsonLd";
 import { Faq } from "@/components/Faq";
 import { fetchPricingPage, fetchSettings } from "@/lib/sanity";
@@ -176,13 +177,14 @@ export default async function PricingPage() {
               {page.closing.subhead}
             </p>
             <div className="mt-8">
-              <WaitlistCta
+              <TrackedLink
+                href={signupUrl()}
                 variant="primary"
                 size="lg"
                 trackLocation="pricing-page-closing"
               >
                 {page.closing.cta} <span aria-hidden="true">{"→"}</span>
-              </WaitlistCta>
+              </TrackedLink>
             </div>
           </div>
         </section>

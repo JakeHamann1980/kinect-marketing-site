@@ -2,6 +2,7 @@ import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
 import TrackedLink from "@/components/TrackedLink";
+import { signupUrl } from "@/lib/checkout";
 import WaitlistCta from "@/components/WaitlistCta";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
@@ -183,9 +184,12 @@ export default async function Home() {
                 waitlist dialog instead (WaitlistCta) -- see that
                 component's own doc comment; "View demo" is unaffected and
                 keeps navigating via TrackedLink. */}
-            <WaitlistCta variant="primary" size="lg" trackLocation="hero">
+            {/* user-directed 2026-08-03: the primary CTAs now hand off to the
+                app's signup (the waitlist is closed). Not a Stripe link --
+                see src/lib/checkout.ts. */}
+            <TrackedLink href={signupUrl()} variant="primary" size="lg" trackLocation="hero">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </WaitlistCta>
+            </TrackedLink>
             {/* user-directed 2026-07-25: "View demo" also opens the waitlist
                 (no demo asset exists yet; the dialog is the one conversion
                 path pre-launch). */}
@@ -371,9 +375,12 @@ export default async function Home() {
           <div className="kx-ctarow">
             {/* Task 16: same "Start free" -> WaitlistCta swap as the hero
                 pair above. */}
-            <WaitlistCta variant="primary" size="xl" trackLocation="closing">
+            {/* user-directed 2026-08-03: the primary CTAs now hand off to the
+                app's signup (the waitlist is closed). Not a Stripe link --
+                see src/lib/checkout.ts. */}
+            <TrackedLink href={signupUrl()} variant="primary" size="xl" trackLocation="closing">
               {home.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </WaitlistCta>
+            </TrackedLink>
             {/* user-directed 2026-07-25: "View demo" opens the waitlist too
                 (same rationale as the hero pair). */}
             <WaitlistCta variant="ghost" size="xl" trackLocation="closing">

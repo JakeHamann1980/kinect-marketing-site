@@ -15,6 +15,13 @@ interface TrackedLinkProps {
   /** An additional, more specific event fired on the same click (e.g. persona_card_clicked, pricing_tier_clicked). */
   event?: KxEvent;
   eventProps?: Record<string, unknown>;
+  /**
+   * Runs after the tracking call, for callers that need their own side
+   * effect on the same click -- the mobile nav sheet closing itself, for
+   * instance. Kept separate from `event` so tracking is never accidentally
+   * replaced by a caller's handler.
+   */
+  onClick?: () => void;
 }
 
 /**
@@ -48,13 +55,17 @@ export default function TrackedLink({
   trackLocation,
   event,
   eventProps,
+  onClick,
   ...buttonProps
 }: TrackedLinkProps) {
+  const handleClick =
+    event || onClick
+      ? () => {
+          if (event) track(event, eventProps);
+          onClick?.();
+        }
+      : undefined;
   return (
-    <Button
-      {...buttonProps}
-      trackLocation={trackLocation}
-      onClick={event ? () => track(event, eventProps) : undefined}
-    />
+    <Button {...buttonProps} trackLocation={trackLocation} onClick={handleClick} />
   );
 }

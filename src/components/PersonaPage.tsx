@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import AsteriskMark from "@/components/AsteriskMark";
 import TrackedLink from "@/components/TrackedLink";
+import { signupUrl } from "@/lib/checkout";
 import WaitlistCta from "@/components/WaitlistCta";
 import Eyebrow from "@/components/Eyebrow";
 import SectionHead from "@/components/SectionHead";
@@ -187,9 +188,9 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
                 Task 16: the primary "Start free" CTA now opens the
                 waitlist dialog instead (WaitlistCta) -- see
                 WaitlistCta.tsx's own doc comment. */}
-            <WaitlistCta variant="primary" size="lg" trackLocation="hero">
+            <TrackedLink href={signupUrl()} variant="primary" size="lg" trackLocation="hero">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </WaitlistCta>
+            </TrackedLink>
             {/* user-directed 2026-07-25: "Watch the 2-min tour" opens the
                 waitlist (no tour video exists yet), same as home's View
                 demo. The closing "Not you? Pick another lane" below stays
@@ -378,9 +379,9 @@ export default async function PersonaPage({ content }: PersonaPageProps) {
             {/* Task 16: same "Start free" -> WaitlistCta swap as the hero
                 pair above. "Not you? Pick another lane" is not "Start
                 free"-labeled and keeps navigating. */}
-            <WaitlistCta variant="primary" size="xl" trackLocation="closing">
+            <TrackedLink href={signupUrl()} variant="primary" size="xl" trackLocation="closing">
               {content.hero.primaryCta} <span aria-hidden="true">{"→"}</span>
-            </WaitlistCta>
+            </TrackedLink>
             <TrackedLink variant="ghost" size="xl" href="/" trackLocation="closing">
               {content.closing.secondaryCta}
             </TrackedLink>

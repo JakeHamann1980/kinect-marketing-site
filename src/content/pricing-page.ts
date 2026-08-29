@@ -181,6 +181,6 @@ export const pricingPage: PricingPageContent = {
     headline: "Start free for 14 days.",
     gradientPhrase: "for 14 days.",
     subhead: "No card, no demo call, no onboarding fee. You are on Kinect Plus the whole time.",
-    cta: "Join the waitlist",
+    cta: "Start free",
   },
 };

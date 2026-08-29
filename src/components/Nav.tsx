@@ -3,10 +3,12 @@
 import { useRef, useState, type FocusEvent, type KeyboardEvent } from "react";
 import Link from "next/link";
 import Lockup from "@/components/Lockup";
+import TrackedLink from "@/components/TrackedLink";
 import WaitlistCta from "@/components/WaitlistCta";
 import { useStuck } from "@/hooks/useStuck";
 import { settings } from "@/content/settings";
 import { visibleLinks } from "@/lib/draft-pages";
+import { signupUrl } from "@/lib/checkout";
 import { home } from "@/content/home";
 import { PERSONAS, personaHref, type Persona } from "@/lib/personas";
 import { track } from "@/lib/analytics";
@@ -249,9 +251,11 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
 
             {/* Task 16: "Start free" -- see WaitlistCta.tsx's own doc
                 comment. Replaces the prior placeholder `href="/"` Button. */}
-            <WaitlistCta variant="primary" trackLocation="nav">
+            {/* user-directed 2026-08-03: primary CTAs hand off to app signup
+                (the waitlist is closed). See src/lib/checkout.ts. */}
+            <TrackedLink href={signupUrl()} variant="primary" trackLocation="nav">
               {ctaLabel}
-            </WaitlistCta>
+            </TrackedLink>
           </div>
 
           <button
@@ -301,14 +305,14 @@ export default function Nav({ badge, forceSolid = false }: NavProps) {
               </Link>
             ))}
 
-            <WaitlistCta
+            <TrackedLink href={signupUrl()}
               variant="primary"
               className="mt-4 w-full"
               trackLocation="mobile-sheet"
               onClick={closeMobile}
             >
               {ctaLabel}
-            </WaitlistCta>
+            </TrackedLink>
           </div>
         )}
       </div>

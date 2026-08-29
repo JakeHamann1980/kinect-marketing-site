@@ -52,6 +52,11 @@ export function signupUrlForTier(tierName: string): string {
   return key ? `${APP_URL}/signup?plan=${key}` : `${APP_URL}/signup`;
 }
 
+/** Signup with no plan preselected, for the generic "Start free" CTAs. */
+export function signupUrl(): string {
+  return `${APP_URL}/signup`;
+}
+
 /** Every tier name the site currently ships, for the completeness test. */
 export function shippedTierNames(): string[] {
   return settings.pricing.tiers.map((t) => t.name);

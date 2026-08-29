@@ -12,17 +12,23 @@ import { test, expect, type Page } from "@playwright/test";
  * simulation of it.
  */
 
-async function openDialogFromNav(page: Page) {
+/**
+ * Opens the dialog from the hero's SECONDARY CTA. It used to open from the
+ * nav's "Start free", but as of 2026-08-03 every primary CTA hands off to
+ * app signup instead (the waitlist is closed). "View demo" is one of the
+ * remaining openers, because no demo asset exists for it to link to yet.
+ */
+async function openDialog(page: Page) {
   await page.goto("/");
-  await page.locator("#kx-nav").getByRole("button", { name: "Start free" }).click();
+  await page.getByRole("button", { name: "View demo" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
 }
 
-test("nav Start free opens the dialog, focuses the email input, and Escape closes it and restores focus", async ({
+test("a waitlist opener focuses the email input, and Escape closes it and restores focus", async ({
   page,
 }) => {
   await page.goto("/");
-  const opener = page.locator("#kx-nav").getByRole("button", { name: "Start free" });
+  const opener = page.getByRole("button", { name: "View demo" }).first();
   await opener.click();
 
   const dialog = page.getByRole("dialog");
@@ -59,7 +65,7 @@ test("pricing tier CTAs hand off to app signup carrying the plan", async ({
 test("an invalid-but-HTML5-valid email is rejected instantly, client-side, with no network request", async ({
   page,
 }) => {
-  await openDialogFromNav(page);
+  await openDialog(page);
 
   const posted: string[] = [];
   page.on("request", (req) => {
@@ -80,7 +86,7 @@ test("an invalid-but-HTML5-valid email is rejected instantly, client-side, with 
 test("a valid email submitted after the human-delay window hits the real server action (no creds -> warming-up error)", async ({
   page,
 }) => {
-  await openDialogFromNav(page);
+  await openDialog(page);
 
   await page.getByLabel("Email").fill("jake@example.com");
   // MIN_HUMAN_DELAY_MS is 2000ms, measured from the moment the dialog opened.
@@ -94,7 +100,7 @@ test("a valid email submitted after the human-delay window hits the real server 
 });
 
 test("honeypot: a filled hidden company field still shows a fake success", async ({ page }) => {
-  await openDialogFromNav(page);
+  await openDialog(page);
 
   await page.getByLabel("Email").fill("jake+honeypot@example.com");
   // Real visitors never see or focus this field; a bot filling every input
@@ -110,4 +116,15 @@ test("honeypot: a filled hidden company field still shows a fake success", async
   await expect(page.getByText("You are on the list.", { exact: true })).toBeVisible({
     timeout: 10_000,
   });
+});
+
+test("nav Start free links to app signup, not the waitlist", async ({ page }) => {
+  // The waitlist closed 2026-08-03; every primary CTA hands off to the app.
+  await page.goto("/");
+  await expect(
+    page.locator("#kx-nav").getByRole("link", { name: "Start free" }),
+  ).toHaveAttribute("href", "https://app.kinectnow.com/signup");
+  await expect(
+    page.locator("#kx-nav").getByRole("button", { name: "Start free" }),
+  ).toHaveCount(0);
 });

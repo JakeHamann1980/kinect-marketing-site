@@ -4,7 +4,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import SectionHead from "@/components/SectionHead";
-import WaitlistCta from "@/components/WaitlistCta";
+import TrackedLink from "@/components/TrackedLink";
+import { signupUrl } from "@/lib/checkout";
 import DraftNotice from "@/components/DraftNotice";
 import { platformPage as page } from "@/content/draft/platform-page";
 import { DRAFT_PAGES_ENABLED } from "@/lib/draft-pages";
@@ -133,9 +134,9 @@ export default function PlatformPage() {
               {page.closing.subhead}
             </p>
             <div className="mt-8">
-              <WaitlistCta variant="primary" size="lg" trackLocation="platform-closing">
+              <TrackedLink href={signupUrl()} variant="primary" size="lg" trackLocation="platform-closing">
                 {page.closing.cta} <span aria-hidden="true">{"→"}</span>
-              </WaitlistCta>
+              </TrackedLink>
             </div>
           </div>
         </section>
