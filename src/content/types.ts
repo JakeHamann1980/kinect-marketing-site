@@ -185,6 +185,36 @@ export interface PricingPageContent {
   closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 
+/**
+ * One capability section on the /platform overview (promoted out of
+ * src/content/draft/ when the page shipped). `id` is the section's anchor;
+ * the footer's Platform column links straight to these, so changing an id
+ * means changing src/content/settings.ts's footer links in the same commit.
+ *
+ * `screenshot` is optional: only the sections with a real capture of that
+ * capability carry one (the captures come from the platform repo's
+ * e2e/marketing-screenshots.spec.ts pipeline, same as the persona pages').
+ * `aspect` is the image's intrinsic width/height ratio, used to reserve
+ * layout space before the image loads; the Sanity projection derives it
+ * from the uploaded asset's own metadata, so a replaced image keeps its
+ * true proportions.
+ */
+export interface PlatformSection {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  points: string[];
+  screenshot?: { src: string; alt: string; caption: string; aspect?: number };
+}
+
+export interface PlatformPageContent {
+  seo: Seo;
+  hero: { eyebrow: string; title: string; gradientPhrase: string; intro: string };
+  sections: PlatformSection[];
+  closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
+}
+
 export interface SiteSettings {
   /**
    * `draft` (user-directed 2026-08-03) hides an entry from the live site

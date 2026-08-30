@@ -11,9 +11,11 @@ import { terms } from "@/content/legal/terms";
 import { security } from "@/content/legal/security";
 import { cookies } from "@/content/legal/cookies";
 import { pricingPage } from "@/content/pricing-page";
+import { platformPage } from "@/content/platform-page";
 import type {
   HomeContent,
   PersonaPageContent,
+  PlatformPageContent,
   PricingPageContent,
   SiteSettings,
 } from "@/content/types";
@@ -184,6 +186,28 @@ export function assertPricingPageShape(doc: PricingPageContent): void {
   required(doc.faqTitle, "faqTitle");
   required(doc.faq, "faq");
   required(doc.stat, "stat");
+  required(doc.closing, "closing");
+  required(doc.closing?.gradientPhrase, "closing.gradientPhrase");
+}
+
+export function assertPlatformPageShape(doc: PlatformPageContent): void {
+  required(doc.seo, "seo");
+  required(doc.hero, "hero");
+  required(doc.hero?.title, "hero.title");
+  // Load-bearing for renderWithGradient, same as the pricing page's.
+  required(doc.hero?.gradientPhrase, "hero.gradientPhrase");
+  required(doc.sections, "sections");
+  for (const [i, section] of (doc.sections ?? []).entries()) {
+    required(section?.id, `sections[${i}].id`);
+    required(section?.points, `sections[${i}].points`);
+    // `screenshot` itself is optional (only some sections carry one), but a
+    // present-yet-hollow one (editor unset the image, or the asset `->`
+    // dereference died) would reach an unguarded <Image src> -- the exact
+    // crash class assertPersonaShape already guards against.
+    if (section?.screenshot) {
+      required(section.screenshot.src, `sections[${i}].screenshot.src`);
+    }
+  }
   required(doc.closing, "closing");
   required(doc.closing?.gradientPhrase, "closing.gradientPhrase");
 }
@@ -376,6 +400,46 @@ export async function fetchPricingPage(): Promise<PricingPageContent> {
   } catch (err) {
     warnFallback(err);
     return pricingPage;
+  }
+}
+
+/**
+ * Reshapes the `platformPage` document back into `PlatformPageContent`.
+ * `aspect` is derived from the uploaded asset's own metadata (Sanity stamps
+ * `metadata.dimensions.aspectRatio` on every image asset at upload time),
+ * so an editor replacing a capture from the Studio keeps the page's
+ * reserved layout box in that image's true proportions with no manual
+ * field to forget.
+ */
+const PLATFORM_PAGE_PROJECTION = `{
+  seo, hero,
+  "sections": sections[]{
+    id, eyebrow, title, body, points,
+    screenshot{
+      "src": ${SCREENSHOT_SRC}, alt, caption,
+      "aspect": image.asset->metadata.dimensions.aspectRatio
+    }
+  },
+  closing
+}`;
+
+export async function fetchPlatformPage(): Promise<PlatformPageContent> {
+  if (!client) {
+    warnFallback("no Sanity client configured (missing NEXT_PUBLIC_SANITY_PROJECT_ID/_DATASET)");
+    return platformPage;
+  }
+  try {
+    const doc = await client.fetch<PlatformPageContent | null>(
+      `*[_id == "platformPage"][0]${PLATFORM_PAGE_PROJECTION}`,
+      {},
+      FETCH_OPTIONS,
+    );
+    if (!doc) throw new Error('"platformPage" document not found in dataset');
+    assertPlatformPageShape(doc);
+    return doc;
+  } catch (err) {
+    warnFallback(err);
+    return platformPage;
   }
 }
 

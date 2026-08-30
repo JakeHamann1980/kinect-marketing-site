@@ -2,7 +2,8 @@ import type { StructureResolver } from "sanity/structure";
 
 /**
  * Task 17 (Sanity Schemas + Studio). Pins the singletons (`homePage`,
- * `siteSettings`, and since 2026-08-03 `pricingPage`) as single non-list
+ * `siteSettings`, since 2026-08-03 `pricingPage`, and since 2026-08-30
+ * `platformPage`) as single non-list
  * entries, and lists `personaPage` (one document per persona) and
  * `legalPage` (one document per slug) as regular document lists. Any other
  * document type would fall through to Studio's default list via
@@ -20,6 +21,10 @@ export const structure: StructureResolver = (S) =>
         .title("Pricing Page")
         .id("pricingPage")
         .child(S.document().schemaType("pricingPage").documentId("pricingPage")),
+      S.listItem()
+        .title("Platform Page")
+        .id("platformPage")
+        .child(S.document().schemaType("platformPage").documentId("platformPage")),
       S.listItem()
         .title("Site Settings")
         .id("siteSettings")
