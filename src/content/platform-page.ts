@@ -43,7 +43,18 @@ export const platformPage: PlatformPageContent = {
     gradientPhrase: "one login.",
     intro:
       "The portal your clients open, the work behind it, the messages around it, the numbers that prove it and the documents that get you paid. No tab-hopping, no exports, no \"let me pull that for you.\"",
+    primaryCta: "Start free",
+    secondaryCta: "Compare plans",
   },
+
+  // Every chip is copy already shipped on /pricing (trustLine and the tier
+  // cards), not a new claim.
+  trustChips: [
+    "Free for 14 days",
+    "No card, no demo call, no onboarding fee",
+    "Unlimited clients on every plan",
+    "Cancel anytime",
+  ],
 
   sections: [
     {
@@ -198,6 +209,26 @@ export const platformPage: PlatformPageContent = {
       ],
     },
   ],
+
+  // Each of the six is a shipped surface documented in the sections above:
+  // the portal, work management, Team Chat, scheduling links, forms, and
+  // invoicing with reminders.
+  stat: {
+    title: "What one login replaces",
+    value: "Six tools",
+    caption:
+      "The client portal, the project tracker, the team chat, the booking link, the form builder and the invoice chaser. One subscription, one place your client already knows.",
+  },
+
+  // Illustrative Kai answer, built strictly from what Kai's real tools
+  // return (overdue items, stale clients, drafted updates). The client name
+  // is invented for the mock, same as home's aiInsight quote invents a
+  // campaign.
+  aiQuote: {
+    eyebrow: "Ask Kai",
+    quote:
+      "Four items are overdue across two clients, and Meridian Consulting has gone quiet for 15 days. I drafted a check-in you can edit before it goes out.",
+  },
 
   closing: {
     headline: "See it with your own client.",

@@ -210,8 +210,28 @@ export interface PlatformSection {
 
 export interface PlatformPageContent {
   seo: Seo;
-  hero: { eyebrow: string; title: string; gradientPhrase: string; intro: string };
+  hero: {
+    eyebrow: string;
+    title: string;
+    gradientPhrase: string;
+    intro: string;
+    /** Hero CTA pair: primary hands off to app signup (signupUrl()),
+     * secondary routes to /pricing. */
+    primaryCta: string;
+    secondaryCta: string;
+  };
+  /** Mono reassurance chips under the hero CTAs, same language as the
+   * pricing page's trustLine. Claims must already be shipped elsewhere on
+   * the site (pricing cards / trust chips), not new promises. */
+  trustChips: string[];
   sections: PlatformSection[];
+  /** The mid-page consolidation band ("Six tools" / what one login
+   * replaces), rendered in the pricing page's stat-band structure with the
+   * bento stat card's gradient value treatment. */
+  stat: { title: string; value: string; caption: string };
+  /** The illustrative Kai answer rendered as the gradient quote card
+   * (PillarCards' aiInsight idiom) beside the AI section's checklist. */
+  aiQuote: { eyebrow: string; quote: string };
   closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 

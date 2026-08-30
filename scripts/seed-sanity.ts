@@ -258,6 +258,9 @@ function platformPageDoc(assetIdByFilename: Record<string, string>) {
     _id: "platformPage",
     _type: "platformPage",
     hero: platformPage.hero,
+    trustChips: platformPage.trustChips,
+    stat: platformPage.stat,
+    aiQuote: platformPage.aiQuote,
     sections: arr(
       "platformSection",
       platformPage.sections.map((section: PlatformSection) => {

@@ -47,11 +47,22 @@ test("/platform renders the hero and every anchored capability section", async (
   const shots = page.locator("main img[alt^='KINECT']");
   await expect(shots).toHaveCount(4);
 
-  // Closing CTA hands off to signup like every other closing section.
-  // Scoped to main: the nav carries its own "Start free" CTA.
-  const cta = page.locator("main").getByRole("link", { name: /Start free/ });
-  await expect(cta).toBeVisible();
-  await expect(cta).toHaveAttribute("href", /app\.kinectnow\.com/);
+  // Layout rework (2026-08-30 second pass): the hero jump nav links every
+  // section anchor, the trust chips render under the CTAs, and the
+  // consolidation band carries the gradient figure.
+  await expect(
+    page.getByRole("navigation", { name: "Platform capabilities" }).getByRole("link"),
+  ).toHaveCount(9);
+  await expect(page.getByText("Unlimited clients on every plan")).toBeVisible();
+  await expect(page.getByText("Six tools")).toBeVisible();
+
+  // Hero and closing each carry the signup CTA (scoped to main: the nav has
+  // its own "Start free"), both handing off to app signup.
+  const ctas = page.locator("main").getByRole("link", { name: /Start free/ });
+  await expect(ctas).toHaveCount(2);
+  for (const cta of await ctas.all()) {
+    await expect(cta).toHaveAttribute("href", /app\.kinectnow\.com/);
+  }
 });
 
 test("nav Product routes to /platform from the home page", async ({ page }) => {

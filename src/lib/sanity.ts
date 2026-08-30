@@ -196,6 +196,13 @@ export function assertPlatformPageShape(doc: PlatformPageContent): void {
   required(doc.hero?.title, "hero.title");
   // Load-bearing for renderWithGradient, same as the pricing page's.
   required(doc.hero?.gradientPhrase, "hero.gradientPhrase");
+  // The layout rework (2026-08-30 second pass) renders these directly:
+  // CTAs in the hero, the trust-chip row, the consolidation band and the
+  // Kai quote card. A pre-rework Sanity doc lacking them must fall back.
+  required(doc.hero?.primaryCta, "hero.primaryCta");
+  required(doc.trustChips, "trustChips");
+  required(doc.stat, "stat");
+  required(doc.aiQuote, "aiQuote");
   required(doc.sections, "sections");
   for (const [i, section] of (doc.sections ?? []).entries()) {
     required(section?.id, `sections[${i}].id`);
@@ -412,7 +419,7 @@ export async function fetchPricingPage(): Promise<PricingPageContent> {
  * field to forget.
  */
 const PLATFORM_PAGE_PROJECTION = `{
-  seo, hero,
+  seo, hero, trustChips, stat, aiQuote,
   "sections": sections[]{
     id, eyebrow, title, body, points,
     screenshot{

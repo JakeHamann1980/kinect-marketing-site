@@ -33,8 +33,29 @@ export default defineType({
           validation: (r) => r.required(),
         }),
         defineField({ name: "intro", type: "text", rows: 3, validation: (r) => r.required() }),
+        defineField({
+          name: "primaryCta",
+          description: "Hands off to app signup.",
+          type: "string",
+          validation: (r) => r.required(),
+        }),
+        defineField({
+          name: "secondaryCta",
+          description: "Routes to /pricing.",
+          type: "string",
+          validation: (r) => r.required(),
+        }),
       ],
       validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "trustChips",
+      title: "Trust Chips",
+      description:
+        "Mono reassurance chips under the hero CTAs. Only claims already shipped on /pricing.",
+      type: "array",
+      of: [{ type: "string" }],
+      validation: (r) => r.required().min(1),
     }),
     defineField({
       name: "sections",
@@ -74,6 +95,30 @@ export default defineType({
         },
       ],
       validation: (r) => r.required().min(1),
+    }),
+    defineField({
+      name: "stat",
+      description:
+        'The mid-page consolidation band ("Six tools"). title is the mono eyebrow, value the gradient figure.',
+      type: "object",
+      fields: [
+        defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+        defineField({ name: "value", type: "string", validation: (r) => r.required() }),
+        defineField({ name: "caption", type: "text", rows: 2, validation: (r) => r.required() }),
+      ],
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "aiQuote",
+      title: "AI Quote",
+      description:
+        "The illustrative Kai answer rendered as the gradient quote card beside the AI section.",
+      type: "object",
+      fields: [
+        defineField({ name: "eyebrow", type: "string", validation: (r) => r.required() }),
+        defineField({ name: "quote", type: "text", rows: 3, validation: (r) => r.required() }),
+      ],
+      validation: (r) => r.required(),
     }),
     defineField({
       name: "closing",
