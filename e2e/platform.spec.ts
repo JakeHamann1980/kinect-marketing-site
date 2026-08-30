@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * The /platform product overview (shipped 2026-08-30, promoted out of the
  * draft gate). Covers the page itself plus the two link surfaces that route
- * to it: the nav's "Product" item and the footer's "Platform" column, whose
+ * to it: the nav's "Platform" item and the footer's "Platform" column, whose
  * links target this page's section anchors.
  *
  * Like e2e/pricing.spec.ts, this runs against the production build with
@@ -65,9 +65,10 @@ test("/platform renders the hero and every anchored capability section", async (
   }
 });
 
-test("nav Product routes to /platform from the home page", async ({ page }) => {
+test("nav Platform routes to /platform from the home page", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("navigation").getByRole("link", { name: "Product" }).click();
+  // Scoped to the nav: the footer column heading also says "Platform".
+  await page.getByRole("navigation").getByRole("link", { name: "Platform" }).click();
   await expect(page).toHaveURL("http://localhost:3200/platform");
 });
 

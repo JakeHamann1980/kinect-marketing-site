@@ -3,10 +3,10 @@ import { test, expect } from "@playwright/test";
 /**
  * Draft pages gate (user-directed 2026-08-03): destinations that are built
  * but not approved are hidden on the live site. As of 2026-08-30 that is
- * just "Docs" -- /platform shipped (with the nav "Product" link and the
- * footer "Platform" column), so this suite now asserts it RENDERS while
- * /docs still 404s. The /platform page's own coverage lives in
- * e2e/platform.spec.ts.
+ * just "Docs" -- /platform shipped (with the nav "Platform" link, labeled
+ * "Product" until 2026-08-31, and the footer "Platform" column), so this
+ * suite now asserts it RENDERS while /docs still 404s. The /platform
+ * page's own coverage lives in e2e/platform.spec.ts.
  *
  * This suite runs with `NEXT_PUBLIC_ENABLE_DRAFT_PAGES` blanked (see
  * playwright.config.ts) so it asserts the PRODUCTION state -- the one that
@@ -20,8 +20,9 @@ test("draft nav items are absent, and no shipped nav link points at '#'", async 
   await page.goto("/");
   const nav = page.getByRole("navigation");
   await expect(nav.getByRole("link", { name: "Docs" })).toHaveCount(0);
-  // "Product" left the gate when /platform shipped (2026-08-30).
-  await expect(nav.getByRole("link", { name: "Product" })).toHaveAttribute(
+  // "Platform" (labeled "Product" until 2026-08-31) left the gate when
+  // /platform shipped (2026-08-30).
+  await expect(nav.getByRole("link", { name: "Platform" })).toHaveAttribute(
     "href",
     "/platform",
   );

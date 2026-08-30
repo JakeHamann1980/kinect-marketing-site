@@ -106,11 +106,14 @@ export const platformPage: PlatformPageContent = {
       eyebrow: "Messages & files",
       title: "The conversation, next to the work",
       body: "A message channel per client, your internal Team Chat one click away, and a hard wall between the two.",
+      // Card copy kept to one visual line-length family (user-directed
+      // 2026-08-31): these four render as a 2x2 card grid, so uneven
+      // lengths read as ragged tiles.
       points: [
-        "Mention teammates and client contacts, with notifications that follow",
+        "Mention teammates or client contacts and they get notified",
         "Replies, reactions and edits, so threads read like threads",
-        "Attachments land in the client's file library, however they arrived",
-        "Team Chat stays internal, enforced in the database rather than hidden in the menu",
+        "Attachments land in the client's file library automatically",
+        "Team Chat stays internal, enforced at the database level",
       ],
     },
     {

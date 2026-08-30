@@ -33,13 +33,15 @@ export const settings: SiteSettings = {
     // NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1 (see src/lib/draft-pages.ts). Its
     // purpose is still an open question -- there is no shipped product to
     // document while the site is a pre-launch waitlist.
-    // "Product" points at the /platform overview. It carried the same
-    // `draft` gate as Docs from 2026-08-03 (hidden on live until the page
-    // was approved); Jake asked for the page on 2026-08-30, so the content
-    // was rebuilt against the platform repo's real feature set and the gate
-    // came off. Remember: the Footer reads this file's Sanity copy, so this
-    // change needs a reseed (npm run seed:sanity) to reach production.
-    { label: "Product", href: "/platform" },
+    // Points at the /platform overview. It carried the same `draft` gate
+    // as Docs from 2026-08-03 (hidden on live until the page was approved);
+    // Jake asked for the page on 2026-08-30, so the content was rebuilt
+    // against the platform repo's real feature set and the gate came off.
+    // Relabeled "Product" -> "Platform" (user-directed 2026-08-31) to match
+    // the page and the footer column. Remember: the Footer reads this
+    // file's Sanity copy, so this change needs a reseed (npm run
+    // seed:sanity) to reach production.
+    { label: "Platform", href: "/platform" },
     { label: "Pricing", href: "/pricing" },
     { label: "Docs", href: "/docs", draft: true },
   ],

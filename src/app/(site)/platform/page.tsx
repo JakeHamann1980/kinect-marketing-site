@@ -49,12 +49,20 @@ export async function generateMetadata() {
   return pageMetadata({ seo: page.seo, canonicalUrl: `${SITE_URL}/platform` });
 }
 
-function CheckIcon({ dark, className }: { dark: boolean; className?: string }) {
+function CheckIcon({
+  dark,
+  size = 18,
+  className,
+}: {
+  dark: boolean;
+  size?: number;
+  className?: string;
+}) {
   return (
     <svg
       viewBox="0 0 16 16"
-      width={16}
-      height={16}
+      width={size}
+      height={size}
       aria-hidden="true"
       className={cn("flex-none", className)}
       style={{ color: dark ? "var(--accent)" : "var(--accent-light)" }}
@@ -68,6 +76,26 @@ function CheckIcon({ dark, className }: { dark: boolean; className?: string }) {
         strokeLinejoin="round"
       />
     </svg>
+  );
+}
+
+/** The feature cards' icon: the check on a tinted rounded badge, so it
+ * reads as an icon rather than a stray list glyph. --accent-tint is the
+ * token globals.css defines for exactly this tinted-chip treatment; on
+ * dark bands the equivalent tint of the bright accent is hardcoded the
+ * same way the dark bands' cyan washes already are (rgba(53,214,232,...)
+ * in pricing/persona sections). */
+function CheckBadge({ dark }: { dark: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="mb-4 inline-flex h-[38px] w-[38px] items-center justify-center rounded-[11px]"
+      style={{
+        background: dark ? "rgba(53,214,232,.12)" : "var(--accent-tint)",
+      }}
+    >
+      <CheckIcon dark={dark} size={20} />
+    </span>
   );
 }
 
@@ -255,7 +283,7 @@ export default async function PlatformPage() {
                         >
                           {section.points.map((point) => (
                             <li key={point} className="flex gap-3">
-                              <CheckIcon dark={dark} className="mt-[5px]" />
+                              <CheckIcon dark={dark} className="mt-[4px]" />
                               <span>{point}</span>
                             </li>
                           ))}
@@ -315,7 +343,7 @@ export default async function PlatformPage() {
                                 : "border border-border bg-surface shadow-[0_1px_3px_rgba(12,18,32,.05)]",
                             )}
                           >
-                            <CheckIcon dark={dark} className="mb-[14px]" />
+                            <CheckBadge dark={dark} />
                             <p
                               className={cn(
                                 "text-[16px] leading-[1.55] text-pretty",
