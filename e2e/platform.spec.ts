@@ -48,7 +48,8 @@ test("/platform renders the hero and every anchored capability section", async (
   await expect(shots).toHaveCount(4);
 
   // Closing CTA hands off to signup like every other closing section.
-  const cta = page.getByRole("link", { name: /Start free/ });
+  // Scoped to main: the nav carries its own "Start free" CTA.
+  const cta = page.locator("main").getByRole("link", { name: /Start free/ });
   await expect(cta).toBeVisible();
   await expect(cta).toHaveAttribute("href", /app\.kinectnow\.com/);
 });
