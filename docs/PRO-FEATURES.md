@@ -1,5 +1,35 @@
 # Kinect Pro: what the page sells vs what exists
 
+> **STATUS 2026-08-30 — three of the four items below SHIPPED.** The platform
+> session built plan capability gating (`20260907100000`), the workspace-wide
+> two-factor requirement (`20260907110000`) and client-facing custom domains
+> (`20260907120000`). Each was verified in the platform repo before the
+> marketing copy changed. What this document says about them below is the
+> SCOPING that preceded the build; read it as history, not as current state.
+>
+> Current state:
+> - **Plan gating: built.** `plans.branding_enabled` / `custom_domain_enabled`,
+>   with `app.workspace_branding_enabled()` enforced in three places — a set
+>   trigger on `workspaces`, the logo storage policy, and `public_document()`,
+>   which nulls the branding columns on read. Branding is now genuinely
+>   Pro-only; it was ungated on every plan until this landed.
+> - **Workspace-wide 2FA requirement: built, and deliberately NOT plan-gated**
+>   (Jake's call). Per-user 2FA was already free on every tier, so gating the
+>   admin toggle would have sold against a $149 customer's security posture.
+>   It is therefore not a Pro differentiator, and `/pricing` carries it as a
+>   yes/yes/yes row rather than a Pro-only one.
+> - **Custom domain: built, CLIENT-FACING ONLY** — the cheap cut recommended
+>   in §2 below. The public `/d/<token>` document surface resolves at the
+>   workspace's own hostname; operators still sign in at app.kinectnow.com.
+>   Marketing copy must keep saying so: never "white-label portal", never
+>   anything implying custom-domain login.
+> - **SSO and multi-workspace billing: still not built**, still `soon` on
+>   `/pricing`, still waiting on a named customer who has asked.
+>
+> Related fix, same day: `src/content/home.ts` claimed SSO twice as a shipped
+> capability (a security pillar and the "Is my client data secure?" FAQ).
+> Both replaced with two-factor, which is real.
+
 Scoped 2026-08-03, against the platform repo at commit `12266e5`. Written
 because `scale` now has a live Stripe price (`price_1U8uW6…`), so the three
 Pro-exclusive rows on /pricing are things a customer can pay $799/month for

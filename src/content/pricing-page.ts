@@ -108,21 +108,39 @@ export const pricingPage: PricingPageContent = {
         heading: "Security & Support",
         rows: [
           { label: "Encryption in transit and at rest", values: ["yes", "yes", "yes"] },
-          // Rewritten 2026-08-03 (see docs/PRO-FEATURES.md). These rows
-          // previously asserted a flat "yes" for Pro on three features, two of
-          // which were only half built and one not at all. Each is now split
-          // into the part that SHIPS and the part that is coming, using the
-          // "soon" sentinel so the table says so in words instead of a
-          // checkmark. Nothing left the page.
+          // Updated 2026-08-30 after the platform shipped plan capability
+          // gating (migration 20260907100000), the workspace-wide two-factor
+          // requirement (20260907110000) and client-facing custom domains
+          // (20260907120000). Each was verified in the platform repo before
+          // this table changed -- see docs/PRO-FEATURES.md for the scoping
+          // that preceded the build.
           //
-          // Two-factor is yes/yes/yes because it genuinely works on every
-          // plan -- it is not plan-gated in the platform, and marking it "no"
-          // for Kinect and Plus would claim a restriction that does not exist.
-          // Pro's differentiator is the workspace-wide REQUIREMENT below.
-          { label: "Two-factor authentication", values: ["yes", "yes", "yes"] },
+          // Two-factor collapsed from two rows into one. It used to be a
+          // yes/yes/yes capability row plus a no/no/soon row for the
+          // workspace-wide requirement; now that the requirement ships on
+          // EVERY plan (deliberately ungated -- per-user 2FA was already free
+          // everywhere, so selling the admin toggle against a $149 customer's
+          // security posture was not something we wanted to do), the second
+          // row would have been a third consecutive line reading yes/yes/yes
+          // and differentiating nothing.
+          //
+          // Branding is finally TRUE as written. It shipped ungated on
+          // 2026-08-28 and this row claimed Pro-exclusivity the platform did
+          // not enforce, so every Kinect and Plus customer could set a logo.
+          // It is now gated at the database in three places (the set trigger,
+          // the logo storage policy, and public_document, which nulls the
+          // columns on read so a value set before the gate never renders).
+          { label: "Two-factor authentication, optionally required workspace-wide", values: ["yes", "yes", "yes"] },
           { label: "Your own logo and color on client documents", values: ["no", "no", "yes"] },
-          { label: "Custom domain", values: ["no", "no", "soon"] },
-          { label: "Workspace-wide two-factor requirement", values: ["no", "no", "soon"] },
+          // CLIENT-FACING ONLY, and the label has to keep saying so. The
+          // domain serves the public /d/<token> document surface -- the
+          // proposals and invoices a workspace sends resolve at its own
+          // hostname with automatic TLS. Operators still sign in at
+          // app.kinectnow.com; multi-domain operator login was deliberately
+          // cut as the expensive version. Do not shorten this to "Custom
+          // domain", and never write "white-label portal": both imply a
+          // login surface that does not exist.
+          { label: "Your own domain on client document links", values: ["no", "no", "yes"] },
           { label: "SSO", values: ["no", "no", "soon"] },
           { label: "Multiple workspaces under one bill", values: ["no", "no", "soon"] },
           { label: "Priority support", values: ["no", "no", "yes"] },
@@ -166,7 +184,7 @@ export const pricingPage: PricingPageContent = {
     {
       question: "Do all plans include the portal?",
       answer:
-        "Yes. The branded portal, unlimited clients, task boards, files and invoicing are on every tier. Kinect Plus adds your clients' ad accounts, their profitability, and the AI layer that explains both. Kinect Pro puts your own name and domain on the portal.",
+        "Yes. The branded portal, unlimited clients, task boards, files and invoicing are on every tier. Kinect Plus adds your clients' ad accounts, their profitability, and the AI layer that explains both. Kinect Pro puts your own logo, color and domain on the documents your clients receive.",
     },
   ],
 

@@ -178,15 +178,33 @@ export const settings: SiteSettings = {
         // `features` (the compact list on the home/persona teasers) sold "Your
         // own domain" and "SSO" with no caveat at all, which was worse than
         // the asterisks. It now lists only shipped capability.
-        features: ["Your own branding", "Two-factor auth", "priority support"],
+        // 2026-08-30: the platform shipped the capability gate, the
+        // workspace-wide 2FA requirement and client-facing custom domains
+        // (migrations 20260907100000/110000/120000, each verified in the
+        // platform repo before this copy changed). Two lines therefore left
+        // the Pro card for OPPOSITE reasons, and neither should come back:
+        //
+        //   "Two-factor authentication" -- removed because it is on EVERY
+        //   plan and always was. Listing it under Pro implied an exclusivity
+        //   that never existed. The workspace-wide REQUIREMENT that shipped
+        //   is also ungated, so it is not a Pro differentiator either; it
+        //   lives in the /pricing comparison table as a yes/yes/yes row.
+        //
+        //   "Custom domain, coming soon" -- removed because it now ships.
+        //
+        // The domain line is worded for the CLIENT-FACING cut that was
+        // actually built: the public /d/<token> document surface resolves at
+        // the workspace's own hostname. Operator sign-in stays on
+        // app.kinectnow.com. "Your own domain" unqualified would read as a
+        // white-label login, which is the expensive version we cut.
+        features: ["Your own branding", "your own domain", "priority support"],
         detail: [
           "Everything in Kinect Plus",
           "Your own logo and color on client documents",
-          "Two-factor authentication",
+          "Your own domain on client document links",
           "Priority support",
           "2 TB storage, more available",
-          "Custom domain, coming soon",
-          "Workspace-wide two-factor and SSO, coming soon",
+          "SSO, coming soon",
           "Multiple workspaces under one bill, coming soon",
         ],
         cta: "Choose Kinect Pro",

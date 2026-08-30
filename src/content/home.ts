@@ -136,7 +136,14 @@ export const home: HomeContent = {
       },
       {
         title: "Secure by default",
-        body: "SSO, role-based access and encryption in transit and at rest.",
+        // "SSO" was here, unqualified, as a shipped capability -- it is not
+        // built (it is the one Kinect Pro item still marked "soon" on
+        // /pricing, and the platform's 2026-08-30 capability build left it
+        // explicitly out of scope). Replaced with two-factor, which is real
+        // on every plan: /login/mfa enrolment and challenge, AAL enforced in
+        // middleware, plus the workspace-wide requirement toggle that
+        // shipped in migration 20260907110000.
+        body: "Two-factor authentication, role-based access and encryption in transit and at rest.",
       },
     ],
   },
@@ -210,7 +217,29 @@ export const home: HomeContent = {
     {
       question: "Is my client data secure?",
       answer:
-        "TLS 1.3 in transit, AES-256 at rest, SSO and role-based access, least-privilege OAuth scopes, audit logs and point-in-time backups.",
+        // Two more claims in this answer were checked against the platform on
+        // 2026-08-30 and did not survive as written:
+        //
+        //   "audit logs" -- the ONLY audit table is platform_admin_audit
+        //   (20260726001707), an append-only record of KINECT STAFF mutations,
+        //   RLS-on-with-no-policies and reachable only through SECURITY
+        //   DEFINER RPCs. No customer can read it and no workspace-activity
+        //   log exists. Listed among customer-facing controls it read as a
+        //   feature the buyer gets. Reworded to say what it actually is,
+        //   which is still a real trust claim.
+        //
+        //   "point-in-time backups" -- PITR is a specific paid Supabase
+        //   add-on meaning restore-to-any-second. What runs is DAILY (see the
+        //   platform's docs/BACKUPS.md): Supabase physical backups at ~7-day
+        //   retention, plus an off-provider AES-256 pg_dump and an rclone
+        //   COPY of every storage bucket at 08:00 UTC. Two independent daily
+        //   layers is a strong answer on its own; it is not PITR, and a
+        //   security questionnaire would have caught the difference.
+        //
+        // "least-privilege OAuth scopes" DID survive: Google adwords (the
+        // only scope Google's Ads API offers -- there is no read-only
+        // variant), Meta ads_read, LinkedIn r_ads + r_ads_reporting.
+        "TLS 1.3 in transit, AES-256 at rest, two-factor authentication your workspace can require of everyone, role-based access, and read-only scopes on every ad account you connect. Backups run daily, both inside our database provider and to encrypted storage outside it. Anything our own staff does to your workspace is written to an append-only log.",
     },
   ],
 
