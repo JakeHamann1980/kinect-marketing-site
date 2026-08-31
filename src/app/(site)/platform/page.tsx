@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Nav from "@/components/Nav";
-import AsteriskMark from "@/components/AsteriskMark";
 import Footer from "@/components/Footer";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import SectionHead from "@/components/SectionHead";
@@ -49,6 +48,36 @@ export const revalidate = false;
 export async function generateMetadata() {
   const page = await fetchPlatformPage();
   return pageMetadata({ seo: page.seo, canonicalUrl: `${SITE_URL}/platform` });
+}
+
+/**
+ * Kai's mark, transcribed from the product (kinect-platform
+ * src/components/brand/kai-mark.tsx): KINECT's asterisk with the two
+ * diagonals shortened to 46% and dimmed, which turns the hub into the
+ * spark shape people read as "AI" while staying the same glyph family.
+ * It wears the accent, exactly as the widget's header does -- the app
+ * uses its `--accent-on-dark` there, whose role this site's `--accent`
+ * (the dark-context accent) plays.
+ */
+function KaiMark({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      className="flex-none"
+    >
+      <g stroke="var(--accent)" strokeWidth={3} strokeLinecap="round">
+        <line x1={16} y1={3} x2={16} y2={29} />
+        <line x1={3} y1={16} x2={29} y2={16} />
+        <g opacity={0.55}>
+          <line x1={10} y1={10} x2={22} y2={22} />
+          <line x1={22} y1={10} x2={10} y2={22} />
+        </g>
+      </g>
+    </svg>
+  );
 }
 
 function CheckIcon({
@@ -480,7 +509,7 @@ export default async function PlatformPage() {
                               />
                             </div>
                             <div className="relative flex items-center gap-2.5">
-                              <AsteriskMark size={20} stroke="#fff" />
+                              <KaiMark size={20} />
                               <span className="font-display text-[15px] font-bold tracking-[-.01em]">
                                 Kai
                               </span>
