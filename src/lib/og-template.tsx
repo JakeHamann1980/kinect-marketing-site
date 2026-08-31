@@ -236,6 +236,15 @@ interface OgTemplateProps {
   personaBadge?: string;
   /** Muted footer line, e.g. the page's hostname. */
   footer: string;
+  /**
+   * Force a line break after the first headline word that matches this
+   * exactly (punctuation included), so a phrase lands intact on its own
+   * line instead of wherever 980px happens to wrap it -- e.g. /platform
+   * passes "relationship," so "one login." (the whole gradient phrase)
+   * sits together on line two. Rendered as a full-width flex spacer,
+   * which is the Satori-safe way to break a wrapping row.
+   */
+  breakAfter?: string;
 }
 
 /**
@@ -252,8 +261,10 @@ export function ogTemplate({
   persona,
   personaBadge,
   footer,
+  breakAfter,
 }: OgTemplateProps): ReactElement {
   const words = gradientPhrase ? gradientWords(headline, gradientPhrase) : headline.split(" ").map((text) => ({ text, color: TEXT }));
+  const breakIndex = breakAfter ? words.findIndex((word) => word.text === breakAfter) : -1;
   const accent = persona ? PERSONAS[persona].accent : "#35D6E8";
   const accentTint = persona ? PERSONAS[persona].tint : "rgba(53,214,232,.14)";
 
@@ -341,11 +352,18 @@ export function ogTemplate({
             letterSpacing: -1,
           }}
         >
-          {words.map((word, i) => (
-            <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: 16, display: "flex" }}>
-              {word.text}
-            </div>
-          ))}
+          {words.flatMap((word, i) => {
+            const el = (
+              <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: 16, display: "flex" }}>
+                {word.text}
+              </div>
+            );
+            // A full-width spacer pushes everything after it onto the next
+            // line of the wrapping row (see `breakAfter`'s doc comment).
+            return i === breakIndex
+              ? [el, <div key={`break-${i}`} style={{ width: "100%", display: "flex" }} />]
+              : [el];
+          })}
         </div>
       </div>
 

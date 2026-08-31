@@ -21,6 +21,9 @@ export default async function Image() {
       eyebrow: platformPage.hero.eyebrow,
       headline: platformPage.hero.title,
       gradientPhrase: platformPage.hero.gradientPhrase,
+      // Break after "relationship," so the gradient phrase ("one login.")
+      // sits whole on the second line instead of splitting across the wrap.
+      breakAfter: "relationship,",
       footer: SITE_HOST,
     }),
     { ...size, fonts },
