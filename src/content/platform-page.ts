@@ -108,12 +108,14 @@ export const platformPage: PlatformPageContent = {
       body: "A message channel per client, your internal Team Chat one click away, and a hard wall between the two.",
       // Card copy kept to one visual line-length family (user-directed
       // 2026-08-31): these four render as a 2x2 card grid, so uneven
-      // lengths read as ragged tiles.
-      points: [
-        "Mention teammates or client contacts and they get notified",
-        "Replies, reactions and edits, so threads read like threads",
-        "Attachments land in the client's file library automatically",
-        "Team Chat stays internal, enforced at the database level",
+      // lengths read as ragged tiles. Icons per card (same direction):
+      // each names the thing the line is about, from the page's own
+      // stroke-icon set.
+      cards: [
+        { icon: "bell", text: "Mention teammates or client contacts and they get notified" },
+        { icon: "chat", text: "Replies, reactions and edits, so threads read like threads" },
+        { icon: "paperclip", text: "Attachments land in the client's file library automatically" },
+        { icon: "lock", text: "Team Chat stays internal, enforced at the database level" },
       ],
     },
     {
@@ -178,12 +180,27 @@ export const platformPage: PlatformPageContent = {
       eyebrow: "Scheduling & intake",
       title: "Booking pages and intake forms, included",
       body: "The front door of the practice without two more subscriptions. Booking links respect your real calendar, and intake forms land on the client record.",
-      points: [
-        "Public booking pages with buffers, booking windows and your published hours",
-        "Availability subtracts your Google Calendar busy time automatically",
-        "One month view across every client: due dates, sessions and bookings",
-        "Intake forms published at a link, with responses attached to the right client",
-        "Smart Docs merge client details into contracts and letters, with a live preview",
+      cards: [
+        {
+          icon: "calendar",
+          text: "Public booking pages with buffers, booking windows and your published hours",
+        },
+        {
+          icon: "clock",
+          text: "Availability subtracts your Google Calendar busy time automatically",
+        },
+        {
+          icon: "grid",
+          text: "One month view across every client: due dates, sessions and bookings",
+        },
+        {
+          icon: "form",
+          text: "Intake forms published at a link, with responses attached to the right client",
+        },
+        {
+          icon: "doc",
+          text: "Smart Docs merge client details into contracts and letters, with a live preview",
+        },
       ],
     },
     {
@@ -191,12 +208,24 @@ export const platformPage: PlatformPageContent = {
       eyebrow: "Integrations",
       title: "Bring the data you already report on",
       body: "Connect the accounts you already pull numbers from. Nothing to migrate, nothing to relearn.",
-      points: [
-        "Google Search Console for search performance, synced nightly",
-        "Client ad accounts across Google, Meta and LinkedIn, from Kinect Plus up",
-        "Google Calendar per teammate, for availability and bookings",
-        "Stripe for card payments on your own account",
-        "Connected by OAuth with least-privilege scopes, in about ten minutes",
+      cards: [
+        {
+          icon: "search",
+          text: "Google Search Console for search performance, synced nightly",
+        },
+        {
+          icon: "megaphone",
+          text: "Client ad accounts across Google, Meta and LinkedIn, from Kinect Plus up",
+        },
+        {
+          icon: "calendar",
+          text: "Google Calendar per teammate, for availability and bookings",
+        },
+        { icon: "card", text: "Stripe for card payments on your own account" },
+        {
+          icon: "key",
+          text: "Connected by OAuth with least-privilege scopes, in about ten minutes",
+        },
       ],
     },
     {
@@ -204,11 +233,20 @@ export const platformPage: PlatformPageContent = {
       eyebrow: "Security & control",
       title: "Client-safe down to the database",
       body: "Every workspace is isolated with row-level security. What a client contact can see is enforced where the data lives, not in the navigation.",
-      points: [
-        "Admin, manager and member roles for your team, portal access for client contacts",
-        "Two-factor authentication on every plan, with a workspace-wide requirement if you want it",
-        "Encrypted daily backups held off-provider",
-        "Your logo, your color and your own domain on client documents, on Kinect Pro",
+      cards: [
+        {
+          icon: "users",
+          text: "Admin, manager and member roles for your team, portal access for client contacts",
+        },
+        {
+          icon: "shield",
+          text: "Two-factor authentication on every plan, with a workspace-wide requirement if you want it",
+        },
+        { icon: "database", text: "Encrypted daily backups held off-provider" },
+        {
+          icon: "globe",
+          text: "Your logo, your color and your own domain on client documents, on Kinect Pro",
+        },
       ],
     },
   ],

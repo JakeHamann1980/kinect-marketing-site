@@ -186,10 +186,42 @@ export interface PricingPageContent {
 }
 
 /**
+ * The icon vocabulary for /platform's feature cards, rendered by the small
+ * stroke-icon registry in src/app/(site)/platform/page.tsx (same visual
+ * language as the checkmark: 16 viewBox, round caps, currentColor). The
+ * page falls back to the check for any name it does not recognize, so an
+ * older Sanity doc or a typo degrades gracefully instead of crashing.
+ */
+export type PlatformIcon =
+  | "bell"
+  | "chat"
+  | "paperclip"
+  | "lock"
+  | "calendar"
+  | "clock"
+  | "grid"
+  | "form"
+  | "doc"
+  | "search"
+  | "megaphone"
+  | "card"
+  | "key"
+  | "users"
+  | "shield"
+  | "database"
+  | "globe";
+
+/**
  * One capability section on the /platform overview (promoted out of
  * src/content/draft/ when the page shipped). `id` is the section's anchor;
  * the footer's Platform column links straight to these, so changing an id
  * means changing src/content/settings.ts's footer links in the same commit.
+ *
+ * Exactly one of `points`/`cards` is set, and it selects the layout:
+ * `points` renders as the checklist beside a screenshot or the Kai quote
+ * card (the two-column split), `cards` as the feature-card grid where each
+ * entry carries its own icon (user-directed 2026-08-31: relevant icons per
+ * card, not a generic check).
  *
  * `screenshot` is optional: only the sections with a real capture of that
  * capability carry one (the captures come from the platform repo's
@@ -204,7 +236,8 @@ export interface PlatformSection {
   eyebrow: string;
   title: string;
   body: string;
-  points: string[];
+  points?: string[];
+  cards?: { icon: PlatformIcon; text: string }[];
   screenshot?: { src: string; alt: string; caption: string; aspect?: number };
 }
 

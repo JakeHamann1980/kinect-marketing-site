@@ -206,7 +206,13 @@ export function assertPlatformPageShape(doc: PlatformPageContent): void {
   required(doc.sections, "sections");
   for (const [i, section] of (doc.sections ?? []).entries()) {
     required(section?.id, `sections[${i}].id`);
-    required(section?.points, `sections[${i}].points`);
+    // Every section renders EITHER a points checklist (split layout) or a
+    // card grid; a section with neither would render an empty band.
+    if (!section?.points?.length && !section?.cards?.length) {
+      throw new Error(
+        `content shape assertion failed: "sections[${i}]" has neither points nor cards`,
+      );
+    }
     // `screenshot` itself is optional (only some sections carry one), but a
     // present-yet-hollow one (editor unset the image, or the asset `->`
     // dereference died) would reach an unguarded <Image src> -- the exact
@@ -422,6 +428,7 @@ const PLATFORM_PAGE_PROJECTION = `{
   seo, hero, trustChips, stat, aiQuote,
   "sections": sections[]{
     id, eyebrow, title, body, points,
+    "cards": cards[]{icon, text},
     screenshot{
       "src": ${SCREENSHOT_SRC}, alt, caption,
       "aspect": image.asset->metadata.dimensions.aspectRatio

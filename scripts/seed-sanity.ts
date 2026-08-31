@@ -264,18 +264,21 @@ function platformPageDoc(assetIdByFilename: Record<string, string>) {
     sections: arr(
       "platformSection",
       platformPage.sections.map((section: PlatformSection) => {
-        const { screenshot, ...rest } = section;
-        if (!screenshot) return rest;
-        const assetId = assetIdByFilename[basename(screenshot.src)];
-        if (!assetId) {
-          throw new Error(
-            `[seed-sanity] platform section "${section.id}" references ${screenshot.src}, which buildHomeDoc did not upload`,
-          );
+        const { screenshot, cards, ...rest } = section;
+        const doc: Record<string, unknown> = { ...rest };
+        // Card entries are an array of objects, so they need the same
+        // _key/_type stamping every other object array gets.
+        if (cards) doc.cards = arr("platformCard", cards);
+        if (screenshot) {
+          const assetId = assetIdByFilename[basename(screenshot.src)];
+          if (!assetId) {
+            throw new Error(
+              `[seed-sanity] platform section "${section.id}" references ${screenshot.src}, which buildHomeDoc did not upload`,
+            );
+          }
+          doc.screenshot = screenshotField(assetId, screenshot.alt, screenshot.caption);
         }
-        return {
-          ...rest,
-          screenshot: screenshotField(assetId, screenshot.alt, screenshot.caption),
-        };
+        return doc;
       }),
     ),
     closing: platformPage.closing,

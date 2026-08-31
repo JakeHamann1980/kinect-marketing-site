@@ -78,9 +78,55 @@ export default defineType({
             defineField({ name: "body", type: "text", rows: 3, validation: (r) => r.required() }),
             defineField({
               name: "points",
+              description:
+                "Checklist lines for a two-column split section (one with a screenshot, or the AI section). Card-grid sections use Cards below instead.",
               type: "array",
               of: [{ type: "string" }],
-              validation: (r) => r.required().min(1),
+            }),
+            defineField({
+              name: "cards",
+              description:
+                "Feature cards for a grid section, each with its own icon. Split sections use Points above instead.",
+              type: "array",
+              of: [
+                {
+                  type: "object",
+                  name: "platformCard",
+                  fields: [
+                    defineField({
+                      name: "icon",
+                      description: "Icon name from the page's stroke-icon set; an unknown name falls back to a checkmark.",
+                      type: "string",
+                      options: {
+                        list: [
+                          "bell",
+                          "chat",
+                          "paperclip",
+                          "lock",
+                          "calendar",
+                          "clock",
+                          "grid",
+                          "form",
+                          "doc",
+                          "search",
+                          "megaphone",
+                          "card",
+                          "key",
+                          "users",
+                          "shield",
+                          "database",
+                          "globe",
+                        ],
+                      },
+                      validation: (r) => r.required(),
+                    }),
+                    defineField({ name: "text", type: "string", validation: (r) => r.required() }),
+                  ],
+                  preview: {
+                    select: { title: "text", subtitle: "icon" },
+                  },
+                },
+              ],
             }),
             defineField({
               name: "screenshot",
@@ -92,6 +138,13 @@ export default defineType({
           preview: {
             select: { title: "title", subtitle: "id" },
           },
+          validation: (r) =>
+            r.custom(
+              (section: { points?: string[]; cards?: unknown[] } | undefined) =>
+                section?.points?.length || section?.cards?.length
+                  ? true
+                  : "Give the section Points (split layout) or Cards (grid layout)",
+            ),
         },
       ],
       validation: (r) => r.required().min(1),

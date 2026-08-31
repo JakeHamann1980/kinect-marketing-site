@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -79,13 +80,125 @@ function CheckIcon({
   );
 }
 
-/** The feature cards' icon: the check on a tinted rounded badge, so it
- * reads as an icon rather than a stray list glyph. --accent-tint is the
- * token globals.css defines for exactly this tinted-chip treatment; on
- * dark bands the equivalent tint of the bright accent is hardcoded the
- * same way the dark bands' cyan washes already are (rgba(53,214,232,...)
- * in pricing/persona sections). */
-function CheckBadge({ dark }: { dark: boolean }) {
+/**
+ * The feature cards' stroke-icon set (user-directed 2026-08-31: each card
+ * carries an icon naming what its line is about, not a generic check).
+ * Hand-drawn on the checkmark's own grammar: 16 viewBox, ~1.7 stroke,
+ * round caps/joins, currentColor. Names are the `PlatformIcon` union in
+ * src/content/types.ts and the Sanity schema's options list; anything
+ * unrecognized falls back to the check so an older doc or a typo renders
+ * a sane badge instead of an empty one.
+ */
+const ICON_PATHS: Record<string, ReactNode> = {
+  bell: (
+    <>
+      <path d="M8 2.2a3.8 3.8 0 0 0-3.8 3.8v2.6L2.8 11h10.4l-1.4-2.4V6A3.8 3.8 0 0 0 8 2.2z" />
+      <path d="M6.6 13.2a1.5 1.5 0 0 0 2.8 0" />
+    </>
+  ),
+  chat: (
+    <>
+      <path d="M3.2 3h9.6a1 1 0 0 1 1 1v5.4a1 1 0 0 1-1 1H7.4L4.2 13v-2.6h-1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" />
+    </>
+  ),
+  paperclip: (
+    <path d="M12.6 7.4l-4.8 4.8a3 3 0 0 1-4.2-4.2L9 2.6a2 2 0 0 1 2.8 2.8L6.6 10.6a1 1 0 0 1-1.4-1.4l4.4-4.4" />
+  ),
+  lock: (
+    <>
+      <rect x="4" y="7" width="8" height="6.2" rx="1.2" />
+      <path d="M5.8 7V5.2a2.2 2.2 0 0 1 4.4 0V7" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="2.4" y="3.4" width="11.2" height="10.2" rx="1.2" />
+      <path d="M2.4 6.6h11.2M5.4 1.8v2.6M10.6 1.8v2.6" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="8" cy="8" r="5.6" />
+      <path d="M8 5v3.2l2.2 1.4" />
+    </>
+  ),
+  grid: (
+    <>
+      <rect x="2.4" y="2.4" width="11.2" height="11.2" rx="1.2" />
+      <path d="M2.4 6.8h11.2M6.8 6.8v6.8M10.8 6.8v6.8" />
+    </>
+  ),
+  form: (
+    <>
+      <rect x="3.4" y="3" width="9.2" height="11" rx="1.2" />
+      <path d="M6 2h4v2.2H6zM5.8 8h4.4M5.8 10.6h3" />
+    </>
+  ),
+  doc: (
+    <>
+      <path d="M4 2.4h4.8L12 5.6v8H4z" />
+      <path d="M8.8 2.4v3.2H12M6 9h4M6 11.2h2.6" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="7" cy="7" r="4.2" />
+      <path d="M10.2 10.2l3.4 3.4" />
+    </>
+  ),
+  megaphone: (
+    <>
+      <path d="M13.2 2.8L5.4 5.6H3.2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2.2l7.8 2.8z" />
+      <path d="M6 10l1 3.4" />
+    </>
+  ),
+  card: (
+    <>
+      <rect x="2" y="3.8" width="12" height="8.6" rx="1.2" />
+      <path d="M2 6.8h12M4.4 10.4h3.2" />
+    </>
+  ),
+  key: (
+    <>
+      <circle cx="5.4" cy="10.6" r="2.6" />
+      <path d="M7.4 8.6L13 3M10.8 5.2l2 2" />
+    </>
+  ),
+  users: (
+    <>
+      <circle cx="5.8" cy="5.6" r="2.2" />
+      <path d="M2.2 13.2c0-2.2 1.6-3.8 3.6-3.8s3.6 1.6 3.6 3.8" />
+      <path d="M10.4 3.8a2.2 2.2 0 0 1 0 3.8M11.4 9.6c1.4.5 2.4 1.9 2.4 3.6" />
+    </>
+  ),
+  shield: (
+    <>
+      <path d="M8 1.8l5 1.9v4c0 3-2 4.7-5 6.3-3-1.6-5-3.3-5-6.3v-4z" />
+      <path d="M5.8 7.8l1.6 1.6 2.8-3" />
+    </>
+  ),
+  database: (
+    <>
+      <ellipse cx="8" cy="3.8" rx="5" ry="1.9" />
+      <path d="M3 3.8v8.2c0 1 2.2 1.9 5 1.9s5-.9 5-1.9V3.8" />
+      <path d="M3 8c0 1 2.2 1.9 5 1.9s5-.9 5-1.9" />
+    </>
+  ),
+  globe: (
+    <>
+      <circle cx="8" cy="8" r="5.6" />
+      <path d="M2.4 8h11.2M8 2.4c1.9 1.8 1.9 9.4 0 11.2M8 2.4c-1.9 1.8-1.9 9.4 0 11.2" />
+    </>
+  ),
+};
+
+/** A card's icon on the tinted rounded badge. --accent-tint is the token
+ * globals.css defines for exactly this tinted-chip treatment; on dark
+ * bands the equivalent tint of the bright accent is hardcoded the same
+ * way the dark bands' cyan washes already are (rgba(53,214,232,...) in
+ * pricing/persona sections). */
+function IconBadge({ dark, icon }: { dark: boolean; icon?: string }) {
+  const glyph = icon ? ICON_PATHS[icon] : undefined;
   return (
     <span
       aria-hidden="true"
@@ -94,7 +207,25 @@ function CheckBadge({ dark }: { dark: boolean }) {
         background: dark ? "rgba(53,214,232,.12)" : "var(--accent-tint)",
       }}
     >
-      <CheckIcon dark={dark} size={20} />
+      {glyph ? (
+        <svg
+          viewBox="0 0 16 16"
+          width={20}
+          height={20}
+          aria-hidden="true"
+          className="flex-none"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.7}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ color: dark ? "var(--accent)" : "var(--accent-light)" }}
+        >
+          {glyph}
+        </svg>
+      ) : (
+        <CheckIcon dark={dark} size={20} />
+      )}
     </span>
   );
 }
@@ -281,7 +412,7 @@ export default async function PlatformPage() {
                             dark ? "text-on-dark-3" : "text-ink-2",
                           )}
                         >
-                          {section.points.map((point) => (
+                          {(section.points ?? []).map((point) => (
                             <li key={point} className="flex gap-3">
                               <CheckIcon dark={dark} className="mt-[4px]" />
                               <span>{point}</span>
@@ -320,42 +451,55 @@ export default async function PlatformPage() {
                       ) : null}
                     </div>
                   ) : (
-                    /* CARD GRID: centered head, points as feature cards. */
-                    <>
-                      <div className="mx-auto max-w-[760px] text-center [&_p]:mx-auto">
-                        <SectionIntro section={section} dark={dark} />
-                      </div>
-                      <div
-                        className={cn(
-                          "mt-11 grid grid-cols-1 gap-5",
-                          section.points.length > 4
-                            ? "kx-sm:grid-cols-2 kx-lg:grid-cols-3"
-                            : "kx-md:grid-cols-2",
-                        )}
-                      >
-                        {section.points.map((point) => (
+                    /* CARD GRID: centered head, one feature card per entry,
+                       each with its own icon. A section that still carries
+                       plain `points` (an older Sanity doc) renders them as
+                       cards with the check fallback. */
+                    (() => {
+                      const cards =
+                        section.cards ??
+                        (section.points ?? []).map((text) => ({
+                          icon: undefined,
+                          text,
+                        }));
+                      return (
+                        <>
+                          <div className="mx-auto max-w-[760px] text-center [&_p]:mx-auto">
+                            <SectionIntro section={section} dark={dark} />
+                          </div>
                           <div
-                            key={point}
                             className={cn(
-                              "rounded-[18px] p-[26px_24px]",
-                              dark
-                                ? "border border-[rgba(255,255,255,.1)] bg-[rgba(255,255,255,.035)]"
-                                : "border border-border bg-surface shadow-[0_1px_3px_rgba(12,18,32,.05)]",
+                              "mt-11 grid grid-cols-1 gap-5",
+                              cards.length > 4
+                                ? "kx-sm:grid-cols-2 kx-lg:grid-cols-3"
+                                : "kx-md:grid-cols-2",
                             )}
                           >
-                            <CheckBadge dark={dark} />
-                            <p
-                              className={cn(
-                                "text-[16px] leading-[1.55] text-pretty",
-                                dark ? "text-on-dark-3" : "text-ink-2",
-                              )}
-                            >
-                              {point}
-                            </p>
+                            {cards.map((cardItem) => (
+                              <div
+                                key={cardItem.text}
+                                className={cn(
+                                  "rounded-[18px] p-[26px_24px]",
+                                  dark
+                                    ? "border border-[rgba(255,255,255,.1)] bg-[rgba(255,255,255,.035)]"
+                                    : "border border-border bg-surface shadow-[0_1px_3px_rgba(12,18,32,.05)]",
+                                )}
+                              >
+                                <IconBadge dark={dark} icon={cardItem.icon} />
+                                <p
+                                  className={cn(
+                                    "text-[16px] leading-[1.55] text-pretty",
+                                    dark ? "text-on-dark-3" : "text-ink-2",
+                                  )}
+                                >
+                                  {cardItem.text}
+                                </p>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </>
+                        </>
+                      );
+                    })()
                   )}
                 </div>
               </section>

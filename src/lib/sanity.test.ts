@@ -136,6 +136,13 @@ describe("assertPlatformPageShape", () => {
     delete doc.sections[0].screenshot;
     expect(() => assertPlatformPageShape(doc)).not.toThrow();
   });
+
+  it("rejects a section with neither points nor cards (an empty band)", () => {
+    const doc = structuredClone(platformPage);
+    delete doc.sections[0].points;
+    delete doc.sections[0].cards;
+    expect(() => assertPlatformPageShape(doc)).toThrow(/neither points nor cards/);
+  });
 });
 
 describe("assertLegalShape", () => {
