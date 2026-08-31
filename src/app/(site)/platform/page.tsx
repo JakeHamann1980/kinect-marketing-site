@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Nav from "@/components/Nav";
+import AsteriskMark from "@/components/AsteriskMark";
 import Footer from "@/components/Footer";
 import HeroBackdrop from "@/components/HeroBackdrop";
 import SectionHead from "@/components/SectionHead";
@@ -189,6 +190,15 @@ const ICON_PATHS: Record<string, ReactNode> = {
       <circle cx="8" cy="8" r="5.6" />
       <path d="M2.4 8h11.2M8 2.4c1.9 1.8 1.9 9.4 0 11.2M8 2.4c-1.9 1.8-1.9 9.4 0 11.2" />
     </>
+  ),
+  download: (
+    <>
+      <path d="M8 2.2v7.2M5.2 6.8L8 9.6l2.8-2.8" />
+      <path d="M2.6 10.4v2a1.4 1.4 0 0 0 1.4 1.4h8a1.4 1.4 0 0 0 1.4-1.4v-2" />
+    </>
+  ),
+  spark: (
+    <path d="M8 1.8l1.5 4.7L14.2 8l-4.7 1.5L8 14.2 6.5 9.5 1.8 8l4.7-1.5z" />
   ),
 };
 
@@ -428,25 +438,112 @@ export default async function PlatformPage() {
                           sizes="(max-width: 1024px) 100vw, 560px"
                         />
                       ) : isAi ? (
-                        /* The gradient Kai quote card -- PillarCards'
-                           aiInsight idiom (light warm-to-cool wash, pill
-                           eyebrow, ink text), self-contained on either
-                           band. */
-                        <div
-                          className="rounded-[18px] border border-border p-[34px_30px]"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, #F7EFE8 0%, #F0F4F2 48%, #DFF0EF 100%)",
-                          }}
-                        >
-                          <div className="mb-4 inline-flex w-fit items-center rounded-full bg-[rgba(240,145,58,.16)] px-[10px] py-[3px] font-mono text-[11px] uppercase tracking-[.14em] text-coral-light">
-                            {page.aiQuote.eyebrow}
+                        /* A faithful miniature of the product's Kai panel
+                           (kinect-platform kai-widget.tsx), playing one
+                           looping interaction in pure CSS (the kx-kai-*
+                           classes in globals.css). Structure mirrors the
+                           real widget: hero header wearing this site's own
+                           backdrop at half scale, the ai-tint wash behind a
+                           white conversation card (accent user bubble,
+                           plain assistant text, the "from <tool>" sources
+                           line), and the composer with the brand-gradient
+                           send button. The composer is a mock, so its
+                           "input" and "button" are inert divs/spans, not
+                           form controls. */
+                        <div className="relative mx-auto w-full max-w-[400px] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_60px_rgba(12,18,32,.18)]">
+                          {/* The ai-tint wash (the product's own AI-surface
+                              marker) behind the body; the opaque hero and
+                              composer paint over it. */}
+                          <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-0"
+                            style={{
+                              background:
+                                "linear-gradient(135deg, rgba(240,145,58,.09), rgba(53,214,232,.09))",
+                            }}
+                          />
+
+                          {/* Hero header: lockup row (mark, Kai, hairline,
+                              KINECT) over the halved-geometry backdrop,
+                              then the widget's headline. -mb pulls the
+                              conversation card up over its lower edge,
+                              exactly like the real panel. */}
+                          <div className="kx-kai-hero relative -mb-7 overflow-hidden px-5 pb-12 pt-4 text-white">
+                            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+                              <div
+                                className="absolute inset-[-20%]"
+                                style={{
+                                  background:
+                                    "radial-gradient(220px 150px at 18% 20%, rgba(240,145,58,.42), transparent 68%), radial-gradient(240px 160px at 86% 78%, rgba(53,214,232,.4), transparent 68%)",
+                                  filter: "blur(26px)",
+                                }}
+                              />
+                            </div>
+                            <div className="relative flex items-center gap-2.5">
+                              <AsteriskMark size={20} stroke="#fff" />
+                              <span className="font-display text-[15px] font-bold tracking-[-.01em]">
+                                Kai
+                              </span>
+                              <span aria-hidden="true" className="block h-[17px] w-px flex-none bg-[rgba(255,255,255,.25)]" />
+                              <span className="text-[9.5px] font-bold uppercase tracking-[.17em] text-[rgba(255,255,255,.5)]">
+                                KINECT
+                              </span>
+                            </div>
+                            <p className="relative mt-6 font-display text-[22px] font-bold leading-[1.12] tracking-[-.01em]">
+                              {page.aiQuote.headline}
+                            </p>
                           </div>
-                          <p className="text-[19px] leading-[1.6] text-ink-2">
-                            {"“"}
-                            {page.aiQuote.quote}
-                            {"”"}
-                          </p>
+
+                          {/* Conversation card. */}
+                          <div className="relative px-3.5 pb-4">
+                            <div className="space-y-3 rounded-2xl border border-border bg-surface p-4 shadow-[0_10px_28px_rgba(12,18,32,.1)]">
+                              <div
+                                className="kx-kai-q ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-sm px-3 py-2 text-[13px] text-white"
+                                style={{ background: "var(--accent-light)" }}
+                              >
+                                {page.aiQuote.question}
+                              </div>
+                              {/* "Looking…" and the answer share one grid
+                                  cell so the transient state never reserves
+                                  its own height. */}
+                              <div className="grid">
+                                <p className="kx-kai-think [grid-area:1/1] text-[13px] text-ink-3">
+                                  Looking…
+                                </p>
+                                <div className="kx-kai-a [grid-area:1/1] max-w-[92%] text-[13px] leading-relaxed text-ink-2">
+                                  <p>{page.aiQuote.quote}</p>
+                                  <p className="kx-kai-src mt-1.5 text-[11px] text-muted">
+                                    from {page.aiQuote.sources.join(", ")}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Composer mock. */}
+                          <div className="relative flex items-center gap-2 border-t border-border bg-surface px-3 py-3">
+                            <div className="min-w-0 flex-1 rounded-lg border border-border bg-light-canvas-2 px-3 py-2 text-[13px] text-muted">
+                              Ask about your work…
+                            </div>
+                            <span
+                              aria-hidden="true"
+                              className="flex h-9 w-9 flex-none items-center justify-center rounded-lg text-white"
+                              style={{ background: "linear-gradient(135deg, #F0913A, #EC5242)" }}
+                            >
+                              <svg
+                                viewBox="0 0 16 16"
+                                width={17}
+                                height={17}
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M8 13V3M4 7l4-4 4 4" />
+                              </svg>
+                            </span>
+                          </div>
                         </div>
                       ) : null}
                     </div>

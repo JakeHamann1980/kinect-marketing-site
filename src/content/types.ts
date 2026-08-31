@@ -209,7 +209,9 @@ export type PlatformIcon =
   | "users"
   | "shield"
   | "database"
-  | "globe";
+  | "globe"
+  | "download"
+  | "spark";
 
 /**
  * One capability section on the /platform overview (promoted out of
@@ -262,9 +264,13 @@ export interface PlatformPageContent {
    * replaces), rendered in the pricing page's stat-band structure with the
    * bento stat card's gradient value treatment. */
   stat: { title: string; value: string; caption: string };
-  /** The illustrative Kai answer rendered as the gradient quote card
-   * (PillarCards' aiInsight idiom) beside the AI section's checklist. */
-  aiQuote: { eyebrow: string; quote: string };
+  /** The AI section's Kai panel mock: a faithful miniature of the
+   * product's actual widget (kinect-platform kai-widget.tsx) playing one
+   * looping interaction. `headline` is the panel hero's line, `question`
+   * the user bubble, `quote` Kai's answer, and `sources` the tool names
+   * rendered under it exactly the way the real widget cites them
+   * ("from get_overdue_by_client, ..."). */
+  aiQuote: { headline: string; question: string; quote: string; sources: string[] };
   closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 

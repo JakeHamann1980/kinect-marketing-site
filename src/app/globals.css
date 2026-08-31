@@ -804,3 +804,74 @@
   .kx-cyc, .kx-lab, .kx-shot-glow { animation: none !important; }
   .kx-cyc-2, .kx-cyc-3 { opacity: 0; }
 }
+
+/*
+ * ── /platform's Kai widget mock ─────────────────────────────────────────
+ *
+ * The AI section renders a faithful mock of the product's Kai panel
+ * (kinect-platform src/components/kai/kai-widget.tsx). Its header there is
+ * THIS site's hero backdrop at half scale -- the platform repo's
+ * `.kai-hero` comment documents halving the 104px grid to 52px so the
+ * texture survives a ~380px panel -- so this ports the same halved
+ * geometry straight back. Colors, alphas and layer order are the hero's,
+ * unchanged.
+ */
+.kx-kai-hero {
+  background-color: #070B12;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.22) 1.5px, transparent 2px),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size:
+    156px 156px,
+    52px 52px,
+    52px 52px;
+  background-position:
+    -78px -26px,
+    0 0,
+    0 0;
+}
+
+/*
+ * The mock's looping interaction: the question bubble lands, Kai's
+ * "Looking…" state shows, the answer and its tools-used line arrive, hold,
+ * then the cycle resets. One shared 9s clock, each element keyed to its
+ * own window of it, so the sequence stays in step without JavaScript.
+ * "Looking…" and the answer share a grid cell in the markup, which is why
+ * neither needs a height keyframe here.
+ */
+@keyframes kx-kai-q {
+  0% { opacity: 0; transform: translateY(6px); }
+  4%, 90% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: none; }
+}
+@keyframes kx-kai-think {
+  0%, 8% { opacity: 0; }
+  12%, 24% { opacity: 1; }
+  28%, 100% { opacity: 0; }
+}
+@keyframes kx-kai-a {
+  0%, 27% { opacity: 0; transform: translateY(6px); }
+  32%, 90% { opacity: 1; transform: none; }
+  96%, 100% { opacity: 0; transform: none; }
+}
+@keyframes kx-kai-src {
+  0%, 34% { opacity: 0; }
+  39%, 90% { opacity: 1; }
+  96%, 100% { opacity: 0; }
+}
+.kx-kai-q     { opacity: 0; animation: kx-kai-q 9s ease-in-out infinite; }
+.kx-kai-think { opacity: 0; animation: kx-kai-think 9s ease-in-out infinite; }
+.kx-kai-a     { opacity: 0; animation: kx-kai-a 9s ease-in-out infinite; }
+.kx-kai-src   { opacity: 0; animation: kx-kai-src 9s ease-in-out infinite; }
+
+/* Reduced motion: the finished conversation, statically. The transient
+ * "Looking…" state stays hidden -- it is motion, not content. */
+@media (prefers-reduced-motion: reduce) {
+  .kx-kai-q, .kx-kai-a, .kx-kai-src {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .kx-kai-think { animation: none !important; opacity: 0; }
+}

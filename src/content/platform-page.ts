@@ -201,6 +201,10 @@ export const platformPage: PlatformPageContent = {
           icon: "doc",
           text: "Smart Docs merge client details into contracts and letters, with a live preview",
         },
+        {
+          icon: "download",
+          text: "Form responses export to CSV, one row per response",
+        },
       ],
     },
     {
@@ -225,6 +229,10 @@ export const platformPage: PlatformPageContent = {
         {
           icon: "key",
           text: "Connected by OAuth with least-privilege scopes, in about ten minutes",
+        },
+        {
+          icon: "spark",
+          text: "Anthropic Claude behind Kai, answering from your own workspace",
         },
       ],
     },
@@ -261,14 +269,19 @@ export const platformPage: PlatformPageContent = {
       "The client portal, the project tracker, the team chat, the booking link, the form builder and the invoice chaser. One subscription, one place your client already knows.",
   },
 
-  // Illustrative Kai answer, built strictly from what Kai's real tools
-  // return (overdue items, stale clients, drafted updates). The client name
-  // is invented for the mock, same as home's aiInsight quote invents a
-  // campaign.
+  // Illustrative Kai interaction, built strictly from the real widget:
+  // `headline` is its hero line and `question` its first suggestion chip,
+  // both verbatim from kinect-platform's kai-widget.tsx; the answer draws
+  // only on what Kai's tools return (overdue items, stale clients, drafted
+  // updates), and `sources` are two of its six actual tool names, rendered
+  // the way the widget cites them. The client name is invented for the
+  // mock, same as home's aiInsight quote invents a campaign.
   aiQuote: {
-    eyebrow: "Ask Kai",
+    headline: "What do you need to know?",
+    question: "What's overdue?",
     quote:
       "Four items are overdue across two clients, and Meridian Consulting has gone quiet for 15 days. I drafted a check-in you can edit before it goes out.",
+    sources: ["get_overdue_by_client", "get_stale_clients"],
   },
 
   closing: {

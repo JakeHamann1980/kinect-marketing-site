@@ -116,6 +116,8 @@ export default defineType({
                           "shield",
                           "database",
                           "globe",
+                          "download",
+                          "spark",
                         ],
                       },
                       validation: (r) => r.required(),
@@ -163,13 +165,22 @@ export default defineType({
     }),
     defineField({
       name: "aiQuote",
-      title: "AI Quote",
+      title: "Kai Panel Mock",
       description:
-        "The illustrative Kai answer rendered as the gradient quote card beside the AI section.",
+        "The AI section's miniature of the real Kai widget: the panel headline, the asked question, Kai's answer, and the tool names cited under it.",
       type: "object",
       fields: [
-        defineField({ name: "eyebrow", type: "string", validation: (r) => r.required() }),
+        defineField({ name: "headline", type: "string", validation: (r) => r.required() }),
+        defineField({ name: "question", type: "string", validation: (r) => r.required() }),
         defineField({ name: "quote", type: "text", rows: 3, validation: (r) => r.required() }),
+        defineField({
+          name: "sources",
+          description:
+            'Tool names rendered as the answer\'s "from ..." line, the way the widget cites them.',
+          type: "array",
+          of: [{ type: "string" }],
+          validation: (r) => r.required().min(1),
+        }),
       ],
       validation: (r) => r.required(),
     }),

@@ -203,6 +203,12 @@ export function assertPlatformPageShape(doc: PlatformPageContent): void {
   required(doc.trustChips, "trustChips");
   required(doc.stat, "stat");
   required(doc.aiQuote, "aiQuote");
+  // The Kai panel mock renders these directly (bubble, answer, sources
+  // line); a pre-rework doc with the old {eyebrow, quote} shape must fall
+  // back rather than render a hollow panel.
+  required(doc.aiQuote?.question, "aiQuote.question");
+  required(doc.aiQuote?.quote, "aiQuote.quote");
+  required(doc.aiQuote?.sources, "aiQuote.sources");
   required(doc.sections, "sections");
   for (const [i, section] of (doc.sections ?? []).entries()) {
     required(section?.id, `sections[${i}].id`);
