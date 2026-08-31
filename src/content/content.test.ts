@@ -55,3 +55,74 @@ describe("copy constraints", () => {
     expect(tiers.find((t) => t.popular)?.name).toBe("Kinect Plus");
   });
 });
+
+/**
+ * Google OAuth app verification (2026-08-30). kinectnow.com/legal/privacy is
+ * the URL on KINECT's Google Cloud OAuth consent screen, and the app itself
+ * has no legal routes, so this page is the only privacy policy that exists.
+ *
+ * Reviewers check for specific things. These pin the ones a well-meaning copy
+ * edit would quietly remove, because losing them does not break the site --
+ * it fails a re-review weeks later, after the 100-user unverified cap has
+ * already started biting.
+ */
+describe("privacy policy: Google OAuth verification requirements", () => {
+  const text = privacy.sections.flatMap((s) => s.paragraphs).join("\n");
+
+  it("carries the Limited Use disclosure essentially verbatim", () => {
+    expect(text).toContain(
+      "KINECT's use and transfer of information received from Google APIs adheres to the",
+    );
+    expect(text).toContain("including the Limited Use requirements.");
+  });
+
+  it("LINKS the policy name, rather than naming it in plain text", () => {
+    expect(text).toContain(
+      "[Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy)",
+    );
+  });
+
+  it("tells the user how to revoke access from Google's own settings", () => {
+    expect(text).toContain("myaccount.google.com/permissions");
+  });
+
+  it("makes the four Limited Use denials explicitly", () => {
+    expect(text).toContain("We do not sell information received from Google APIs");
+    expect(text).toContain("We do not use it for advertising");
+    expect(text).toMatch(/do not use it to train, retrain or improve any artificial intelligence/);
+  });
+
+  /**
+   * The scope descriptions must match what the platform actually requests.
+   * Calendar is the trap: calendar.events is a WRITE scope, and describing it
+   * as read-only is the classic scope/description mismatch that gets an app
+   * bounced. If a scope changes in the platform, this page changes with it.
+   */
+  it("describes each Google surface the platform actually requests", () => {
+    expect(text).toContain("Google Search Console");
+    expect(text).toContain("Google Ads");
+    expect(text).toContain("Google Calendar");
+    expect(text).toContain("create and update events");
+  });
+
+  it("no longer claims KINECT is pre-launch or waitlist-only", () => {
+    const lowered = text.toLowerCase();
+    expect(lowered).not.toContain("pre-launch");
+    expect(lowered).not.toContain("not yet available to the public");
+    expect(lowered).not.toContain("marketing site and waitlist only");
+  });
+
+  it("names every subprocessor that handles customer data", () => {
+    for (const provider of [
+      "Supabase",
+      "Vercel",
+      "Stripe",
+      "Resend",
+      "Backblaze",
+      "Google",
+      "Anthropic",
+    ]) {
+      expect(text).toContain(provider);
+    }
+  });
+});

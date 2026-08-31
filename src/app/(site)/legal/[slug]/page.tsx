@@ -8,6 +8,7 @@ import { security } from "@/content/legal/security";
 import { cookies } from "@/content/legal/cookies";
 import type { LegalPage } from "@/content/legal/types";
 import { fetchLegal } from "@/lib/sanity";
+import { renderLegalText } from "@/lib/legal-links";
 import { pageMetadata, SITE_URL } from "@/lib/seo";
 
 // Task 18 (Seed Script + Page Wiring + Revalidation): fully static,
@@ -106,7 +107,11 @@ export default async function LegalPageRoute({
                       key={i}
                       className="text-[17px] leading-[1.65] text-ink-2 text-pretty"
                     >
-                      {paragraph}
+                      {/* Inline `[text](url)` links only -- see
+                          src/lib/legal-links.tsx. Added for the Google OAuth
+                          Limited Use disclosure, which reviewers expect to
+                          find LINKED to Google's policy. */}
+                      {renderLegalText(paragraph)}
                     </p>
                   ))}
                 </div>
