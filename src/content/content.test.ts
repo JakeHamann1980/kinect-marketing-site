@@ -126,3 +126,45 @@ describe("privacy policy: Google OAuth verification requirements", () => {
     }
   });
 });
+
+/**
+ * The security page is what a security-conscious buyer and any future
+ * questionnaire reads. It went live claiming a pre-launch waitlist while the
+ * product had paying customers; these pin the shape of the rewrite so the
+ * next edit cannot quietly reintroduce either failure mode - stale framing,
+ * or a control we do not actually have.
+ */
+describe("security page: says what is true, and only that", () => {
+  const text = security.sections.flatMap((s) => s.paragraphs).join("\n");
+
+  it("describes a live product, not a waitlist", () => {
+    expect(text).toContain("KINECT is live");
+    const lowered = text.toLowerCase();
+    expect(lowered).not.toContain("pre-launch");
+    expect(lowered).not.toContain("waitlist");
+  });
+
+  it("does not claim a certification KINECT has not been audited against", () => {
+    expect(text).toContain("We do not hold SOC 2, ISO 27001 or any comparable certification today");
+  });
+
+  /**
+   * SSO does not exist. It has already been claimed twice on this site as
+   * though it shipped (home page, 2026-08-30), so the security page states
+   * its absence outright rather than staying silent and letting a reader
+   * assume.
+   */
+  it("states plainly that SSO is not available", () => {
+    expect(text).toContain("Single sign-on through an identity provider is not available yet");
+  });
+
+  it("does not claim application-level encryption of connected-account tokens", () => {
+    expect(text.toLowerCase()).not.toContain("tokens are encrypted");
+    expect(text.toLowerCase()).not.toContain("encrypted tokens");
+  });
+
+  it("leads on the control that actually matters, enforced where it is enforced", () => {
+    expect(text).toContain("row-level security");
+    expect(text).toContain("enforced in the database rather than in application code");
+  });
+});
