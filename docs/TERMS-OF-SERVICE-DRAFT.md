@@ -23,11 +23,21 @@ the bottom.
 
 ## Open questions — answer these before counsel review
 
-1. **Legal entity.** What is the contracting entity's exact registered name
-   and form (LLC, Inc., state of formation)? Everything below says
-   **[ENTITY]**. This is the single most important blank.
-2. **Governing law and venue.** Which state's law, and where do disputes go?
-   Arbitration or courts? Class-action waiver or not?
+1. ~~**Legal entity.**~~ **ANSWERED 2026-08-30: KINECT LLC, a Texas limited
+   liability company.** Counsel should confirm the exact registered name
+   matches the Texas SOS filing character for character, including whether it
+   is styled "KINECT LLC" or "KINECT, L.L.C."
+2. **Venue and forum.** Governing law is answered (Texas, see 1). Still open:
+   do disputes go to courts or to binding arbitration, in which county, and
+   is there a class-action waiver? The draft names Texas law and leaves the
+   forum bracketed.
+2a. **Texas-specific items for counsel.** Two worth raising because they are
+   Texas law rather than general drafting: whether to include a Texas
+   Deceptive Trade Practices Act waiver (available for business-to-business
+   contracts meeting the statutory thresholds), and the conspicuousness
+   requirement Texas applies to warranty disclaimers and limitations of
+   liability. Sections 18 and 19 may need to be set in bold or capitals to
+   be enforceable, which changes how they render on the page.
 3. **Refunds.** There is no refund or proration logic in the product today:
    cancelling sets `cancel_at_period_end`, access runs to the end of the paid
    period, and nothing is refunded. Draft says exactly that. Confirm it is
@@ -55,8 +65,8 @@ the bottom.
 
 ## 1. Who this agreement is between
 
-These Terms of Service are an agreement between **[ENTITY]** ("KINECT", "we",
-"us") and the business or individual that creates a KINECT workspace ("you",
+These Terms of Service are an agreement between **KINECT LLC**, a Texas
+limited liability company ("KINECT", "we", "us") and the business or individual that creates a KINECT workspace ("you",
 "Customer"). By creating a workspace, subscribing to a plan, or using the
 KINECT application, you agree to these terms. If you are agreeing on behalf of
 a company, you confirm you have authority to bind it.
@@ -281,10 +291,10 @@ them, you may cancel.
 
 ## 22. Governing law and disputes
 
-These terms are governed by the laws of **[STATE]**, without regard to conflict
-of laws rules. **[Disputes will be resolved in the state and federal courts
-located in [VENUE] / by binding arbitration administered by [BODY] — DECISION
-NEEDED, SEE OPEN QUESTION 2.]**
+These terms are governed by the laws of the **State of Texas**, without regard
+to conflict of laws rules. **[Disputes will be resolved in the state and
+federal courts located in [COUNTY] County, Texas / by binding arbitration
+administered by [BODY] — DECISION NEEDED, SEE OPEN QUESTION 2.]**
 
 ## 23. General
 
