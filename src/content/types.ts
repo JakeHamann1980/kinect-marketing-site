@@ -267,10 +267,9 @@ export interface PlatformPageContent {
   /** The AI section's Kai panel mock: a faithful miniature of the
    * product's actual widget (kinect-platform kai-widget.tsx) playing one
    * looping interaction. `headline` is the panel hero's line, `question`
-   * the user bubble, `quote` Kai's answer, and `sources` the tool names
-   * rendered under it exactly the way the real widget cites them
-   * ("from get_overdue_by_client, ..."). */
-  aiQuote: { headline: string; question: string; quote: string; sources: string[] };
+   * the user bubble, `quote` Kai's answer. (The widget's "from <tool>"
+   * sources line was mocked too, then cut: user-directed 2026-08-31.) */
+  aiQuote: { headline: string; question: string; quote: string };
   closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 

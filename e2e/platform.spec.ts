@@ -56,11 +56,11 @@ test("/platform renders the hero and every anchored capability section", async (
   await expect(page.getByText("Unlimited clients on every plan")).toBeVisible();
   await expect(page.getByText("Six tools")).toBeVisible();
 
-  // The Kai panel mock: the widget's headline and its cited-tools line.
+  // The Kai panel mock: the widget's headline and the asked question.
   // (Playwright treats animated opacity-0 elements as visible, so the CSS
   // interaction loop does not make these assertions timing-dependent.)
   await expect(page.getByText("What do you need to know?")).toBeVisible();
-  await expect(page.getByText(/from get_overdue_by_client/)).toBeVisible();
+  await expect(page.getByText("What's overdue?")).toBeVisible();
 
   // Hero and closing each carry the signup CTA (scoped to main: the nav has
   // its own "Start free"), both handing off to app signup.

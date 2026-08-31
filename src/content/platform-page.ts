@@ -273,15 +273,15 @@ export const platformPage: PlatformPageContent = {
   // `headline` is its hero line and `question` its first suggestion chip,
   // both verbatim from kinect-platform's kai-widget.tsx; the answer draws
   // only on what Kai's tools return (overdue items, stale clients, drafted
-  // updates), and `sources` are two of its six actual tool names, rendered
-  // the way the widget cites them. The client name is invented for the
-  // mock, same as home's aiInsight quote invents a campaign.
+  // updates). The client name is invented for the mock, same as home's
+  // aiInsight quote invents a campaign. The widget's "from <tool>" sources
+  // line is deliberately NOT mocked (user-directed 2026-08-31): raw tool
+  // names read as debug output on a marketing page.
   aiQuote: {
     headline: "What do you need to know?",
     question: "What's overdue?",
     quote:
       "Four items are overdue across two clients, and Meridian Consulting has gone quiet for 15 days. I drafted a check-in you can edit before it goes out.",
-    sources: ["get_overdue_by_client", "get_stale_clients"],
   },
 
   closing: {

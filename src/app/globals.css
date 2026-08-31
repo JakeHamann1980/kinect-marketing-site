@@ -834,8 +834,8 @@
 
 /*
  * The mock's looping interaction: the question bubble lands, Kai's
- * "Looking…" state shows, the answer and its tools-used line arrive, hold,
- * then the cycle resets. One shared 9s clock, each element keyed to its
+ * "Looking…" state shows, the answer arrives, hold, then the cycle
+ * resets. One shared 9s clock, each element keyed to its
  * own window of it, so the sequence stays in step without JavaScript.
  * "Looking…" and the answer share a grid cell in the markup, which is why
  * neither needs a height keyframe here.
@@ -855,20 +855,14 @@
   32%, 90% { opacity: 1; transform: none; }
   96%, 100% { opacity: 0; transform: none; }
 }
-@keyframes kx-kai-src {
-  0%, 34% { opacity: 0; }
-  39%, 90% { opacity: 1; }
-  96%, 100% { opacity: 0; }
-}
 .kx-kai-q     { opacity: 0; animation: kx-kai-q 9s ease-in-out infinite; }
 .kx-kai-think { opacity: 0; animation: kx-kai-think 9s ease-in-out infinite; }
 .kx-kai-a     { opacity: 0; animation: kx-kai-a 9s ease-in-out infinite; }
-.kx-kai-src   { opacity: 0; animation: kx-kai-src 9s ease-in-out infinite; }
 
 /* Reduced motion: the finished conversation, statically. The transient
  * "Looking…" state stays hidden -- it is motion, not content. */
 @media (prefers-reduced-motion: reduce) {
-  .kx-kai-q, .kx-kai-a, .kx-kai-src {
+  .kx-kai-q, .kx-kai-a {
     animation: none !important;
     opacity: 1;
     transform: none;

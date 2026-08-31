@@ -510,12 +510,9 @@ export default async function PlatformPage() {
                                 <p className="kx-kai-think [grid-area:1/1] text-[13px] text-ink-3">
                                   Looking…
                                 </p>
-                                <div className="kx-kai-a [grid-area:1/1] max-w-[92%] text-[13px] leading-relaxed text-ink-2">
-                                  <p>{page.aiQuote.quote}</p>
-                                  <p className="kx-kai-src mt-1.5 text-[11px] text-muted">
-                                    from {page.aiQuote.sources.join(", ")}
-                                  </p>
-                                </div>
+                                <p className="kx-kai-a [grid-area:1/1] max-w-[92%] text-[13px] leading-relaxed text-ink-2">
+                                  {page.aiQuote.quote}
+                                </p>
                               </div>
                             </div>
                           </div>

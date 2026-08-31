@@ -167,20 +167,12 @@ export default defineType({
       name: "aiQuote",
       title: "Kai Panel Mock",
       description:
-        "The AI section's miniature of the real Kai widget: the panel headline, the asked question, Kai's answer, and the tool names cited under it.",
+        "The AI section's miniature of the real Kai widget: the panel headline, the asked question, and Kai's answer.",
       type: "object",
       fields: [
         defineField({ name: "headline", type: "string", validation: (r) => r.required() }),
         defineField({ name: "question", type: "string", validation: (r) => r.required() }),
         defineField({ name: "quote", type: "text", rows: 3, validation: (r) => r.required() }),
-        defineField({
-          name: "sources",
-          description:
-            'Tool names rendered as the answer\'s "from ..." line, the way the widget cites them.',
-          type: "array",
-          of: [{ type: "string" }],
-          validation: (r) => r.required().min(1),
-        }),
       ],
       validation: (r) => r.required(),
     }),
