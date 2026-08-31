@@ -42,9 +42,11 @@ export function GET(req: NextRequest) {
     ? [`${personaUrl(persona)}/`]
     : [
         `${SITE_URL}/`,
-        // /pricing canonicalizes to the apex (see its page.tsx), so like
-        // the legal pages it is listed on the root sitemap only.
+        // /pricing and /platform canonicalize to the apex (see each
+        // page.tsx), so like the legal pages they are listed on the root
+        // sitemap only.
         `${SITE_URL}/pricing`,
+        `${SITE_URL}/platform`,
         ...LEGAL_SLUGS.map((slug) => `${SITE_URL}/legal/${slug}`),
       ];
 

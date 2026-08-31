@@ -4,7 +4,7 @@
  * controller's graceful-fallback design decision (see src/lib/sanity.ts's
  * own top comment) -- onto Sanity documents with stable ids, via
  * `createOrReplace` (so reseeding is idempotent: rerunning this script
- * overwrites the same nine documents rather than duplicating them).
+ * overwrites the same documents rather than duplicating them).
  *
  * Run via `npm run seed:sanity`, which is
  * `sanity exec scripts/seed-sanity.ts --with-user-token`: `--with-user-token`
@@ -44,7 +44,8 @@ import { terms } from "../src/content/legal/terms";
 import { security } from "../src/content/legal/security";
 import { cookies } from "../src/content/legal/cookies";
 import { pricingPage } from "../src/content/pricing-page";
-import type { Card, PersonaPageContent } from "../src/content/types";
+import { platformPage } from "../src/content/platform-page";
+import type { Card, PersonaPageContent, PlatformSection } from "../src/content/types";
 import type { LegalPage } from "../src/content/legal/types";
 
 const client = getCliClient({ apiVersion: "2026-07-25" });
@@ -242,6 +243,49 @@ const pricingPageDoc = {
   seo: pricingPage.seo,
 };
 
+/**
+ * The /platform overview (promoted out of draft 2026-08-30). Its sections'
+ * optional screenshots reference the SAME four assets buildHomeDoc already
+ * uploads (the platform page deliberately reuses the persona/home captures,
+ * see src/content/platform-page.ts), so this takes a filename -> asset-id
+ * map instead of uploading anything itself. The `aspect` field on local
+ * screenshot content is NOT seeded: the projection derives it from the
+ * asset's own metadata (src/lib/sanity.ts), so seeding it would only create
+ * a second source of truth to drift.
+ */
+function platformPageDoc(assetIdByFilename: Record<string, string>) {
+  return {
+    _id: "platformPage",
+    _type: "platformPage",
+    hero: platformPage.hero,
+    trustChips: platformPage.trustChips,
+    stat: platformPage.stat,
+    aiQuote: platformPage.aiQuote,
+    sections: arr(
+      "platformSection",
+      platformPage.sections.map((section: PlatformSection) => {
+        const { screenshot, cards, ...rest } = section;
+        const doc: Record<string, unknown> = { ...rest };
+        // Card entries are an array of objects, so they need the same
+        // _key/_type stamping every other object array gets.
+        if (cards) doc.cards = arr("platformCard", cards);
+        if (screenshot) {
+          const assetId = assetIdByFilename[basename(screenshot.src)];
+          if (!assetId) {
+            throw new Error(
+              `[seed-sanity] platform section "${section.id}" references ${screenshot.src}, which buildHomeDoc did not upload`,
+            );
+          }
+          doc.screenshot = screenshotField(assetId, screenshot.alt, screenshot.caption);
+        }
+        return doc;
+      }),
+    ),
+    closing: platformPage.closing,
+    seo: platformPage.seo,
+  };
+}
+
 function legalDoc(id: string, content: LegalPage) {
   return {
     _id: id,
@@ -272,6 +316,12 @@ async function run() {
     homeDoc,
     settingsDoc,
     pricingPageDoc,
+    platformPageDoc({
+      "analytics-full.png": analyticsFullId,
+      "consultant-hq.png": consultantHqId,
+      "portal-board.png": portalBoardId,
+      "services-firm-hq.png": servicesHqId,
+    }),
     personaDoc("personaPage-agency", agency, analyticsFullId),
     // personaPage-coach is still seeded. The lane is retired from marketing
     // but coach.kinectnow.com still serves it, and `createOrReplace` never

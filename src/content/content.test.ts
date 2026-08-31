@@ -5,6 +5,8 @@ import { coach } from "./coach";
 import { services } from "./services";
 import { consultant } from "./consultant";
 import { settings } from "./settings";
+import { pricingPage } from "./pricing-page";
+import { platformPage } from "./platform-page";
 import { privacy } from "./legal/privacy";
 import { terms } from "./legal/terms";
 import { security } from "./legal/security";
@@ -18,6 +20,11 @@ const allText = JSON.stringify([
   consultant,
   services,
   settings,
+  // Both dedicated-page modules get the same guardrails as everything else:
+  // pricingPage predates this list and was simply missing; platformPage
+  // joined when /platform shipped (2026-08-30).
+  pricingPage,
+  platformPage,
   privacy,
   terms,
   security,

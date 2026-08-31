@@ -14,7 +14,7 @@ const SIZES: { width: number; expectedFontSize: string }[] = [
   { width: 400, expectedFontSize: "29px" },
 ];
 
-const PAGES = ["/", "/agency"];
+const PAGES = ["/", "/agency", "/platform"];
 
 for (const path of PAGES) {
   test.describe(`responsive ${path}`, () => {

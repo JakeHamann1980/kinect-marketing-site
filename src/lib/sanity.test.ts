@@ -5,12 +5,14 @@ import {
   assertSettingsShape,
   assertLegalShape,
   assertPricingPageShape,
+  assertPlatformPageShape,
 } from "./sanity";
 import { home } from "@/content/home";
 import { agency } from "@/content/agency";
 import { settings } from "@/content/settings";
 import { privacy } from "@/content/legal/privacy";
 import { pricingPage } from "@/content/pricing-page";
+import { platformPage } from "@/content/platform-page";
 
 /**
  * Release-review fix (2026-07-26): a Sanity document whose `screenshot`
@@ -102,6 +104,44 @@ describe("assertSettingsShape", () => {
     // @ts-expect-error -- see above.
     doc.pricing.tiers = null;
     expect(() => assertSettingsShape(doc)).toThrow(/pricing\.tiers/);
+  });
+});
+
+describe("assertPlatformPageShape", () => {
+  it("accepts real platform page content unchanged", () => {
+    expect(() => assertPlatformPageShape(platformPage)).not.toThrow();
+  });
+
+  it("rejects a null sections array (the page maps sections directly)", () => {
+    const doc = structuredClone(platformPage);
+    // @ts-expect-error -- see above.
+    doc.sections = null;
+    expect(() => assertPlatformPageShape(doc)).toThrow(/"sections"/);
+  });
+
+  it("rejects a present-but-hollow section screenshot (unguarded <Image src>)", () => {
+    const doc = structuredClone(platformPage);
+    const withShot = doc.sections.findIndex((s) => s.screenshot);
+    // @ts-expect-error -- simulates the image field resolving but the
+    // dereferenced asset URL failing to resolve (src ends up undefined),
+    // the same crash class assertPersonaShape guards against.
+    doc.sections[withShot].screenshot.src = undefined;
+    expect(() => assertPlatformPageShape(doc)).toThrow(
+      new RegExp(`sections\\[${withShot}\\]\\.screenshot\\.src`),
+    );
+  });
+
+  it("accepts a section with no screenshot at all (the field is optional)", () => {
+    const doc = structuredClone(platformPage);
+    delete doc.sections[0].screenshot;
+    expect(() => assertPlatformPageShape(doc)).not.toThrow();
+  });
+
+  it("rejects a section with neither points nor cards (an empty band)", () => {
+    const doc = structuredClone(platformPage);
+    delete doc.sections[0].points;
+    delete doc.sections[0].cards;
+    expect(() => assertPlatformPageShape(doc)).toThrow(/neither points nor cards/);
   });
 });
 

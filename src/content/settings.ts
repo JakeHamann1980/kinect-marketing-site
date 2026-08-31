@@ -33,13 +33,15 @@ export const settings: SiteSettings = {
     // NEXT_PUBLIC_ENABLE_DRAFT_PAGES=1 (see src/lib/draft-pages.ts). Its
     // purpose is still an open question -- there is no shipped product to
     // document while the site is a pre-launch waitlist.
-    // "Product" gets the same treatment (user-directed 2026-08-03, second
-    // pass): it was still shipping as a dead "#" on live. Its real
-    // destination is the /platform overview, so it now points there and
-    // carries the same `draft` gate -- hidden on live until /platform is
-    // approved, live-and-clickable locally. That leaves the production nav
-    // with only destinations that actually exist: Solutions and Pricing.
-    { label: "Product", href: "/platform", draft: true },
+    // Points at the /platform overview. It carried the same `draft` gate
+    // as Docs from 2026-08-03 (hidden on live until the page was approved);
+    // Jake asked for the page on 2026-08-30, so the content was rebuilt
+    // against the platform repo's real feature set and the gate came off.
+    // Relabeled "Product" -> "Platform" (user-directed 2026-08-31) to match
+    // the page and the footer column. Remember: the Footer reads this
+    // file's Sanity copy, so this change needs a reseed (npm run
+    // seed:sanity) to reach production.
+    { label: "Platform", href: "/platform" },
     { label: "Pricing", href: "/pricing" },
     { label: "Docs", href: "/docs", draft: true },
   ],
@@ -239,12 +241,11 @@ export const settings: SiteSettings = {
         ],
       },
       {
-        // user-directed 2026-08-03: the whole Platform column is hidden on
-        // the live site (every link was a dead "#") and now points at the
-        // built-out /platform overview's section anchors, visible only with
-        // drafts enabled. See src/lib/draft-pages.ts.
+        // Points at the /platform overview's section anchors. Hidden as a
+        // draft from 2026-08-03 (every link was a dead "#" before that);
+        // shipped 2026-08-30 with the page itself. The anchor ids live in
+        // src/content/platform-page.ts -- change them together.
         heading: "Platform",
-        draft: true,
         links: [
           { label: "Client portal", href: "/platform#client-portal" },
           { label: "Analytics", href: "/platform#analytics" },

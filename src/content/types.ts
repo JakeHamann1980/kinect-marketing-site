@@ -185,6 +185,94 @@ export interface PricingPageContent {
   closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
 }
 
+/**
+ * The icon vocabulary for /platform's feature cards, rendered by the small
+ * stroke-icon registry in src/app/(site)/platform/page.tsx (same visual
+ * language as the checkmark: 16 viewBox, round caps, currentColor). The
+ * page falls back to the check for any name it does not recognize, so an
+ * older Sanity doc or a typo degrades gracefully instead of crashing.
+ */
+export type PlatformIcon =
+  | "bell"
+  | "chat"
+  | "paperclip"
+  | "lock"
+  | "calendar"
+  | "clock"
+  | "grid"
+  | "form"
+  | "doc"
+  | "search"
+  | "megaphone"
+  | "card"
+  | "key"
+  | "users"
+  | "shield"
+  | "database"
+  | "globe"
+  | "download"
+  | "spark";
+
+/**
+ * One capability section on the /platform overview (promoted out of
+ * src/content/draft/ when the page shipped). `id` is the section's anchor;
+ * the footer's Platform column links straight to these, so changing an id
+ * means changing src/content/settings.ts's footer links in the same commit.
+ *
+ * Exactly one of `points`/`cards` is set, and it selects the layout:
+ * `points` renders as the checklist beside a screenshot or the Kai quote
+ * card (the two-column split), `cards` as the feature-card grid where each
+ * entry carries its own icon (user-directed 2026-08-31: relevant icons per
+ * card, not a generic check).
+ *
+ * `screenshot` is optional: only the sections with a real capture of that
+ * capability carry one (the captures come from the platform repo's
+ * e2e/marketing-screenshots.spec.ts pipeline, same as the persona pages').
+ * `aspect` is the image's intrinsic width/height ratio, used to reserve
+ * layout space before the image loads; the Sanity projection derives it
+ * from the uploaded asset's own metadata, so a replaced image keeps its
+ * true proportions.
+ */
+export interface PlatformSection {
+  id: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+  points?: string[];
+  cards?: { icon: PlatformIcon; text: string }[];
+  screenshot?: { src: string; alt: string; caption: string; aspect?: number };
+}
+
+export interface PlatformPageContent {
+  seo: Seo;
+  hero: {
+    eyebrow: string;
+    title: string;
+    gradientPhrase: string;
+    intro: string;
+    /** Hero CTA pair: primary hands off to app signup (signupUrl()),
+     * secondary routes to /pricing. */
+    primaryCta: string;
+    secondaryCta: string;
+  };
+  /** Mono reassurance chips under the hero CTAs, same language as the
+   * pricing page's trustLine. Claims must already be shipped elsewhere on
+   * the site (pricing cards / trust chips), not new promises. */
+  trustChips: string[];
+  sections: PlatformSection[];
+  /** The mid-page consolidation band ("Six tools" / what one login
+   * replaces), rendered in the pricing page's stat-band structure with the
+   * bento stat card's gradient value treatment. */
+  stat: { title: string; value: string; caption: string };
+  /** The AI section's Kai panel mock: a faithful miniature of the
+   * product's actual widget (kinect-platform kai-widget.tsx) playing one
+   * looping interaction. `headline` is the panel hero's line, `question`
+   * the user bubble, `quote` Kai's answer. (The widget's "from <tool>"
+   * sources line was mocked too, then cut: user-directed 2026-08-31.) */
+  aiQuote: { headline: string; question: string; quote: string };
+  closing: { headline: string; gradientPhrase: string; subhead: string; cta: string };
+}
+
 export interface SiteSettings {
   /**
    * `draft` (user-directed 2026-08-03) hides an entry from the live site
