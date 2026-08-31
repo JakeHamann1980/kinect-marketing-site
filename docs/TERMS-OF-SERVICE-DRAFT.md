@@ -23,15 +23,22 @@ the bottom.
 
 ## Open questions — answer these before counsel review
 
-1. ~~**Legal entity.**~~ **ANSWERED 2026-08-30: KINECT LLC, a Texas limited
-   liability company.** Counsel should confirm the exact registered name
-   matches the Texas SOS filing character for character, including whether it
-   is styled "KINECT LLC" or "KINECT, L.L.C."
+1. ~~**Legal entity.**~~ **ANSWERED 2026-08-30, from the Certificate of
+   Formation: Kinect LLC, a Texas limited liability company. Texas SOS filing
+   #806751919, filed 08/17/2026.**
+
+   Note the capitalization. The certificate reads **Kinect LLC**, title case.
+   The brand is styled KINECT in all caps everywhere on the site, but the
+   contracting party in an agreement has to be the name as filed, so the
+   entity appears as "Kinect LLC" in section 1 and the all-caps KINECT is
+   used only as the defined short name thereafter.
 2. **Venue and forum.** Governing law is answered (Texas, see 1). Still open:
    do disputes go to courts or to binding arbitration, in which county, and
    is there a class-action waiver? The draft names Texas law and leaves the
    forum bracketed.
-2a. **Texas-specific items for counsel.** Two worth raising because they are
+2a. **Texas-specific items for counsel.** (Renderer note: the site can now
+   render bold in legal prose, added 2026-08-30, so a conspicuousness
+   requirement is no longer blocked on a template change.) Two worth raising because they are
    Texas law rather than general drafting: whether to include a Texas
    Deceptive Trade Practices Act waiver (available for business-to-business
    contracts meeting the statutory thresholds), and the conspicuousness
@@ -65,7 +72,7 @@ the bottom.
 
 ## 1. Who this agreement is between
 
-These Terms of Service are an agreement between **KINECT LLC**, a Texas
+These Terms of Service are an agreement between **Kinect LLC**, a Texas
 limited liability company ("KINECT", "we", "us") and the business or individual that creates a KINECT workspace ("you",
 "Customer"). By creating a workspace, subscribing to a plan, or using the
 KINECT application, you agree to these terms. If you are agreeing on behalf of

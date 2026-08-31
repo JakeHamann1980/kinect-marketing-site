@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { renderLegalText } from "./legal-links";
+import { renderLegalText } from "./legal-markup";
 
 const html = (text: string) => renderToStaticMarkup(<>{renderLegalText(text)}</>);
 
@@ -44,6 +44,39 @@ describe("renderLegalText", () => {
     expect(out).not.toContain("<a");
     expect(out).toContain("here");
     expect(out).toContain("now");
+  });
+
+  /**
+   * Texas applies a conspicuousness requirement to warranty disclaimers and
+   * limitations of liability. KINECT is a Texas LLC, so the Terms of Service
+   * may need those sections visually set apart to be ENFORCEABLE - which
+   * makes this markup a legal requirement rather than a styling nicety.
+   */
+  it("renders bold as a real strong element", () => {
+    const out = html("THE SERVICE IS PROVIDED **AS IS** AND WITHOUT WARRANTY.");
+    expect(out).toContain("<strong");
+    expect(out).toContain("AS IS</strong>");
+    expect(out).toContain("AND WITHOUT WARRANTY.");
+  });
+
+  it("bolds a whole clause, not just a word", () => {
+    const out = html("**Our total liability will not exceed the fees you paid us.** See above.");
+    expect(out).toContain("Our total liability will not exceed the fees you paid us.</strong>");
+    expect(out).toContain("See above.");
+  });
+
+  it("mixes bold and links in one paragraph", () => {
+    const out = html("**Important:** see the [policy](/legal/privacy) first.");
+    expect(out).toContain("<strong");
+    expect(out).toContain('href="/legal/privacy"');
+  });
+
+  it("leaves an unmatched asterisk pair alone", () => {
+    expect(html("2 * 3 * 4 = 24")).toBe("2 * 3 * 4 = 24");
+  });
+
+  it("escapes inside bold too", () => {
+    expect(html("**<script>x</script>**")).toContain("&lt;script&gt;");
   });
 
   it("handles several links in one paragraph", () => {
