@@ -12,7 +12,7 @@ import { settings } from "@/content/settings";
  * nothing to provision it against, and the webhook would drop the event.
  *
  * So the site hands off to signup instead. Creating a workspace starts the
- * 14-day trial automatically, and checkout happens in-app where the ids
+ * 30-day trial automatically, and checkout happens in-app where the ids
  * exist. That also matches the offer: sending someone straight to a payment
  * page would charge a person who is entitled to try it free first.
  *

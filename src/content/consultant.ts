@@ -138,7 +138,7 @@ export const consultant: PersonaPageContent = {
   closing: {
     headline: "Advice is easy to doubt. Evidence is not.",
     gradientPhrase: "Evidence is not.",
-    subhead: "Free for 14 days. Renew on proof, not goodwill.",
+    subhead: "Free for 30 days. Renew on proof, not goodwill.",
     secondaryCta: "Not you? Pick another lane",
   },
 };

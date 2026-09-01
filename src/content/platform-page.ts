@@ -50,7 +50,7 @@ export const platformPage: PlatformPageContent = {
   // Every chip is copy already shipped on /pricing (trustLine and the tier
   // cards), not a new claim.
   trustChips: [
-    "Free for 14 days",
+    "Free for 30 days",
     "No card, no demo call, no onboarding fee",
     "Unlimited clients on every plan",
     "Cancel anytime",
@@ -287,7 +287,7 @@ export const platformPage: PlatformPageContent = {
   closing: {
     headline: "See it with your own client.",
     gradientPhrase: "your own client.",
-    subhead: "Free for 14 days. No card, no demo call, no onboarding fee.",
+    subhead: "Free for 30 days. No card, no demo call, no onboarding fee.",
     cta: "Start free",
   },
 };
