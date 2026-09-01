@@ -19,6 +19,16 @@ platform repo, not assumed. Where a term depends on a business or legal
 decision I cannot make, it appears in **[BRACKETS]** and is listed again at
 the bottom.
 
+**Revised 2026-09-01 — section 10 changed, and one change NARROWS a term.**
+The free trial went from 14 days to 30. In the same change the post-trial
+grace went from 7 days to **48 hours**, which is a reduction in what this
+draft previously promised. Both now match the platform
+(`20260916100000_trial_thirty_days.sql`). Nothing was breached, because this
+document has never been published and no customer has been shown it — but if
+it has already gone to counsel, the shortened grace is the line to raise
+rather than let them find in a diff. The separate 7-day grace for a FAILED
+PAYMENT in section 12 is unchanged and is a different mechanism.
+
 ---
 
 ## Open questions — answer these before counsel review
@@ -182,12 +192,12 @@ change takes effect for your subscription, and you may cancel before it does.
 
 ## 10. Free trial
 
-New Workspaces start with a 14-day free trial on Kinect Plus. **We do not take
+New Workspaces start with a 30-day free trial on Kinect Plus. **We do not take
 a payment method to start a trial**, so nothing is charged and nothing converts
 automatically. If you do not choose a plan, the trial simply ends.
 
-After the trial ends you keep full access for a further 7 days. After that, the
-Workspace becomes read-only as described in section 12.
+After the trial ends you keep full access for a further 48 hours. After that,
+the Workspace becomes read-only as described in section 12.
 
 ## 11. Storage
 
@@ -327,8 +337,8 @@ Questions about these terms: hello@kinectnow.com.
 | --- | --- |
 | $149 / $399 / $799, flat, unlimited clients | `src/content/settings.ts` (website) |
 | No per-seat or per-client charge | same |
-| 14-day trial on Kinect Plus, no card taken | `app.start_workspace_trial()`, `20260727024914_billing.sql` |
-| 7-day grace after trial, then read-only | `app.workspace_limits`, `20260908100000_trial_reminders.sql` |
+| 30-day trial on Kinect Plus, no card taken | `app.start_workspace_trial()`, `20260916100000_trial_thirty_days.sql` |
+| 48-hour grace after trial, then read-only | `app.workspace_limits`, `20260916100000_trial_thirty_days.sql` |
 | past_due keeps access 7 days | `app.workspace_limits`, past_due branch |
 | Cancellation runs to end of paid period | `cancel_at_period_end` in `apply-event.ts` |
 | No refunds or proration | no refund logic exists anywhere in the platform |

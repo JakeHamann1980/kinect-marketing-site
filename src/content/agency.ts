@@ -149,7 +149,7 @@ export const agency: PersonaPageContent = {
     headline: "Be the agency that shows, not the one that tells.",
     gradientPhrase: "not the one that tells.",
     subhead:
-      "Free for 14 days. Bring a real client and decide on evidence.",
+      "Free for 30 days. Bring a real client and decide on evidence.",
     secondaryCta: "Not you? Pick another lane",
   },
 };

@@ -212,7 +212,7 @@ export const home: HomeContent = {
     {
       question: "How is it priced?",
       answer:
-        "Flat monthly by plan, no per-seat charges. Every workspace starts with 14 days free on Kinect Plus, no card required.",
+        "Flat monthly by plan, no per-seat charges. Every workspace starts with 30 days free on Kinect Plus, no card required.",
     },
     {
       question: "Is my client data secure?",
@@ -247,6 +247,6 @@ export const home: HomeContent = {
     headline: "Stop reporting on the work. Start showing it.",
     gradientPhrase: "Start showing it.",
     subhead:
-      "Free for 14 days on Kinect Plus. No card, no demo call, no onboarding fee.",
+      "Free for 30 days on Kinect Plus. No card, no demo call, no onboarding fee.",
   },
 };

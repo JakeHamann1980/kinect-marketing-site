@@ -168,7 +168,7 @@ export const services: PersonaPageContent = {
   closing: {
     headline: "Stop being the status report.",
     gradientPhrase: "the status report.",
-    subhead: "Free for 14 days. Open one engagement and see what your client sees.",
+    subhead: "Free for 30 days. Open one engagement and see what your client sees.",
     secondaryCta: "Not you? Pick another lane",
   },
 };
