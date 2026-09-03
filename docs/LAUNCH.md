@@ -70,7 +70,7 @@ npm run build:check && npm run test:e2e
 ## 5. Search & AI discoverability
 
 - [ ] **[Jake]** Search Console: **partially done** -- a `google-site-verification` TXT record is live on `kinectnow.com` (verified 2026-08-17), and a DNS-verified *Domain* property covers every subdomain at once, which is stronger than four separate URL-prefix properties. Confirm which property type was actually created before doing this four times. Per-host sitemaps are confirmed serving (apex 6 URLs, `agency.` 1). Original: verify all four hostname properties; submit each host's own `/sitemap.xml` (robots.txt on each host already advertises its own sitemap).
-- [ ] **[dev]** Google Rich Results Test on `/`, all three persona pages, one legal page — expect Organization, SoftwareApplication with AggregateOffer ($149–$799, 3 offers), FAQPage where applicable. (Automated JSON-LD validation already runs in `build:check`; this is the Google-side confirmation.)
+- [ ] **[dev]** Google Rich Results Test on `/`, all three persona pages, one legal page — expect Organization, SoftwareApplication with AggregateOffer ($149–$1499, 4 offers), FAQPage where applicable. (Automated JSON-LD validation already runs in `build:check`; this is the Google-side confirmation.)
 - [ ] **[Jake]** Off-site action list from the spec (§8a-iii), in priority order: G2 + Capterra profiles with early reviews; entity cleanup ("KINECT client portal" naming everywhere, Wikidata attempt); listicle outreach (FuseBase/Taskip/Softr/Agiled roundups, Zapier/ClickUp blogs); disclosed Reddit participation; Product Hunt + YouTube walkthrough. See the GTM strategy doc for cadence.
 
 ## 6. Link previews

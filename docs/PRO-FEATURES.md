@@ -26,6 +26,24 @@
 > - **SSO and multi-workspace billing: still not built**, still `soon` on
 >   `/pricing`, still waiting on a named customer who has asked.
 >
+> **UPDATE 2026-09-01 — both of those moved off Kinect Pro.** Kinect Enterprise
+> shipped as a fourth tier ($1,499/mo base, 3 locations included, $250/mo per
+> location after), and multi-entity billing is its entire proposition, so
+> leaving it promised on Pro would have sold the new tier against itself. On
+> `/pricing` the SSO and "multiple locations under one bill" rows are now `no`
+> for Pro and `soon` for Enterprise, and both lines left the Pro card in
+> `settings.ts`. That is a takeaway from published copy; it is defensible only
+> because no plan has ever had a `stripe_price_id`, so nobody has ever bought
+> Pro on the strength of either line.
+>
+> Nothing in §4 below got easier. The scoping there is still the scoping, and
+> the tier was published precisely to find out whether the named customer it
+> waits on exists. Three more Enterprise rows joined the same `soon` column
+> for the same reason: cross-location roll-up, organization-level admin, and a
+> workspace audit log. The last was not asked for by anyone — it is listed
+> because a tenant-visible audit log and SSO are the two things an enterprise
+> security review asks for first, and neither exists.
+>
 > Related fix, same day: `src/content/home.ts` claimed SSO twice as a shipped
 > capability (a security pillar and the "Is my client data secure?" FAQ).
 > Both replaced with two-factor, which is real.

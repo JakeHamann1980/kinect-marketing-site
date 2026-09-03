@@ -135,7 +135,11 @@ export default function PricingSection({
           }}
         />
       ) : null}
-      <div className="relative mx-auto max-w-[1000px]">
+      {/* Widened from 1000px with the fourth tier. At 1000px, four cards are
+          ~236px each; at 1200px they are ~286px, close to the ~321px three
+          cards had. The section head's own copy stays at max-w-[520px] below,
+          so the wider container only affects the card row. */}
+      <div className="relative mx-auto max-w-[1200px]">
         <div className="text-center">
           <SectionHead context={dark ? "dark" : "light"}>{headline}</SectionHead>
           <p
@@ -148,12 +152,21 @@ export default function PricingSection({
           </p>
         </div>
 
-        {/* 3-col grid: holds 3 columns from kx-md straight through to
-            desktop, no kx-lg tier -- see the matching comment in
-            PillarCards.tsx for the prototype evidence (dc.html's
-            max-width:1024px block only overrides the literal
-            `repeat(4,1fr)` selector, never `repeat(3,1fr)`). */}
-        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-3">
+        {/* 4-col grid as of 2026-09-01 (Kinect Enterprise). This WAS
+            `kx-md:grid-cols-3` with no kx-lg step, on the evidence that
+            dc.html's max-width:1024px block only overrides the literal
+            `repeat(4,1fr)` selector and never `repeat(3,1fr)`. That evidence
+            now cuts the other way: at four cards the prototype's own rule
+            applies, and design-reference/README.md:220 states it -- "≤1024px,
+            4-column grids become 2".
+            So: two columns from kx-md, four only at kx-xl (1280). NOT kx-lg,
+            which is what StepCards.tsx uses for its own 4-up -- measured at a
+            1024px viewport these cards land at 226px, about twenty characters
+            a line, and one detail line wrapped to four. StepCards gets away
+            with 1024 because its cards carry a title and a sentence; these
+            carry a 42px price and a seven-line list. See the kx-xl note in
+            globals.css. Three-across is gone deliberately. */}
+        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-xl:grid-cols-4">
           {tiers.map((tier) => {
             const cardClass = dark
               ? tier.popular

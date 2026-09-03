@@ -24,9 +24,14 @@ nobody is ever charged automatically for growing.
 
 Suggested notification thresholds: 80% and 100% of the included allowance.
 
-**Kinect Infinity** is a planned fourth tier. Its storage allowance is
-deliberately undecided, and it is explicitly **not** unlimited storage
-(Jake, 2026-08-03). Do not assume unlimited when scoping it.
+**Kinect Enterprise** took the fourth-tier slot on 2026-09-01, superseding
+the planned "Kinect Infinity". Its allowance is **5 TB**, and the pricing page
+calls it *pooled* -- one allowance shared across a firm's locations rather
+than 5 TB granted per office. The platform enforces it PER WORKSPACE today
+(`20260921100000_enterprise_plan.sql`), because per-workspace is the only
+quota machinery that exists; pooling arrives with the org entity that
+consolidated billing needs. It is explicitly **not** unlimited storage
+(Jake, 2026-08-03, and still true).
 
 ## What exists today
 

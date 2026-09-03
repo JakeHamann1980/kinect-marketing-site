@@ -439,6 +439,23 @@
   --breakpoint-kx-sm: 30rem;   /* 480px */
   --breakpoint-kx-md: 53.75rem; /* 860px */
   --breakpoint-kx-lg: 64rem;   /* 1024px */
+  /*
+   * kx-xl added 2026-09-01 for the four-tier pricing grid, and used ONLY
+   * there. The three steps above are the documented breakpoints and stay the
+   * default vocabulary; this is a fourth column's admission price, not a new
+   * general-purpose step.
+   *
+   * Why not kx-lg, which is what StepCards uses for its own 4-up: measured at
+   * a 1024px viewport the pricing cards come out 226px wide, about twenty
+   * characters a line, and "Multiple locations under one bill, coming soon"
+   * wrapped to FOUR lines. StepCards survives 1024 because its cards carry a
+   * title and one short sentence; a pricing card carries a 42px price and a
+   * seven-line detail list. At 1280 the same card is 277px and that line fits
+   * in two. design-reference/README.md also says "<=1024px, 4-column grids
+   * become 2" in as many words, which kx-lg (min-width:1024) breaks by one
+   * pixel and this does not.
+   */
+  --breakpoint-kx-xl: 80rem;   /* 1280px */
 }
 
 /*

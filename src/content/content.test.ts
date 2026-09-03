@@ -49,9 +49,9 @@ describe("copy constraints", () => {
       /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{1F1E6}-\u{1F1FF}]/u,
     );
   });
-  it("pricing tiers are 149/399/799 with Growth popular", () => {
+  it("pricing tiers are 149/399/799/1499 with Kinect Plus popular", () => {
     const tiers = settings.pricing.tiers;
-    expect(tiers.map((t) => t.price)).toEqual([149, 399, 799]);
+    expect(tiers.map((t) => t.price)).toEqual([149, 399, 799, 1499]);
     expect(tiers.find((t) => t.popular)?.name).toBe("Kinect Plus");
   });
 });

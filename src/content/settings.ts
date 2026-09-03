@@ -93,9 +93,12 @@ export const settings: SiteSettings = {
     // still what the home/persona teaser sections render. Detail lines are
     // drawn strictly from claims already shipped elsewhere on the site.
     // Tier names (pricing review): Starter/Growth/Scale became
-    // Kinect/Kinect Plus/Kinect Pro. A fourth tier, Kinect Infinity, is
-    // planned around the Growth Engine and is deliberately absent here until
-    // it is scoped and priced.
+    // Kinect/Kinect Plus/Kinect Pro. The fourth slot was reserved for a
+    // planned "Kinect Infinity" built around the Growth Engine; as of
+    // 2026-09-01 KINECT ENTERPRISE TAKES IT, aimed at multi-location firms
+    // rather than at the Growth Engine. Infinity is not deferred, it is
+    // superseded -- do not reintroduce it as a fifth tier without deciding
+    // what it sells that Enterprise does not.
     //
     // These are DISPLAY names only. The database keys stay `starter`,
     // `growth` and `scale` (platform: public.plans.key), because those are
@@ -199,6 +202,14 @@ export const settings: SiteSettings = {
         // the workspace's own hostname. Operator sign-in stays on
         // app.kinectnow.com. "Your own domain" unqualified would read as a
         // white-label login, which is the expensive version we cut.
+        //
+        // 2026-09-01: "SSO, coming soon" and "Multiple workspaces under one
+        // bill, coming soon" LEFT this card and moved up to Kinect Enterprise,
+        // where multi-location is the whole proposition. That is a takeaway
+        // from published copy, so it is recorded rather than quietly done:
+        // every plan's `stripe_price_id` is still NULL, nobody has ever been
+        // able to buy Pro, and so nobody bought it on the strength of either
+        // line. If that stops being true, this is the paragraph to reread.
         features: ["Your own branding", "your own domain", "priority support"],
         detail: [
           "Everything in Kinect Plus",
@@ -206,10 +217,50 @@ export const settings: SiteSettings = {
           "Your own domain on client document links",
           "Priority support",
           "2 TB storage, more available",
-          "SSO, coming soon",
-          "Multiple workspaces under one bill, coming soon",
         ],
         cta: "Choose Kinect Pro",
+      },
+      {
+        // Kinect Enterprise (2026-09-01). The multi-location tier: one bill
+        // across several offices instead of one workspace, one subscription
+        // and one trial per office.
+        //
+        // BE HONEST ABOUT WHAT SHIPS. On day one this is Kinect Pro plus a
+        // larger storage number plus a named human. The four "coming soon"
+        // lines are carrying the proposition, and they are not decoration:
+        // consolidated billing does not exist, is not started, and needs an
+        // org entity above `workspaces` before it can (see
+        // docs/PRO-FEATURES.md). The tier ships now so a real multi-location
+        // buyer can surface; the doc's own advice is to build it against a
+        // named customer rather than a guess.
+        //
+        // `price` stays a plain number. The per-location rate lives here in
+        // `detail` and as a comparison row, never in `price` -- jsonld.ts runs
+        // Math.min/Math.max over every tier price to build the site-wide
+        // AggregateOffer, so a non-numeric price would emit NaN on every page.
+        //
+        // "Pooled" is deliberate and is the one storage word that is a
+        // promise rather than a fact: the platform enforces 5 TB per
+        // workspace, because per-workspace is the only quota machinery that
+        // exists (20260921100000_enterprise_plan.sql says so in the same
+        // words). It becomes true when the org entity lands.
+        //
+        // No `popular` flag. Kinect Plus keeps it, and two flagged tiers would
+        // render two "Most popular" badges.
+        name: "Kinect Enterprise",
+        price: 1499,
+        tagline: "For firms running more than one location.",
+        features: ["Every location", "one bill", "one roll-up"],
+        detail: [
+          "Everything in Kinect Pro",
+          "3 locations included, $250 per location after",
+          "5 TB pooled storage, more available",
+          "Named support contact",
+          "Multiple locations under one bill, coming soon",
+          "Cross-location roll-up, coming soon",
+          "SSO, coming soon",
+        ],
+        cta: "Choose Kinect Enterprise",
       },
     ],
     // Rewritten in the pricing review. The transcribed original read "Every

@@ -19,7 +19,7 @@ import type { Readable } from "node:stream";
  * environment (it's an interactive web tool), so this script is the
  * automatable subset of that requirement: well-formed JSON, the right
  * `@type`s in the right places, and the specific numbers spec §8a promotes
- * (lowPrice 149 / highPrice 799 / offerCount 3). The actual Rich Results
+ * (lowPrice 149 / highPrice 1499 / offerCount 4). The actual Rich Results
  * Test pass is called out as a manual pre-launch step (see docs/LAUNCH.md,
  * Task 23) -- this script cannot and does not substitute for it.
  *
@@ -266,7 +266,7 @@ async function checkPage(target: PageTarget, failures: string[]): Promise<void> 
       // whichever module happens to be the runtime source of truth at fetch
       // time. If these numbers ever change deliberately, update them here
       // too, same as jsonld.test.ts's own belt-and-suspenders assertion.
-      const expected = { lowPrice: "149", highPrice: "799", offerCount: "3", priceCurrency: "USD" };
+      const expected = { lowPrice: "149", highPrice: "1499", offerCount: "4", priceCurrency: "USD" };
       for (const [key, value] of Object.entries(expected)) {
         if (offers[key] !== value) {
           failures.push(`[${target.label}] AggregateOffer.${key} expected ${JSON.stringify(value)}, got ${JSON.stringify(offers[key])}`);
