@@ -48,7 +48,7 @@ function Value({ value }: { value: string }) {
     // "conditions apply" while stating no condition. A word in the cell
     // cannot dangle.
     return (
-      <span className="font-mono text-[11px] uppercase tracking-[.1em] text-accent-light">
+      <span className="font-mono text-[11px] italic uppercase tracking-[.1em] text-accent-light opacity-60">
         Soon
       </span>
     );

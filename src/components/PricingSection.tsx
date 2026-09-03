@@ -215,8 +215,24 @@ export default function PricingSection({
                     bodyClass,
                   )}
                 >
+                  {/* A line ending "coming soon" is a promise, not a
+                      capability, and it should not read at the same weight as
+                      the lines above it. Italic + reduced opacity is the
+                      lightest treatment that says so without a second colour
+                      or a marker: an asterisk here would repeat the mistake
+                      settings.ts documents at length (a glyph that reads
+                      "conditions apply" while stating no condition).
+                      Matched on the copy rather than a new content field so
+                      the sentinel stays in one vocabulary with the comparison
+                      table's "soon", and an editor writing the phrase in
+                      Sanity gets the treatment for free. */}
                   {(detailed ? (tier.detail ?? tier.features) : tier.features).map((feature) => (
-                    <li key={feature}>{feature}</li>
+                    <li
+                      key={feature}
+                      className={cn(/\bcoming soon\b/i.test(feature) && "italic opacity-60")}
+                    >
+                      {feature}
+                    </li>
                   ))}
                 </ul>
 
