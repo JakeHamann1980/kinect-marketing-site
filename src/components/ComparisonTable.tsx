@@ -48,7 +48,7 @@ function Value({ value }: { value: string }) {
     // "conditions apply" while stating no condition. A word in the cell
     // cannot dangle.
     return (
-      <span className="font-mono text-[11px] uppercase tracking-[.1em] text-accent-light">
+      <span className="font-mono text-[11px] italic uppercase tracking-[.1em] text-accent-light opacity-60">
         Soon
       </span>
     );
@@ -96,11 +96,20 @@ export default function ComparisonTable({ comparison, tiers }: ComparisonTablePr
         <table className="w-full border-collapse text-left">
           <thead>
             <tr>
-              <th className="w-[40%] px-6 py-4 font-mono text-[11px] font-medium uppercase tracking-[.14em] text-muted">
+              {/* 40% -> 28% with the fourth tier. At 40% the four value
+                  columns would have been 15% each -- about 150px, minus
+                  px-6 both sides leaves ~102px for strings like
+                  "$10 / 100 GB". At 28% they get 18% each. The label column
+                  can afford it: its longest string wraps to two lines either
+                  way. Padding also drops from px-6 to px-4 until kx-lg.
+                  Deliberately NOT solved with a min-width -- one shipped at
+                  640px and made the whole document pan sideways on a phone;
+                  e2e/pricing.spec.ts guards that at 390px. */}
+              <th className="w-[28%] px-4 py-4 font-mono text-[11px] font-medium uppercase tracking-[.14em] text-muted kx-lg:px-6">
                 Compare plans
               </th>
               {tiers.map((tier) => (
-                <th key={tier.name} className="px-6 py-4">
+                <th key={tier.name} className="px-4 py-4 kx-lg:px-6">
                   <div
                     className={cn(
                       "font-display text-[17px] font-bold",
@@ -122,20 +131,20 @@ export default function ComparisonTable({ comparison, tiers }: ComparisonTablePr
               <tr>
                 <th
                   colSpan={tiers.length + 1}
-                  className="border-t border-border bg-light-canvas px-6 py-[10px] text-left font-mono text-[11px] font-medium uppercase tracking-[.14em] text-ink-3"
+                  className="border-t border-border bg-light-canvas px-4 py-[10px] kx-lg:px-6 text-left font-mono text-[11px] font-medium uppercase tracking-[.14em] text-ink-3"
                 >
                   {group.heading}
                 </th>
               </tr>
               {group.rows.map((row) => (
                 <tr key={row.label}>
-                  <td className="border-t border-divider px-6 py-[13px] text-[15px] text-ink-2 text-pretty">
+                  <td className="border-t border-divider px-4 py-[13px] text-[15px] text-ink-2 text-pretty kx-lg:px-6">
                     {row.label}
                   </td>
                   {row.values.map((value, i) => (
                     <td
                       key={tiers[i]?.name ?? i}
-                      className="border-t border-divider px-6 py-[13px] text-[15px] text-ink-2"
+                      className="border-t border-divider px-4 py-[13px] text-[15px] text-ink-2 kx-lg:px-6"
                     >
                       <Value value={value} />
                     </td>

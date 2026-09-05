@@ -23,13 +23,17 @@ explains the work sitting right next to it.
 
 ## Pricing
 
-Flat monthly pricing, no per-seat fees: Starter $149, Growth $399, Scale
-$799.
+Flat monthly pricing, no per-seat fees and no per-client fees: Kinect $149,
+Kinect Plus $399, Kinect Pro $799, and Kinect Enterprise $1,499 for firms
+running more than one location. Kinect Enterprise includes 3 locations and
+adds $250 per month per additional location. Every plan has unlimited clients
+and a 30-day free trial with no card required.
 
 ## Status
 
-KINECT is pre-launch. The waitlist is open at https://kinectnow.com/; the
-product itself is not yet publicly available.
+Sign-up is open at https://app.kinectnow.com/signup. Every workspace starts a
+30-day free trial on Kinect Plus with no card required. The waitlist this file
+used to describe was retired when the signup handoff shipped.
 
 ## Contact
 

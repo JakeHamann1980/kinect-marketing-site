@@ -26,7 +26,7 @@ export const pricingPage: PricingPageContent = {
   seo: {
     title: "Pricing | KINECT Client Portal from $149, Flat Monthly",
     description:
-      "Flat monthly pricing for the KINECT client portal: Kinect $149, Kinect Plus $399, Kinect Pro $799. Unlimited clients on every plan. No per-seat charges, no contact-sales wall. Compare every plan.",
+      "Flat monthly pricing for the KINECT client portal: Kinect $149, Kinect Plus $399, Kinect Pro $799, Kinect Enterprise $1,499 for multi-location firms. Unlimited clients on every plan. No per-seat charges, no contact-sales wall. Compare every plan.",
   },
 
   hero: {
@@ -51,19 +51,29 @@ export const pricingPage: PricingPageContent = {
       {
         heading: "Clients & Team",
         rows: [
-          { label: "Clients", values: ["Unlimited", "Unlimited", "Unlimited"] },
-          { label: "Per-seat charges", values: ["None", "None", "None"] },
-          { label: "Per-client charges", values: ["None", "None", "None"] },
+          { label: "Clients", values: ["Unlimited", "Unlimited", "Unlimited", "Unlimited"] },
+          { label: "Per-seat charges", values: ["None", "None", "None", "None"] },
+          { label: "Per-client charges", values: ["None", "None", "None", "None"] },
+          // The one metered dimension on the page, and the only reason the
+          // "no per-seat, no per-client" promise survives Enterprise intact:
+          // a location is neither. Both rows stay in this group rather than
+          // moving to a group of their own, so a reader comparing what each
+          // tier counts sees clients, seats and locations together.
+          { label: "Locations included", values: ["1", "1", "1", "3"] },
+          {
+            label: "Additional locations, per month",
+            values: ["Not available", "Not available", "Not available", "$250"],
+          },
         ],
       },
       {
         heading: "Client Portal",
         rows: [
-          { label: "Branded portal your clients log into", values: ["yes", "yes", "yes"] },
-          { label: "Task boards, files and approvals", values: ["yes", "yes", "yes"] },
-          { label: "Invoices, rate cards and proposals", values: ["yes", "yes", "yes"] },
-          { label: "Client-safe view with role-based access", values: ["yes", "yes", "yes"] },
-          { label: "Templates for your services, programs or engagements", values: ["yes", "yes", "yes"] },
+          { label: "Branded portal your clients log into", values: ["yes", "yes", "yes", "yes"] },
+          { label: "Task boards, files and approvals", values: ["yes", "yes", "yes", "yes"] },
+          { label: "Invoices, rate cards and proposals", values: ["yes", "yes", "yes", "yes"] },
+          { label: "Client-safe view with role-based access", values: ["yes", "yes", "yes", "yes"] },
+          { label: "Templates for your services, programs or engagements", values: ["yes", "yes", "yes", "yes"] },
         ],
       },
       {
@@ -78,14 +88,19 @@ export const pricingPage: PricingPageContent = {
         // promise a soft cap makes.
         heading: "Files & Storage",
         rows: [
-          { label: "Included storage", values: ["100 GB", "500 GB", "2 TB"] },
+          // Enterprise says "pooled" because the allowance is meant to be
+          // shared across a firm's locations rather than granted per office.
+          // The platform enforces it per workspace today, which is the only
+          // quota machinery that exists; pooling arrives with the org entity.
+          // This is the one storage figure on the page that is a promise.
+          { label: "Included storage", values: ["100 GB", "500 GB", "2 TB", "5 TB pooled"] },
           {
             label: "Additional storage, per month",
-            values: ["$10 / 100 GB", "$10 / 100 GB", "$10 / 100 GB"],
+            values: ["$10 / 100 GB", "$10 / 100 GB", "$10 / 100 GB", "$10 / 100 GB"],
           },
           {
             label: "Uploads keep working past the limit",
-            values: ["yes", "yes", "yes"],
+            values: ["yes", "yes", "yes", "yes"],
           },
         ],
       },
@@ -96,18 +111,18 @@ export const pricingPage: PricingPageContent = {
           // Removed in the pricing review: no detection, thresholds or
           // alerting exists anywhere in the platform. "Integrations" went
           // with it, replaced by the named ad platforms that are real.
-          { label: "Client ad accounts across Google, Meta and LinkedIn", values: ["no", "yes", "yes"] },
-          { label: "Client-facing dashboards", values: ["no", "yes", "yes"] },
-          { label: "Per-client control over what each client sees", values: ["no", "yes", "yes"] },
-          { label: "Profitability and utilization per client", values: ["no", "yes", "yes"] },
-          { label: "AI insights and drafted client updates", values: ["no", "yes", "yes"] },
-          { label: "Exports and scheduled reports", values: ["no", "yes", "yes"] },
+          { label: "Client ad accounts across Google, Meta and LinkedIn", values: ["no", "yes", "yes", "yes"] },
+          { label: "Client-facing dashboards", values: ["no", "yes", "yes", "yes"] },
+          { label: "Per-client control over what each client sees", values: ["no", "yes", "yes", "yes"] },
+          { label: "Profitability and utilization per client", values: ["no", "yes", "yes", "yes"] },
+          { label: "AI insights and drafted client updates", values: ["no", "yes", "yes", "yes"] },
+          { label: "Exports and scheduled reports", values: ["no", "yes", "yes", "yes"] },
         ],
       },
       {
         heading: "Security & Support",
         rows: [
-          { label: "Encryption in transit and at rest", values: ["yes", "yes", "yes"] },
+          { label: "Encryption in transit and at rest", values: ["yes", "yes", "yes", "yes"] },
           // Updated 2026-08-30 after the platform shipped plan capability
           // gating (migration 20260907100000), the workspace-wide two-factor
           // requirement (20260907110000) and client-facing custom domains
@@ -130,8 +145,8 @@ export const pricingPage: PricingPageContent = {
           // It is now gated at the database in three places (the set trigger,
           // the logo storage policy, and public_document, which nulls the
           // columns on read so a value set before the gate never renders).
-          { label: "Two-factor authentication, optionally required workspace-wide", values: ["yes", "yes", "yes"] },
-          { label: "Your own logo and color on client documents", values: ["no", "no", "yes"] },
+          { label: "Two-factor authentication, optionally required workspace-wide", values: ["yes", "yes", "yes", "yes"] },
+          { label: "Your own logo and color on client documents", values: ["no", "no", "yes", "yes"] },
           // CLIENT-FACING ONLY, and the label has to keep saying so. The
           // domain serves the public /d/<token> document surface -- the
           // proposals and invoices a workspace sends resolve at its own
@@ -140,10 +155,31 @@ export const pricingPage: PricingPageContent = {
           // cut as the expensive version. Do not shorten this to "Custom
           // domain", and never write "white-label portal": both imply a
           // login surface that does not exist.
-          { label: "Your own domain on client document links", values: ["no", "no", "yes"] },
-          { label: "SSO", values: ["no", "no", "soon"] },
-          { label: "Multiple workspaces under one bill", values: ["no", "no", "soon"] },
-          { label: "Priority support", values: ["no", "no", "yes"] },
+          { label: "Your own domain on client document links", values: ["no", "no", "yes", "yes"] },
+          // 2026-09-01: both of these read `soon` under Kinect Pro until
+          // Kinect Enterprise shipped, and they MOVED rather than being
+          // duplicated. Multi-entity billing is the whole Enterprise
+          // proposition, so leaving it promised on Pro would have sold the new
+          // tier against itself. Pro is now `no` on both -- a takeaway from
+          // published copy, made safe only by the fact that no tier has ever
+          // had a Stripe price and so nobody has ever bought Pro on the
+          // strength of either line.
+          { label: "SSO", values: ["no", "no", "no", "soon"] },
+          {
+            // Relabelled from "Multiple workspaces under one bill". The buyer
+            // says locations, not workspaces -- workspace is our word for
+            // their office, and this row is read by someone counting offices.
+            label: "Multiple locations under one bill",
+            values: ["no", "no", "no", "soon"],
+          },
+          { label: "Cross-location roll-up", values: ["no", "no", "no", "soon"] },
+          { label: "Organization-level admin", values: ["no", "no", "no", "soon"] },
+          // Not asked for, listed anyway: a tenant-visible audit log and SSO
+          // are the two things an enterprise security review asks for first,
+          // and neither exists. Naming it here is cheaper than being asked.
+          { label: "Workspace audit log", values: ["no", "no", "no", "soon"] },
+          { label: "Priority support", values: ["no", "no", "yes", "yes"] },
+          { label: "Named support contact", values: ["no", "no", "no", "yes"] },
         ],
       },
     ],

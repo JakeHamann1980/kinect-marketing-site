@@ -72,10 +72,10 @@ export default defineType({
                         defineField({
                           name: "values",
                           description:
-                            'Exactly three values in tier order (Starter, Growth, Scale). "yes" renders a check, "no" renders a dash, anything else renders as text.',
+                            'Exactly four values in tier order (Kinect, Kinect Plus, Kinect Pro, Kinect Enterprise). "yes" renders a check, "no" renders a dash, anything else renders as text.',
                           type: "array",
                           of: [{ type: "string" }],
-                          validation: (r) => r.required().length(3),
+                          validation: (r) => r.required().length(4),
                         }),
                       ],
                       preview: {

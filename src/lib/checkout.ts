@@ -36,6 +36,10 @@ const PLAN_KEY_BY_TIER: Record<string, string> = {
   Kinect: "starter",
   "Kinect Plus": "growth",
   "Kinect Pro": "scale",
+  // Reserved in the platform by 20260921100000_enterprise_plan.sql. This is
+  // the one key that matches its display name; the older three do not, and
+  // must not be "tidied" to match.
+  "Kinect Enterprise": "enterprise",
 };
 
 export function planKeyForTier(tierName: string): string | null {

@@ -126,20 +126,23 @@ describe("softwareApplicationLd", () => {
     });
   });
 
-  it("still matches the spec's launch numbers today (149/799/3) via settings.pricing.tiers", () => {
-    // Belt-and-suspenders: spec §8a promotes exactly these numbers
-    // (lowPrice 149, highPrice 799, offerCount 3), which is also the
-    // launch-pricing invariant scripts/validate-jsonld.ts asserts against
-    // the live rendered HTML (see that script's own comment on why it keeps
-    // these numbers hardcoded rather than importing settings.ts: it
-    // validates the actually-shipped HTML independent of any one content
-    // source, Sanity or local). This assertion is expected to track
-    // settings.ts's tiers -- if they ever change, this test (not just the
-    // settings-derived one above) should be updated deliberately.
+  it("still matches the published numbers today (149/1499/4) via settings.pricing.tiers", () => {
+    // Belt-and-suspenders against the same numbers
+    // scripts/validate-jsonld.ts asserts on the live rendered HTML (see that
+    // script's own comment on why it keeps them hardcoded rather than
+    // importing settings.ts: it validates the actually-shipped HTML
+    // independent of any one content source, Sanity or local). This
+    // assertion is expected to track settings.ts's tiers -- if they ever
+    // change, this test (not just the settings-derived one above) should be
+    // updated deliberately.
+    //
+    // Was 149/799/3 until Kinect Enterprise landed 2026-09-01. highPrice is
+    // now the Enterprise BASE; the $250-per-location rate is deliberately not
+    // a tier price, so it never reaches AggregateOffer.
     const app = softwareApplicationLd(settings.pricing.tiers);
     expect(app.offers.lowPrice).toBe("149");
-    expect(app.offers.highPrice).toBe("799");
-    expect(app.offers.offerCount).toBe("3");
+    expect(app.offers.highPrice).toBe("1499");
+    expect(app.offers.offerCount).toBe("4");
   });
 });
 

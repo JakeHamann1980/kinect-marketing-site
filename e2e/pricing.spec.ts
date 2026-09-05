@@ -148,7 +148,7 @@ test("the comparison matrix publishes the storage tiers and add-on price", async
   // The add-on price appears once per tier column.
   await expect(
     matrix.getByRole("cell", { name: "$10 / 100 GB", exact: true }),
-  ).toHaveCount(3);
+  ).toHaveCount(4);
 
   // The soft cap is a promise, not a detail: uploads must never be described
   // as stopping. See docs/STORAGE-PRICING.md.

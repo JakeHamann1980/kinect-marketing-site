@@ -39,6 +39,7 @@ test("pricing tier CTAs hand off to app signup carrying the plan", async ({
     ["Choose Kinect", "starter"],
     ["Start free", "growth"],
     ["Choose Kinect Pro", "scale"],
+    ["Choose Kinect Enterprise", "enterprise"],
   ]) {
     await expect(
       pricing.getByRole("link", { name: label, exact: true }),

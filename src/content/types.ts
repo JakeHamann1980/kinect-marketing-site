@@ -176,7 +176,7 @@ export interface PricingPageContent {
     intro: string;
     groups: {
       heading: string;
-      rows: { label: string; values: [string, string, string] }[];
+      rows: { label: string; values: [string, string, string, string] }[];
     }[];
   };
   faqTitle: string;
