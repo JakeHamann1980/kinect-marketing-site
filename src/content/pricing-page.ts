@@ -24,9 +24,9 @@ import type { PricingPageContent } from "./types";
  */
 export const pricingPage: PricingPageContent = {
   seo: {
-    title: "Pricing | KINECT Client Portal from $149, Flat Monthly",
+    title: "Pricing | KINECT Client Portal from $149, Flat Pricing",
     description:
-      "Flat monthly pricing for the KINECT client portal: Kinect $149, Kinect Plus $399, Kinect Pro $799, Kinect Enterprise $1,499 for multi-location firms. Unlimited clients on every plan. No per-seat charges, no contact-sales wall. Compare every plan.",
+      "Flat pricing for the KINECT client portal: Kinect $149, Kinect Plus $399, Kinect Pro $799, Kinect Enterprise $1,499 for multi-location firms. Unlimited clients on every plan. No per-seat charges, no contact-sales wall. Pay annually and get two months free. Compare every plan.",
   },
 
   hero: {
@@ -34,7 +34,7 @@ export const pricingPage: PricingPageContent = {
     title: "The price is the price.",
     gradientPhrase: "is the price.",
     intro:
-      'Flat monthly plans with no per-seat charges, no per-client charges, and no "contact sales" wall. Pick a tier, invite your clients, and the bill stays put.',
+      'Flat plans, monthly or annual, with no per-seat charges, no per-client charges, and no "contact sales" wall. Pick a tier, invite your clients, and the bill stays put.',
   },
 
   trustLine: [
@@ -190,12 +190,12 @@ export const pricingPage: PricingPageContent = {
     {
       question: "How is KINECT priced?",
       answer:
-        "Flat monthly by plan. Kinect is $149, Kinect Plus is $399, Kinect Pro is $799, and none of them charge per seat or per client. Every workspace starts with 30 days free on Kinect Plus, no card required.",
+        "Flat pricing by plan. Kinect is $149, Kinect Plus is $399, Kinect Pro is $799, and none of them charge per seat or per client. Every workspace starts with 30 days free on Kinect Plus, no card required. Pay annually and you get twelve months for the price of ten.",
     },
     {
       question: "Why doesn't KINECT charge per seat or per client?",
       answer:
-        "Because your portal should get more valuable as more people use it, not more expensive. Every plan is a flat monthly price. Add clients, add teammates, the bill stays the same.",
+        "Because your portal should get more valuable as more people use it, not more expensive. Every plan is a flat price. Add clients, add teammates, the bill stays the same.",
     },
     {
       question: "What happens when I add more clients?",
@@ -210,7 +210,18 @@ export const pricingPage: PricingPageContent = {
     {
       question: "Can I change plans later?",
       answer:
-        "Yes. Upgrade or downgrade whenever your roster changes. No lock-in, no repricing call, no penalty.",
+        "Yes. Upgrade or downgrade whenever your roster changes, with no repricing call. Annual plans are paid up front for the year: cancel renewal at any time and keep full access until the term ends.",
+    },
+    {
+      // Annual (2026-09-03). The one place the commitment is spelled out in
+      // full: paid up front, cancel stops renewal, access runs to the end of
+      // the term, no partial refund. This matches section 12 of the terms
+      // draft word for word in substance, and "Cancel anytime" in the trust
+      // chips stays literally true because cancelling is always available;
+      // what it does not do is refund the months already paid for.
+      question: "What happens if I cancel an annual plan?",
+      answer:
+        "Cancelling stops the plan from renewing. You keep full access until the end of the year you paid for, and nothing is charged again after that. We do not refund the remaining months, which is the trade for getting twelve of them for the price of ten.",
     },
     {
       question: "Is there a free trial?",

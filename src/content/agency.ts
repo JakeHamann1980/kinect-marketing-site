@@ -126,7 +126,7 @@ export const agency: PersonaPageContent = {
     {
       question: "Why doesn't KINECT charge per seat or per client?",
       answer:
-        "Because your portal should get more valuable as more people use it, not more expensive. Every plan is a flat monthly price. Add clients, add teammates, the bill stays the same.",
+        "Because your portal should get more valuable as more people use it, not more expensive. Every plan is a flat price. Add clients, add teammates, the bill stays the same.",
     },
     {
       question: "Does this replace our project management tool?",

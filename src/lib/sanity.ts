@@ -358,7 +358,7 @@ const SETTINGS_PROJECTION = `{
   "solutions": solutions[]{persona, name, description},
   pricing{
     headline, supporting,
-    "tiers": tiers[]{name, price, popular, features, tagline, detail, cta},
+    "tiers": tiers[]{name, price, annualPrice, popular, features, tagline, detail, cta},
     note
   },
   footer{

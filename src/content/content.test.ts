@@ -52,6 +52,7 @@ describe("copy constraints", () => {
   it("pricing tiers are 149/399/799/1499 with Kinect Plus popular", () => {
     const tiers = settings.pricing.tiers;
     expect(tiers.map((t) => t.price)).toEqual([149, 399, 799, 1499]);
+    expect(tiers.map((t) => t.annualPrice)).toEqual([1490, 3990, 7990, 14990]);
     expect(tiers.find((t) => t.popular)?.name).toBe("Kinect Plus");
   });
 });

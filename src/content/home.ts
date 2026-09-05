@@ -212,7 +212,7 @@ export const home: HomeContent = {
     {
       question: "How is it priced?",
       answer:
-        "Flat monthly by plan, no per-seat charges. Every workspace starts with 30 days free on Kinect Plus, no card required.",
+        "Flat pricing by plan, no per-seat charges. Every workspace starts with 30 days free on Kinect Plus, no card required.",
     },
     {
       question: "Is my client data secure?",

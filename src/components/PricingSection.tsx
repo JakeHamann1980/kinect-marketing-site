@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { type ButtonVariant } from "@/components/Button";
-import TrackedLink from "@/components/TrackedLink";
-import { signupUrlForTier } from "@/lib/checkout";
+import TierCards from "@/components/TierCards";
 import SectionHead from "@/components/SectionHead";
 import type { Tier } from "@/content/types";
 import { cn } from "@/lib/cn";
@@ -152,136 +150,11 @@ export default function PricingSection({
           </p>
         </div>
 
-        {/* 4-col grid as of 2026-09-01 (Kinect Enterprise). This WAS
-            `kx-md:grid-cols-3` with no kx-lg step, on the evidence that
-            dc.html's max-width:1024px block only overrides the literal
-            `repeat(4,1fr)` selector and never `repeat(3,1fr)`. That evidence
-            now cuts the other way: at four cards the prototype's own rule
-            applies, and design-reference/README.md:220 states it -- "≤1024px,
-            4-column grids become 2".
-            So: two columns from kx-md, four only at kx-xl (1280). NOT kx-lg,
-            which is what StepCards.tsx uses for its own 4-up -- measured at a
-            1024px viewport these cards land at 226px, about twenty characters
-            a line, and one detail line wrapped to four. StepCards gets away
-            with 1024 because its cards carry a title and a sentence; these
-            carry a 42px price and a seven-line list. See the kx-xl note in
-            globals.css. Three-across is gone deliberately. */}
-        <div className="mt-[50px] grid grid-cols-1 gap-[18px] kx-md:grid-cols-2 kx-xl:grid-cols-4">
-          {tiers.map((tier) => {
-            const cardClass = dark
-              ? tier.popular
-                ? "flex flex-col rounded-[18px] border border-[rgba(53,214,232,.34)] bg-[rgba(53,214,232,.06)] p-[30px_28px] shadow-[0_0_50px_rgba(53,214,232,.14)]"
-                : "flex flex-col rounded-[18px] border border-[rgba(255,255,255,.1)] bg-[rgba(255,255,255,.035)] p-[30px_28px]"
-              : tier.popular
-                ? "flex flex-col rounded-[18px] border border-accent-light bg-surface p-[30px_28px] shadow-[0_8px_24px_rgba(41,169,224,.14)]"
-                : "flex flex-col rounded-[18px] border border-border bg-surface p-[30px_28px]";
-            const tagClass = dark ? (tier.popular ? "text-cyan" : "text-on-dark-5") : "text-accent-light";
-            const headingClass = dark ? "text-on-dark" : "text-ink";
-            const bodyClass = dark ? "text-on-dark-3" : "text-ink-2";
-            const moClass = dark ? "text-on-dark-4" : "text-muted";
-            const ctaVariant: ButtonVariant = tier.popular
-              ? dark
-                ? "primary"
-                : "accent"
-              : dark
-                ? "fill-dark"
-                : "outline-light";
-
-            return (
-              <div key={tier.name} className={cardClass}>
-                <div
-                  className={cn(
-                    "mb-[10px] h-[16px] font-mono text-[11px] uppercase tracking-[.14em]",
-                    tagClass,
-                  )}
-                >
-                  {tier.popular ? "Most popular" : ""}
-                </div>
-                <div className={cn("font-display text-[21px] font-bold text-balance", headingClass)}>
-                  {tier.name}
-                </div>
-                {detailed && tier.tagline ? (
-                  <p className={cn("mt-1 text-[14px] leading-[1.5] text-pretty", moClass)}>
-                    {tier.tagline}
-                  </p>
-                ) : null}
-                <div className={cn("mt-2 mb-1 font-display text-[42px] font-bold", headingClass)}>
-                  {"$" + tier.price}
-                  <span className={cn("text-[16px] font-medium", moClass)}>/mo</span>
-                </div>
-                <ul
-                  className={cn(
-                    "mb-[22px] flex flex-col gap-2 text-[16px] leading-[1.55] text-pretty",
-                    bodyClass,
-                  )}
-                >
-                  {/* A line ending "coming soon" is a promise, not a
-                      capability, and it should not read at the same weight as
-                      the lines above it. Italic + reduced opacity is the
-                      lightest treatment that says so without a second colour
-                      or a marker: an asterisk here would repeat the mistake
-                      settings.ts documents at length (a glyph that reads
-                      "conditions apply" while stating no condition).
-                      Matched on the copy rather than a new content field so
-                      the sentinel stays in one vocabulary with the comparison
-                      table's "soon", and an editor writing the phrase in
-                      Sanity gets the treatment for free. */}
-                  {(detailed ? (tier.detail ?? tier.features) : tier.features).map((feature) => (
-                    <li
-                      key={feature}
-                      className={cn(/\bcoming soon\b/i.test(feature) && "italic opacity-60")}
-                    >
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-auto">
-                  {/* Task 15: PricingSection is a Server Component, so the
-                      click handler goes through WaitlistCta/TrackedLink
-                      (client boundaries -- see their own doc comments)
-                      rather than Button directly. Fires both the generic
-                      cta_clicked{location:"pricing"} (this is one of the
-                      task brief's named trackLocation call sites) AND the
-                      tier-specific pricing_tier_clicked -- a rollup "any
-                      CTA click" metric plus the more precise "which tier"
-                      one, not a duplicate of the same signal.
-                      Task 16 follow-up (controller-approved, superseding
-                      this task's original "only the tier literally labeled
-                      'Start free' opens the dialog" scoping): ALL THREE
-                      tiers now open the waitlist dialog, Kinect/Kinect Pro
-                      included, regardless of label. There is no signup
-                      flow to route any of them to (design-reference/
-                      README.md's own open question #4: "'Start free'
-                      destination -- signup flow, waitlist, or demo
-                      request? Not designed."); a pricing CTA that instead
-                      navigated to the "/" placeholder would abandon a
-                      visitor's purchase intent at exactly the moment it's
-                      highest, while the waitlist is this site's actual
-                      launch conversion path today. Labels ("Choose
-                      Starter" / "Start free" / "Choose Scale") are
-                      unchanged -- only the destination moved. */}
-                  {/* user-directed 2026-08-03: tier CTAs now hand off to the
-                      app's signup carrying the plan, instead of opening the
-                      waitlist. Deliberately NOT a Stripe payment link -- see
-                      src/lib/checkout.ts for why one would orphan the
-                      payment. Analytics unchanged so the funnel stays
-                      comparable across the switch. */}
-                  <TrackedLink
-                    href={signupUrlForTier(tier.name)}
-                    variant={ctaVariant}
-                    className="w-full justify-center"
-                    trackLocation="pricing"
-                    event="pricing_tier_clicked"
-                    eventProps={{ tier: tier.name }}
-                  >
-                    {tier.cta}
-                  </TrackedLink>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {/* The tier grid and the Monthly / Annual switch live in TierCards, a
+            client component, because the interval is client state and this
+            section stays a Server Component. Only the detailed /pricing
+            render gets the switch; teasers stay monthly. */}
+        <TierCards tiers={tiers} dark={dark} detailed={detailed} showToggle={detailed} />
 
         {compareHref ? (
           <div className="mt-9 text-center">

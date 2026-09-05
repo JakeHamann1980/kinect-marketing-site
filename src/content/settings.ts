@@ -86,7 +86,7 @@ export const settings: SiteSettings = {
     // for growing. The ladder is carried by connected data sources, storage
     // and capability instead. Do not reintroduce a client cap without
     // rewriting this line first.
-    supporting: 'Flat monthly. No per-seat, no per-client, no "contact sales."',
+    supporting: 'Flat pricing. No per-seat, no per-client, no "contact sales."',
     // `tagline`/`detail` (user-directed 2026-08-03): the /pricing page's
     // detailed card rendering -- see the Tier type's own doc comment. The
     // compact `features` lists above them are unchanged handoff copy and
@@ -129,6 +129,7 @@ export const settings: SiteSettings = {
       {
         name: "Kinect",
         price: 149,
+        annualPrice: 1490,
         tagline: "For operators putting their clients behind one login.",
         features: ["Unlimited clients", "client portal", "invoicing"],
         detail: [
@@ -144,6 +145,7 @@ export const settings: SiteSettings = {
       {
         name: "Kinect Plus",
         price: 399,
+        annualPrice: 3990,
         popular: true,
         tagline: "For rosters that need the numbers, and the story behind them.",
         features: ["Client ad accounts", "profitability", "AI insights"],
@@ -161,6 +163,7 @@ export const settings: SiteSettings = {
       {
         name: "Kinect Pro",
         price: 799,
+        annualPrice: 7990,
         tagline: "For firms that need the portal to carry their own name.",
         // Rewritten 2026-08-03 after scoping each claim against the platform
         // (docs/PRO-FEATURES.md). The previous copy carried a bare "(*)" on
@@ -249,6 +252,7 @@ export const settings: SiteSettings = {
         // render two "Most popular" badges.
         name: "Kinect Enterprise",
         price: 1499,
+        annualPrice: 14990,
         tagline: "For firms running more than one location.",
         features: ["Every location", "one bill", "one roll-up"],
         detail: [
