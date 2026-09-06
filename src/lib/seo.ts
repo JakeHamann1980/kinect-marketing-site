@@ -45,11 +45,16 @@ export function personaUrl(persona: Persona): string {
  * `src/lib/og-template.tsx`), and Next's file-convention resolver merges
  * that route's rendered image into both `openGraph.images` and
  * `twitter.images` automatically at request time, resolved against
- * `metadataBase` into an absolute URL (verified in this task's own build:
- * see the `curl`-against-`next start` check in this task's verification
- * notes). Setting `images` here explicitly would either duplicate that
- * merge or, worse, silently shadow it depending on merge order, so it's
- * left for the convention to own entirely.
+ * `metadataBase` into an absolute URL. Setting `images` here explicitly
+ * would duplicate that merge or shadow it, so it's left to the convention.
+ *
+ * The convention has one sharp edge: because this function returns an
+ * `openGraph` block, Next drops any images inherited from a PARENT
+ * segment before re-attaching the page's own segment's file. So the file
+ * must sit beside the page's `page.tsx`; a file at `src/app/` decorates
+ * nothing here. Home and /pricing both shipped with no image for that
+ * reason. `e2e/og.spec.ts` now fails the suite for any sitemap URL whose
+ * HTML lacks a resolvable `og:image` and `twitter:image`.
  */
 export function pageMetadata({
   seo,

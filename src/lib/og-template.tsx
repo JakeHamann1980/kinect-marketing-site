@@ -1,16 +1,30 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import type { Persona } from "@/lib/personas";
 import { PERSONAS } from "@/lib/personas";
 import { SITE_HOST } from "@/lib/seo";
+import { balanceLines, measureText, parseFontMetrics, type FontMetrics } from "@/lib/og-measure";
 
 /**
- * Task 21 (OG Images + Preview Metadata). Shared layout module for the five
- * `opengraph-image.tsx` file-convention routes (home, the three persona
- * subdomains, the generic legal variant) so each of those files stays a
- * thin "content in, ImageResponse out" wrapper instead of duplicating this
- * layout five times. Next's file-convention image routes
+ * Task 21 (OG Images + Preview Metadata). Shared layout module for every
+ * `opengraph-image.tsx` file-convention route (home, pricing, platform, the
+ * four lane pages, the generic legal variant) so each of those files stays
+ * a thin "content in, ImageResponse out" wrapper instead of duplicating
+ * this layout eight times.
+ *
+ * PLACEMENT RULE (learned the hard way): the file must live in the SAME
+ * route segment as the `page.tsx` it decorates. Next attaches file-based
+ * images per segment, and a page whose `generateMetadata` returns an
+ * `openGraph` block (every page here does, via `pageMetadata`) replaces the
+ * inherited block, images included, before its own segment's file is
+ * re-attached (`mergeMetadata` then `mergeStaticMetadata` in
+ * next/dist/lib/metadata/resolve-metadata.js). A file one level up is
+ * therefore silently ignored: home's card sat at `src/app/` for months
+ * and `/` shipped with no `og:image` at all, as did `/pricing`, which had
+ * no file. `e2e/og.spec.ts` now walks every sitemap URL on every host and
+ * fails the suite if any page lacks a resolvable image, so a new page
+ * cannot repeat that. Next's file-convention image routes
  * (`app/opengraph-image.tsx`, `app/<segment>/opengraph-image.tsx`) render
  * with `next/og`'s `ImageResponse`, which uses Satori (a constrained
  * HTML/CSS-subset-to-SVG renderer, not a browser) rather than actual
@@ -145,15 +159,46 @@ function gradientWords(headline: string, gradientPhrase: string): { text: string
  * Next's build/server process, matching the pattern used throughout the
  * Vercel OG examples for bundling local font assets.
  */
-async function loadHeadlineFont(): Promise<ArrayBuffer> {
-  const path = join(process.cwd(), "src", "app", "og", "_fonts", "HankenGrotesk-Bold.ttf");
-  const buffer = await readFile(path);
-  return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+let headlineFont: Promise<ArrayBuffer> | undefined;
+function loadHeadlineFont(): Promise<ArrayBuffer> {
+  headlineFont ??= readFile(join(process.cwd(), "src", "app", "og", "_fonts", "HankenGrotesk-Bold.ttf")).then(
+    (buffer) => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer,
+  );
+  return headlineFont;
+}
+
+let headlineMetrics: Promise<FontMetrics> | undefined;
+function loadHeadlineMetrics(): Promise<FontMetrics> {
+  headlineMetrics ??= loadHeadlineFont().then(parseFontMetrics);
+  return headlineMetrics;
 }
 
 export async function ogFonts() {
   const data = await loadHeadlineFont();
   return [{ name: "Hanken Grotesk", data, weight: 700 as const, style: "normal" as const }];
+}
+
+const screenshotCache = new Map<string, Promise<string>>();
+
+/**
+ * Reads a product screenshot from `public/` (the same files the site's hero
+ * showcase renders, e.g. `/screenshots/analytics-full.png`) and returns it
+ * as a base64 data URI. Satori accepts `<img src="data:...">` but cannot
+ * fetch a URL at build time, and these routes must not depend on the
+ * network anyway (see `loadHeadlineFont`). The PNGs are 300 KB to 1 MB on
+ * disk; that is the render input only, the output card is still a
+ * 1200x630 PNG rasterised once at build. Cached per path because the
+ * persona and home routes share files across a single build.
+ */
+export function loadScreenshot(publicPath: string): Promise<string> {
+  let cached = screenshotCache.get(publicPath);
+  if (!cached) {
+    cached = readFile(join(process.cwd(), "public", publicPath)).then(
+      (buffer) => `data:image/png;base64,${buffer.toString("base64")}`,
+    );
+    screenshotCache.set(publicPath, cached);
+  }
+  return cached;
 }
 
 /**
@@ -237,14 +282,73 @@ interface OgTemplateProps {
   /** Muted footer line, e.g. the page's hostname. */
   footer: string;
   /**
-   * Force a line break after the first headline word that matches this
-   * exactly (punctuation included), so a phrase lands intact on its own
-   * line instead of wherever 980px happens to wrap it -- e.g. /platform
-   * passes "relationship," so "one login." (the whole gradient phrase)
-   * sits together on line two. Rendered as a full-width flex spacer,
-   * which is the Satori-safe way to break a wrapping row.
+   * Optional one-line fact beneath the headline in muted type, e.g. the
+   * four plan prices on the pricing card. Kept to a single sentence or two;
+   * anything longer is unreadable at the ~500px width chat clients show.
    */
-  breakAfter?: string;
+  detail?: string;
+  /**
+   * Optional product screenshot as a data URI (see `loadScreenshot`). When
+   * present the card becomes the "product" variant: the headline column
+   * narrows to the left 600px and the screenshot sits in a framed window
+   * that bleeds off the bottom-right edge, its top-left corner (the app's
+   * sidebar and first row of the view) the part that stays visible. Cards
+   * without it are the "statement" variant: headline only, full width.
+   */
+  screenshot?: string;
+}
+
+/**
+ * Decides the line breaks for a row of words ourselves rather than
+ * leaving them to Satori's greedy wrap, so no card ends with a lone word
+ * on its last line (see `src/lib/og-measure.ts`). `columnWidth` is the
+ * true column; a 12px margin is held back because our widths ignore
+ * kerning and Satori's wrap must never fire before ours. Returns the set
+ * of word indices after which a break is forced, rendered as full-width
+ * flex spacers, the Satori-safe way to break a wrapping row, plus the
+ * word gap: the font's own space glyph at this size, so the row reads as
+ * a sentence rather than as evenly spaced tiles (a fixed 16px looked
+ * right at 58px and like justified text at 22px).
+ */
+function breaksFor(
+  metrics: FontMetrics,
+  words: string[],
+  { fontSize, letterSpacing, columnWidth }: { fontSize: number; letterSpacing: number; columnWidth: number },
+): { breaks: Set<number>; gap: number } {
+  const gap = Math.round(measureText(metrics, " ", fontSize, letterSpacing));
+  const widths = words.map((word) => measureText(metrics, word, fontSize, letterSpacing));
+  const lines = balanceLines(widths, columnWidth - 12, gap);
+  const breaks = new Set<number>();
+  for (const line of lines.slice(0, -1)) breaks.add(line[line.length - 1]);
+  return { breaks, gap };
+}
+
+/** A wrapping row of words with our own breaks, the headline's building
+ * block and the detail line's. `words` carry their color; the spacer after
+ * a break index pushes the rest of the row onto the next line. */
+function WordRow({
+  words,
+  breaks,
+  gap,
+  style,
+}: {
+  words: { text: string; color: string }[];
+  breaks: Set<number>;
+  gap: number;
+  style: CSSProperties;
+}) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", ...style }}>
+      {words.flatMap((word, i) => {
+        const el = (
+          <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: gap, display: "flex" }}>
+            {word.text}
+          </div>
+        );
+        return breaks.has(i) ? [el, <div key={`break-${i}`} style={{ width: "100%", display: "flex" }} />] : [el];
+      })}
+    </div>
+  );
 }
 
 /**
@@ -254,17 +358,31 @@ interface OgTemplateProps {
  * ImageResponse(...)` without an extra component layer Satori would have
  * to resolve.
  */
-export function ogTemplate({
+export async function ogTemplate({
   eyebrow,
   headline,
   gradientPhrase,
   persona,
   personaBadge,
   footer,
-  breakAfter,
-}: OgTemplateProps): ReactElement {
+  detail,
+  screenshot,
+}: OgTemplateProps): Promise<ReactElement> {
+  const metrics = await loadHeadlineMetrics();
   const words = gradientPhrase ? gradientWords(headline, gradientPhrase) : headline.split(" ").map((text) => ({ text, color: TEXT }));
-  const breakIndex = breakAfter ? words.findIndex((word) => word.text === breakAfter) : -1;
+  const headlineColumn = screenshot ? 600 : 980;
+  const headlineSize = screenshot ? 50 : 58;
+  const headlineRow = breaksFor(
+    metrics,
+    words.map((word) => word.text),
+    { fontSize: headlineSize, letterSpacing: -1, columnWidth: headlineColumn },
+  );
+  const detailWords = detail ? detail.split(/\s+/).filter(Boolean).map((text) => ({ text, color: MUTED })) : [];
+  const detailRow = breaksFor(
+    metrics,
+    detailWords.map((word) => word.text),
+    { fontSize: 22, letterSpacing: -0.2, columnWidth: 900 },
+  );
   const accent = persona ? PERSONAS[persona].accent : "#35D6E8";
   const accentTint = persona ? PERSONAS[persona].tint : "rgba(53,214,232,.14)";
 
@@ -330,8 +448,19 @@ export function ogTemplate({
         ) : null}
       </div>
 
-      {/* Headline block (center-weighted, per §8c). */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 20, position: "relative", maxWidth: 980 }}>
+      {/* Headline block (center-weighted, per §8c). Narrower and one step
+          smaller when a screenshot shares the canvas, so the two never
+          overlap: 76px padding + 600px column ends at x=676, and the
+          screenshot frame starts at x=700. */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          position: "relative",
+          maxWidth: headlineColumn,
+        }}
+      >
         <div
           style={{
             fontSize: 13,
@@ -342,30 +471,51 @@ export function ogTemplate({
         >
           {eyebrow}
         </div>
+        <WordRow
+          words={words}
+          breaks={headlineRow.breaks}
+          gap={headlineRow.gap}
+          style={{ fontSize: headlineSize, fontWeight: 700, lineHeight: 1.12, letterSpacing: -1 }}
+        />
+        {detailWords.length > 0 ? (
+          <WordRow
+            words={detailWords}
+            breaks={detailRow.breaks}
+            gap={detailRow.gap}
+            style={{ fontSize: 22, lineHeight: 1.4, letterSpacing: -0.2, maxWidth: 900 }}
+          />
+        ) : null}
+      </div>
+
+      {/* Product window (product variant only). Rendered after the headline
+          so it paints on top; absolutely positioned and deliberately larger
+          than the space left for it, so it bleeds off the bottom and right
+          edges like a window sitting just off-canvas. The <img> keeps the
+          screenshot's own aspect ratio (all five in public/screenshots are
+          roughly 3:2), so 760 wide is about 520 tall, and the visible part
+          is the app's sidebar plus the first row of the view. Satori
+          supports border, border-radius, overflow: hidden and box-shadow,
+          all confirmed against the bundled build. */}
+      {screenshot ? (
         <div
           style={{
+            position: "absolute",
+            left: 700,
+            top: 150,
+            width: 760,
             display: "flex",
-            flexWrap: "wrap",
-            fontSize: 58,
-            fontWeight: 700,
-            lineHeight: 1.12,
-            letterSpacing: -1,
+            borderRadius: 14,
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.16)",
+            boxShadow: "0 30px 80px rgba(0,0,0,0.6)",
+            background: "#0D1320",
           }}
         >
-          {words.flatMap((word, i) => {
-            const el = (
-              <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: 16, display: "flex" }}>
-                {word.text}
-              </div>
-            );
-            // A full-width spacer pushes everything after it onto the next
-            // line of the wrapping row (see `breakAfter`'s doc comment).
-            return i === breakIndex
-              ? [el, <div key={`break-${i}`} style={{ width: "100%", display: "flex" }} />]
-              : [el];
-          })}
+          {/* Satori render tree, not a DOM page: next/image has no meaning here. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={screenshot} width={760} alt="" style={{ objectFit: "cover" }} />
         </div>
-      </div>
+      ) : null}
 
       {/* Footer: muted hostname line. */}
       <div
