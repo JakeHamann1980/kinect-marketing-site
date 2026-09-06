@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { coach } from "@/content/coach";
 import { PERSONAS } from "@/lib/personas";
-import { OG_SIZE, ogFonts, ogTemplate } from "@/lib/og-template";
+import { OG_SIZE, loadScreenshot, ogFonts, ogTemplate } from "@/lib/og-template";
 
 /**
  * Task 21 (OG Images + Preview Metadata). Coach persona OG image -- see
@@ -13,12 +13,13 @@ export const contentType = "image/png";
 export const alt = "KINECT for coaches -- a client portal your clients actually open.";
 
 export default async function Image() {
-  const fonts = await ogFonts();
+  const [fonts, screenshot] = await Promise.all([ogFonts(), loadScreenshot("/screenshots/coach-checkin.png")]);
   return new ImageResponse(
     ogTemplate({
       eyebrow: coach.heroExtra.eyebrow,
       headline: coach.hero.headline,
       gradientPhrase: coach.hero.gradientPhrase,
+      screenshot,
       persona: coach.persona,
       personaBadge: coach.navBadge,
       footer: PERSONAS.coach.hostname,

@@ -6,11 +6,24 @@ import { PERSONAS } from "@/lib/personas";
 import { SITE_HOST } from "@/lib/seo";
 
 /**
- * Task 21 (OG Images + Preview Metadata). Shared layout module for the five
- * `opengraph-image.tsx` file-convention routes (home, the three persona
- * subdomains, the generic legal variant) so each of those files stays a
- * thin "content in, ImageResponse out" wrapper instead of duplicating this
- * layout five times. Next's file-convention image routes
+ * Task 21 (OG Images + Preview Metadata). Shared layout module for every
+ * `opengraph-image.tsx` file-convention route (home, pricing, platform, the
+ * four lane pages, the generic legal variant) so each of those files stays
+ * a thin "content in, ImageResponse out" wrapper instead of duplicating
+ * this layout eight times.
+ *
+ * PLACEMENT RULE (learned the hard way): the file must live in the SAME
+ * route segment as the `page.tsx` it decorates. Next attaches file-based
+ * images per segment, and a page whose `generateMetadata` returns an
+ * `openGraph` block (every page here does, via `pageMetadata`) replaces the
+ * inherited block, images included, before its own segment's file is
+ * re-attached (`mergeMetadata` then `mergeStaticMetadata` in
+ * next/dist/lib/metadata/resolve-metadata.js). A file one level up is
+ * therefore silently ignored: home's card sat at `src/app/` for months
+ * and `/` shipped with no `og:image` at all, as did `/pricing`, which had
+ * no file. `e2e/og.spec.ts` now walks every sitemap URL on every host and
+ * fails the suite if any page lacks a resolvable image, so a new page
+ * cannot repeat that. Next's file-convention image routes
  * (`app/opengraph-image.tsx`, `app/<segment>/opengraph-image.tsx`) render
  * with `next/og`'s `ImageResponse`, which uses Satori (a constrained
  * HTML/CSS-subset-to-SVG renderer, not a browser) rather than actual
@@ -156,6 +169,29 @@ export async function ogFonts() {
   return [{ name: "Hanken Grotesk", data, weight: 700 as const, style: "normal" as const }];
 }
 
+const screenshotCache = new Map<string, Promise<string>>();
+
+/**
+ * Reads a product screenshot from `public/` (the same files the site's hero
+ * showcase renders, e.g. `/screenshots/analytics-full.png`) and returns it
+ * as a base64 data URI. Satori accepts `<img src="data:...">` but cannot
+ * fetch a URL at build time, and these routes must not depend on the
+ * network anyway (see `loadHeadlineFont`). The PNGs are 300 KB to 1 MB on
+ * disk; that is the render input only, the output card is still a
+ * 1200x630 PNG rasterised once at build. Cached per path because the
+ * persona and home routes share files across a single build.
+ */
+export function loadScreenshot(publicPath: string): Promise<string> {
+  let cached = screenshotCache.get(publicPath);
+  if (!cached) {
+    cached = readFile(join(process.cwd(), "public", publicPath)).then(
+      (buffer) => `data:image/png;base64,${buffer.toString("base64")}`,
+    );
+    screenshotCache.set(publicPath, cached);
+  }
+  return cached;
+}
+
 /**
  * Approximates the live site's `.kx-grid` 104px line grid (globals.css,
  * ~line 369-375) as a set of absolutely-positioned 1px divs -- Satori
@@ -237,6 +273,21 @@ interface OgTemplateProps {
   /** Muted footer line, e.g. the page's hostname. */
   footer: string;
   /**
+   * Optional one-line fact beneath the headline in muted type, e.g. the
+   * four plan prices on the pricing card. Kept to a single sentence or two;
+   * anything longer is unreadable at the ~500px width chat clients show.
+   */
+  detail?: string;
+  /**
+   * Optional product screenshot as a data URI (see `loadScreenshot`). When
+   * present the card becomes the "product" variant: the headline column
+   * narrows to the left 600px and the screenshot sits in a framed window
+   * that bleeds off the bottom-right edge, its top-left corner (the app's
+   * sidebar and first row of the view) the part that stays visible. Cards
+   * without it are the "statement" variant: headline only, full width.
+   */
+  screenshot?: string;
+  /**
    * Force a line break after the first headline word that matches this
    * exactly (punctuation included), so a phrase lands intact on its own
    * line instead of wherever 980px happens to wrap it -- e.g. /platform
@@ -261,6 +312,8 @@ export function ogTemplate({
   persona,
   personaBadge,
   footer,
+  detail,
+  screenshot,
   breakAfter,
 }: OgTemplateProps): ReactElement {
   const words = gradientPhrase ? gradientWords(headline, gradientPhrase) : headline.split(" ").map((text) => ({ text, color: TEXT }));
@@ -330,8 +383,19 @@ export function ogTemplate({
         ) : null}
       </div>
 
-      {/* Headline block (center-weighted, per §8c). */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 20, position: "relative", maxWidth: 980 }}>
+      {/* Headline block (center-weighted, per §8c). Narrower and one step
+          smaller when a screenshot shares the canvas, so the two never
+          overlap: 76px padding + 600px column ends at x=676, and the
+          screenshot frame starts at x=700. */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+          position: "relative",
+          maxWidth: screenshot ? 600 : 980,
+        }}
+      >
         <div
           style={{
             fontSize: 13,
@@ -346,7 +410,7 @@ export function ogTemplate({
           style={{
             display: "flex",
             flexWrap: "wrap",
-            fontSize: 58,
+            fontSize: screenshot ? 50 : 58,
             fontWeight: 700,
             lineHeight: 1.12,
             letterSpacing: -1,
@@ -365,7 +429,51 @@ export function ogTemplate({
               : [el];
           })}
         </div>
+        {detail ? (
+          <div
+            style={{
+              display: "flex",
+              fontSize: 22,
+              lineHeight: 1.4,
+              letterSpacing: -0.2,
+              color: MUTED,
+              maxWidth: 900,
+            }}
+          >
+            {detail}
+          </div>
+        ) : null}
       </div>
+
+      {/* Product window (product variant only). Rendered after the headline
+          so it paints on top; absolutely positioned and deliberately larger
+          than the space left for it, so it bleeds off the bottom and right
+          edges like a window sitting just off-canvas. The <img> keeps the
+          screenshot's own aspect ratio (all five in public/screenshots are
+          roughly 3:2), so 760 wide is about 520 tall, and the visible part
+          is the app's sidebar plus the first row of the view. Satori
+          supports border, border-radius, overflow: hidden and box-shadow,
+          all confirmed against the bundled build. */}
+      {screenshot ? (
+        <div
+          style={{
+            position: "absolute",
+            left: 700,
+            top: 150,
+            width: 760,
+            display: "flex",
+            borderRadius: 14,
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.16)",
+            boxShadow: "0 30px 80px rgba(0,0,0,0.6)",
+            background: "#0D1320",
+          }}
+        >
+          {/* Satori render tree, not a DOM page: next/image has no meaning here. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={screenshot} width={760} alt="" style={{ objectFit: "cover" }} />
+        </div>
+      ) : null}
 
       {/* Footer: muted hostname line. */}
       <div

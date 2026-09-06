@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { services } from "@/content/services";
 import { PERSONAS } from "@/lib/personas";
-import { OG_SIZE, ogFonts, ogTemplate } from "@/lib/og-template";
+import { OG_SIZE, loadScreenshot, ogFonts, ogTemplate } from "@/lib/og-template";
 
 /**
  * Professional Services persona OG image -- see `src/lib/og-template.tsx` for
@@ -18,12 +18,13 @@ export const alt =
   "KINECT for professional services firms -- a client portal your clients actually open.";
 
 export default async function Image() {
-  const fonts = await ogFonts();
+  const [fonts, screenshot] = await Promise.all([ogFonts(), loadScreenshot("/screenshots/services-firm-hq.png")]);
   return new ImageResponse(
     ogTemplate({
       eyebrow: services.heroExtra.eyebrow,
       headline: services.hero.headline,
       gradientPhrase: services.hero.gradientPhrase,
+      screenshot,
       persona: services.persona,
       personaBadge: services.navBadge,
       footer: PERSONAS.services.hostname,
