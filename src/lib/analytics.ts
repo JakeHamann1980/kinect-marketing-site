@@ -15,7 +15,8 @@ export type KxEvent =
   | "screenshot_pinned"
   | "faq_opened"
   | "pricing_tier_clicked"
-  | "consent_updated";
+  | "consent_updated"
+  | "billing_interval_toggled";
 
 /**
  * Whether PostHog has actually been initialized (consent granted AND

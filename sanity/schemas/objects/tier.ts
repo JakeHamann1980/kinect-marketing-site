@@ -2,7 +2,7 @@ import { defineField, defineType } from "sanity";
 
 /**
  * Mirrors `Tier` in src/content/types.ts:
- * { name: string; price: number; popular?: boolean; features: string[]; cta: string }.
+ * { name, price, annualPrice?, popular?, features, tagline?, detail?, cta }.
  */
 export default defineType({
   name: "tier",
@@ -11,6 +11,12 @@ export default defineType({
   fields: [
     defineField({ name: "name", type: "string", validation: (r) => r.required() }),
     defineField({ name: "price", type: "number", validation: (r) => r.required().min(0) }),
+    defineField({
+      name: "annualPrice",
+      description: "Annual total, 10x monthly (two months free). Leave empty to show monthly only.",
+      type: "number",
+      validation: (r) => r.min(0),
+    }),
     defineField({ name: "popular", type: "boolean", initialValue: false }),
     defineField({
       name: "features",

@@ -17,6 +17,13 @@ export interface Step {
 export interface Tier {
   name: string;
   price: number;
+  /**
+   * Annual total, 10x monthly (two months free). Optional so a Sanity
+   * document without it still validates and the card falls back to
+   * monthly-only rather than rendering undefined. Never fed into the JSON-LD
+   * price array, or lowPrice would silently become the annual figure.
+   */
+  annualPrice?: number;
   popular?: boolean;
   features: string[];
   cta: string;

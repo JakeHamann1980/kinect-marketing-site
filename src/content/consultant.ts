@@ -121,7 +121,7 @@ export const consultant: PersonaPageContent = {
     {
       question: "Why flat pricing?",
       answer:
-        "Consulting revenue is lumpy enough. KINECT costs the same flat price every month, whatever your engagement count, with no per-seat math.",
+        "Consulting revenue is lumpy enough. KINECT costs the same flat price, whatever your engagement count, with no per-seat math.",
     },
     {
       question: "What does the AI do?",

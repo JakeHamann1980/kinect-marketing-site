@@ -119,7 +119,7 @@ export const coach: PersonaPageContent = {
     {
       question: "Does my price go up as my roster grows?",
       answer:
-        "No. Every plan is flat. Ten clients or fifty, the monthly price is the monthly price.",
+        "No. Every plan is flat. Ten clients or fifty, the price is the price.",
     },
     {
       question: "What do my clients see?",

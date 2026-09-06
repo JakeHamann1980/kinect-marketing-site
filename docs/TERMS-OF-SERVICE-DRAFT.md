@@ -19,6 +19,14 @@ platform repo, not assumed. Where a term depends on a business or legal
 decision I cannot make, it appears in **[BRACKETS]** and is listed again at
 the bottom.
 
+**Revised 2026-09-03 — section 9 adds annual billing and Kinect Enterprise.**
+Annual plans are ten times the monthly price, charged once per annual term.
+Section 12 already stated the cancellation rule that applies to them
+(cancellation takes effect at the end of the paid period; no refunds or credits
+for partial periods) and is unchanged; the /pricing FAQ now says the same thing
+in plain words. Kinect Enterprise ($1,499/mo, three locations included, $250
+per additional location) was missing from section 9 and is now listed.
+
 **Revised 2026-09-01 — section 10 changed, and one change NARROWS a term.**
 The free trial went from 14 days to 30. In the same change the post-trial
 grace went from 7 days to **48 hours**, which is a reduction in what this
@@ -178,9 +186,14 @@ Client.
 
 ## 9. Plans, pricing and payment
 
-Plans are flat monthly prices: Kinect at $149, Kinect Plus at $399, and Kinect
-Pro at $799 per month. **There is no per-seat or per-client charge**, and every
-plan includes unlimited Clients.
+Plans are flat prices, billed monthly or annually: Kinect at $149, Kinect Plus
+at $399, Kinect Pro at $799, and Kinect Enterprise at $1,499 per month.
+Annual billing is ten times the monthly price for twelve months of service
+($1,490, $3,990, $7,990 and $14,990 respectively), charged once at the start
+of each annual term. **There is no per-seat or per-client charge**, and every
+plan includes unlimited Clients. Kinect Enterprise includes three locations;
+additional locations are $250 per month each (or $2,500 per year on an annual
+plan).
 
 Payments are processed by Stripe. By subscribing you authorize us, through
 Stripe, to charge your payment method the recurring fee for your plan until

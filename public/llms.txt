@@ -23,11 +23,13 @@ explains the work sitting right next to it.
 
 ## Pricing
 
-Flat monthly pricing, no per-seat fees and no per-client fees: Kinect $149,
+Flat pricing, no per-seat fees and no per-client fees. Monthly: Kinect $149,
 Kinect Plus $399, Kinect Pro $799, and Kinect Enterprise $1,499 for firms
-running more than one location. Kinect Enterprise includes 3 locations and
-adds $250 per month per additional location. Every plan has unlimited clients
-and a 30-day free trial with no card required.
+running more than one location. Annual is ten times the monthly price for
+twelve months, so two months are free: $1,490, $3,990, $7,990 and $14,990.
+Kinect Enterprise includes 3 locations and adds $250 per month ($2,500 per
+year) per additional location. Every plan has unlimited clients and a 30-day
+free trial with no card required.
 
 ## Status
 

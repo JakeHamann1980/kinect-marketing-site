@@ -49,7 +49,7 @@ test("/pricing renders the hero, tier cards, comparison matrix and FAQ", async (
   const faqButton = page.getByRole("button", { name: "How is KINECT priced?" });
   await expect(faqButton).toBeVisible();
   await faqButton.click();
-  await expect(page.getByText("Flat monthly by plan.")).toBeVisible();
+  await expect(page.getByText("Flat pricing by plan.")).toBeVisible();
 });
 
 test("nav Pricing routes to /pricing from the home page", async ({ page }) => {
@@ -155,4 +155,43 @@ test("the comparison matrix publishes the storage tiers and add-on price", async
   await expect(
     matrix.getByText("Uploads keep working past the limit"),
   ).toBeVisible();
+});
+
+test("Annual swaps the tier cards to the yearly total and says what it buys", async ({
+  page,
+}) => {
+  await page.goto("/pricing");
+  const pricing = page.locator("#pricing");
+
+  // Monthly by default, so the first figure anyone sees matches every
+  // published one (SEO description, JSON-LD, llms.txt).
+  await expect(pricing.getByText(/^\$149\/mo$/)).toBeVisible();
+  await expect(pricing.getByText("Two months free, billed annually")).toHaveCount(0);
+
+  const annual = page.getByRole("button", { name: /^Annual/ });
+  await expect(annual).toHaveAttribute("aria-pressed", "false");
+  await annual.click();
+  await expect(annual).toHaveAttribute("aria-pressed", "true");
+
+  // The billed total, not an effective monthly: ten times the monthly figure.
+  await expect(pricing.getByText(/^\$1,490\/yr$/)).toBeVisible();
+  await expect(pricing.getByText(/^\$14,990\/yr$/)).toBeVisible();
+  // One caption per tier, because every tier carries an annual price.
+  await expect(pricing.getByText("Two months free, billed annually")).toHaveCount(4);
+});
+
+test("the billing toggle does not make /pricing scroll sideways on a phone", async ({
+  page,
+}) => {
+  // The 390px guard above runs with Monthly selected. The toggle adds a
+  // control and Annual widens every price by two characters; neither may
+  // reintroduce the sideways pan the guard exists for.
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/pricing");
+  await page.getByRole("button", { name: /^Annual/ }).click();
+  const overflows = await page.evaluate(() => {
+    const de = document.documentElement;
+    return { scrollWidth: de.scrollWidth, clientWidth: de.clientWidth };
+  });
+  expect(overflows.scrollWidth).toBe(overflows.clientWidth);
 });

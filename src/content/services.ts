@@ -156,7 +156,7 @@ export const services: PersonaPageContent = {
     {
       question: "Why flat pricing?",
       answer:
-        "Firm headcount moves and matter volume moves more. KINECT costs the same flat price every month, whatever your client or engagement count, with no per-seat math.",
+        "Firm headcount moves and matter volume moves more. KINECT costs the same flat price, whatever your client or engagement count, with no per-seat math.",
     },
     {
       question: "What does the AI do?",

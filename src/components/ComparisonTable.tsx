@@ -118,9 +118,23 @@ export default function ComparisonTable({ comparison, tiers }: ComparisonTablePr
                   >
                     {tier.name}
                   </div>
+                  {/* Both intervals, always. The table is a Server Component
+                      and the Monthly/Annual toggle lives in the client-side
+                      tier cards above it; pulling the whole matrix into that
+                      boundary for one header line is not worth it, and two
+                      figures side by side is the honest static answer. */}
                   <div className="mt-0.5 text-[13px] font-medium text-muted">
-                    ${tier.price}
+                    ${tier.price.toLocaleString("en-US")}
                     <span>/mo</span>
+                    {typeof tier.annualPrice === "number" ? (
+                      <>
+                        <span className="mx-1.5 text-border" aria-hidden="true">
+                          ·
+                        </span>
+                        ${tier.annualPrice.toLocaleString("en-US")}
+                        <span>/yr</span>
+                      </>
+                    ) : null}
                   </div>
                 </th>
               ))}
@@ -185,9 +199,16 @@ export default function ComparisonTable({ comparison, tiers }: ComparisonTablePr
                   </span>
                 ) : null}
               </div>
-              <span className="text-[14px] font-medium text-muted">
-                ${tier.price}
+              <span className="text-right text-[14px] font-medium text-muted">
+                ${tier.price.toLocaleString("en-US")}
                 <span>/mo</span>
+                {typeof tier.annualPrice === "number" ? (
+                  <>
+                    <br />
+                    ${tier.annualPrice.toLocaleString("en-US")}
+                    <span>/yr</span>
+                  </>
+                ) : null}
               </span>
             </div>
 
