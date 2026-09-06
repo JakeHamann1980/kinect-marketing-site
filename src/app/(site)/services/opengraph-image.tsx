@@ -20,7 +20,7 @@ export const alt =
 export default async function Image() {
   const [fonts, screenshot] = await Promise.all([ogFonts(), loadScreenshot("/screenshots/services-firm-hq.png")]);
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: services.heroExtra.eyebrow,
       headline: services.hero.headline,
       gradientPhrase: services.hero.gradientPhrase,

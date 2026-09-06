@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { ReactElement, ReactNode } from "react";
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import type { Persona } from "@/lib/personas";
 import { PERSONAS } from "@/lib/personas";
 import { SITE_HOST } from "@/lib/seo";
+import { balanceLines, measureText, parseFontMetrics, type FontMetrics } from "@/lib/og-measure";
 
 /**
  * Task 21 (OG Images + Preview Metadata). Shared layout module for every
@@ -158,10 +159,18 @@ function gradientWords(headline: string, gradientPhrase: string): { text: string
  * Next's build/server process, matching the pattern used throughout the
  * Vercel OG examples for bundling local font assets.
  */
-async function loadHeadlineFont(): Promise<ArrayBuffer> {
-  const path = join(process.cwd(), "src", "app", "og", "_fonts", "HankenGrotesk-Bold.ttf");
-  const buffer = await readFile(path);
-  return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
+let headlineFont: Promise<ArrayBuffer> | undefined;
+function loadHeadlineFont(): Promise<ArrayBuffer> {
+  headlineFont ??= readFile(join(process.cwd(), "src", "app", "og", "_fonts", "HankenGrotesk-Bold.ttf")).then(
+    (buffer) => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer,
+  );
+  return headlineFont;
+}
+
+let headlineMetrics: Promise<FontMetrics> | undefined;
+function loadHeadlineMetrics(): Promise<FontMetrics> {
+  headlineMetrics ??= loadHeadlineFont().then(parseFontMetrics);
+  return headlineMetrics;
 }
 
 export async function ogFonts() {
@@ -287,15 +296,59 @@ interface OgTemplateProps {
    * without it are the "statement" variant: headline only, full width.
    */
   screenshot?: string;
-  /**
-   * Force a line break after the first headline word that matches this
-   * exactly (punctuation included), so a phrase lands intact on its own
-   * line instead of wherever 980px happens to wrap it -- e.g. /platform
-   * passes "relationship," so "one login." (the whole gradient phrase)
-   * sits together on line two. Rendered as a full-width flex spacer,
-   * which is the Satori-safe way to break a wrapping row.
-   */
-  breakAfter?: string;
+}
+
+/**
+ * Decides the line breaks for a row of words ourselves rather than
+ * leaving them to Satori's greedy wrap, so no card ends with a lone word
+ * on its last line (see `src/lib/og-measure.ts`). `columnWidth` is the
+ * true column; a 12px margin is held back because our widths ignore
+ * kerning and Satori's wrap must never fire before ours. Returns the set
+ * of word indices after which a break is forced, rendered as full-width
+ * flex spacers, the Satori-safe way to break a wrapping row, plus the
+ * word gap: the font's own space glyph at this size, so the row reads as
+ * a sentence rather than as evenly spaced tiles (a fixed 16px looked
+ * right at 58px and like justified text at 22px).
+ */
+function breaksFor(
+  metrics: FontMetrics,
+  words: string[],
+  { fontSize, letterSpacing, columnWidth }: { fontSize: number; letterSpacing: number; columnWidth: number },
+): { breaks: Set<number>; gap: number } {
+  const gap = Math.round(measureText(metrics, " ", fontSize, letterSpacing));
+  const widths = words.map((word) => measureText(metrics, word, fontSize, letterSpacing));
+  const lines = balanceLines(widths, columnWidth - 12, gap);
+  const breaks = new Set<number>();
+  for (const line of lines.slice(0, -1)) breaks.add(line[line.length - 1]);
+  return { breaks, gap };
+}
+
+/** A wrapping row of words with our own breaks, the headline's building
+ * block and the detail line's. `words` carry their color; the spacer after
+ * a break index pushes the rest of the row onto the next line. */
+function WordRow({
+  words,
+  breaks,
+  gap,
+  style,
+}: {
+  words: { text: string; color: string }[];
+  breaks: Set<number>;
+  gap: number;
+  style: CSSProperties;
+}) {
+  return (
+    <div style={{ display: "flex", flexWrap: "wrap", ...style }}>
+      {words.flatMap((word, i) => {
+        const el = (
+          <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: gap, display: "flex" }}>
+            {word.text}
+          </div>
+        );
+        return breaks.has(i) ? [el, <div key={`break-${i}`} style={{ width: "100%", display: "flex" }} />] : [el];
+      })}
+    </div>
+  );
 }
 
 /**
@@ -305,7 +358,7 @@ interface OgTemplateProps {
  * ImageResponse(...)` without an extra component layer Satori would have
  * to resolve.
  */
-export function ogTemplate({
+export async function ogTemplate({
   eyebrow,
   headline,
   gradientPhrase,
@@ -314,10 +367,22 @@ export function ogTemplate({
   footer,
   detail,
   screenshot,
-  breakAfter,
-}: OgTemplateProps): ReactElement {
+}: OgTemplateProps): Promise<ReactElement> {
+  const metrics = await loadHeadlineMetrics();
   const words = gradientPhrase ? gradientWords(headline, gradientPhrase) : headline.split(" ").map((text) => ({ text, color: TEXT }));
-  const breakIndex = breakAfter ? words.findIndex((word) => word.text === breakAfter) : -1;
+  const headlineColumn = screenshot ? 600 : 980;
+  const headlineSize = screenshot ? 50 : 58;
+  const headlineRow = breaksFor(
+    metrics,
+    words.map((word) => word.text),
+    { fontSize: headlineSize, letterSpacing: -1, columnWidth: headlineColumn },
+  );
+  const detailWords = detail ? detail.split(/\s+/).filter(Boolean).map((text) => ({ text, color: MUTED })) : [];
+  const detailRow = breaksFor(
+    metrics,
+    detailWords.map((word) => word.text),
+    { fontSize: 22, letterSpacing: -0.2, columnWidth: 900 },
+  );
   const accent = persona ? PERSONAS[persona].accent : "#35D6E8";
   const accentTint = persona ? PERSONAS[persona].tint : "rgba(53,214,232,.14)";
 
@@ -393,7 +458,7 @@ export function ogTemplate({
           flexDirection: "column",
           gap: 20,
           position: "relative",
-          maxWidth: screenshot ? 600 : 980,
+          maxWidth: headlineColumn,
         }}
       >
         <div
@@ -406,42 +471,19 @@ export function ogTemplate({
         >
           {eyebrow}
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            fontSize: screenshot ? 50 : 58,
-            fontWeight: 700,
-            lineHeight: 1.12,
-            letterSpacing: -1,
-          }}
-        >
-          {words.flatMap((word, i) => {
-            const el = (
-              <div key={`${word.text}-${i}`} style={{ color: word.color, marginRight: 16, display: "flex" }}>
-                {word.text}
-              </div>
-            );
-            // A full-width spacer pushes everything after it onto the next
-            // line of the wrapping row (see `breakAfter`'s doc comment).
-            return i === breakIndex
-              ? [el, <div key={`break-${i}`} style={{ width: "100%", display: "flex" }} />]
-              : [el];
-          })}
-        </div>
-        {detail ? (
-          <div
-            style={{
-              display: "flex",
-              fontSize: 22,
-              lineHeight: 1.4,
-              letterSpacing: -0.2,
-              color: MUTED,
-              maxWidth: 900,
-            }}
-          >
-            {detail}
-          </div>
+        <WordRow
+          words={words}
+          breaks={headlineRow.breaks}
+          gap={headlineRow.gap}
+          style={{ fontSize: headlineSize, fontWeight: 700, lineHeight: 1.12, letterSpacing: -1 }}
+        />
+        {detailWords.length > 0 ? (
+          <WordRow
+            words={detailWords}
+            breaks={detailRow.breaks}
+            gap={detailRow.gap}
+            style={{ fontSize: 22, lineHeight: 1.4, letterSpacing: -0.2, maxWidth: 900 }}
+          />
         ) : null}
       </div>
 

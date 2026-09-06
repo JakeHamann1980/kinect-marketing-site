@@ -15,7 +15,7 @@ export const alt = "KINECT for coaches -- a client portal your clients actually 
 export default async function Image() {
   const [fonts, screenshot] = await Promise.all([ogFonts(), loadScreenshot("/screenshots/coach-checkin.png")]);
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: coach.heroExtra.eyebrow,
       headline: coach.hero.headline,
       gradientPhrase: coach.hero.gradientPhrase,

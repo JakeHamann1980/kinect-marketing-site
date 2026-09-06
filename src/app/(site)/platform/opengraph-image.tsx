@@ -18,14 +18,11 @@ export const alt =
 export default async function Image() {
   const [fonts, screenshot] = await Promise.all([ogFonts(), loadScreenshot("/screenshots/portal-board.png")]);
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: platformPage.hero.eyebrow,
       screenshot,
       headline: platformPage.hero.title,
       gradientPhrase: platformPage.hero.gradientPhrase,
-      // Break after "relationship," so the gradient phrase ("one login.")
-      // sits whole on the second line instead of splitting across the wrap.
-      breakAfter: "relationship,",
       footer: SITE_HOST,
     }),
     { ...size, fonts },

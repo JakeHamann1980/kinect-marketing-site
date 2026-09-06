@@ -22,7 +22,7 @@ export default async function Image() {
     loadScreenshot(home.showcase.screenshots.agency.src),
   ]);
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: "Client Portal Software",
       headline: home.hero.headline,
       gradientPhrase: home.hero.gradientPhrase,

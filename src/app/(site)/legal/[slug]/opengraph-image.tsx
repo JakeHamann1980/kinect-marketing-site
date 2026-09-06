@@ -42,7 +42,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const fonts = await ogFonts();
 
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: "KINECT",
       headline: page?.title ?? "KINECT",
       footer: `${SITE_HOST}/legal/${slug}`,

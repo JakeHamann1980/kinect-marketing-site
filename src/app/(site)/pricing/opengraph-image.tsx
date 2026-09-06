@@ -27,7 +27,7 @@ function priceLine(): string {
 export default async function Image() {
   const fonts = await ogFonts();
   return new ImageResponse(
-    ogTemplate({
+    await ogTemplate({
       eyebrow: pricingPage.hero.eyebrow,
       headline: pricingPage.hero.title,
       gradientPhrase: pricingPage.hero.gradientPhrase,
