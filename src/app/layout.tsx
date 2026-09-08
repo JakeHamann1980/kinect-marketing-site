@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { hanken, instrument, plexMono } from "@/lib/fonts";
 import { SITE_URL } from "@/lib/seo";
 import "./globals.css";
@@ -53,6 +54,7 @@ export default function RootLayout({
         }}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
